@@ -1,0 +1,21 @@
+{
+  "name": "zhushen-game",
+  "version": "1.1.0",
+  "description": "诸神终应知晓玩家自制史记 Android 应用",
+  "scripts": {
+    "verify": "node scripts/verify-project.js",
+    "build": "npm run verify && node scripts/build-android.js debug",
+    "build:release": "npm run verify && node scripts/build-android.js release",
+    "lint:android": "cd android && gradlew.bat :app:lintDebug --no-daemon"
+  },
+  "keywords": [
+    "game",
+    "mobile",
+    "android"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "tailwindcss": "^3.4.19"
+  }
+}

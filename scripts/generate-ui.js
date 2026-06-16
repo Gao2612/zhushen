@@ -1,0 +1,1157 @@
+const { writeFileSync } = require('fs');
+const { join, resolve } = require('path');
+
+const root = resolve(__dirname, '..');
+const assetsRoot = join(root, 'manual-build', 'assets');
+
+const pages = [
+  { href: 'zy.html', label: '首页' },
+  { href: 'gfjs.html', label: '角色' },
+  { href: 'gfgn.html', label: '概念' },
+  { href: 'wjec.html', label: '二创' },
+  { href: 'qyxhhj.html', label: '笑话' }
+];
+
+const characters = [
+  {
+    key: 'atal',
+    name: '阿塔尔',
+    title: '少女骑士 · 送葬人',
+    tags: ['官方', '猎人', '送葬人'],
+    cover: '官方-角色/阿塔尔/阿塔尔1 .jpeg',
+    desc:
+      '被国家和盟友背叛的少女骑士。死前与「第十三席的恶魔」定约，' +
+      '堕入名为「汇流地」的异界，成为猎人，代号「送葬人」，' +
+      '开始履行契约——狩猎神明。',
+    quote: '去为诸神带回死亡吧，「送葬人」。',
+    images: [
+      '官方-角色/阿塔尔/阿塔尔1 .jpeg',
+      '官方-角色/阿塔尔/阿塔尔2.png',
+      '官方-角色/阿塔尔/阿塔尔3.png',
+      '官方-角色/阿塔尔/阿塔尔4.jpeg',
+      '官方-角色/阿塔尔/阿塔尔5.jpeg'
+    ],
+    videos: [
+      { src: '官方-角色/视频/阿塔尔.mp4', label: '阿塔尔展示' },
+      { src: '官方-角色/视频/阿塔尔回睦.mp4', label: '阿塔尔回睦' },
+      { src: '官方-角色/视频/阿塔尔技能特效.mp4', label: '技能特效' }
+    ]
+  },
+  {
+    key: 'dehenu',
+    name: '德赫奴',
+    title: '神明 · 无性别',
+    tags: ['官方', '神明', '待考证'],
+    cover: '官方-角色/德赫奴/德赫奴1.jpeg',
+    desc:
+      '已知身份为神明，设定为无性别。曾在 PV 中对阿塔尔说道：' +
+      '“你的灵魂非常明亮，真是令人怀念呢。”',
+    quote: '你的灵魂非常明亮，真是令人怀念呢。',
+    images: [
+      '官方-角色/德赫奴/德赫奴1.jpeg',
+      '官方-角色/德赫奴/德赫奴2.jpeg',
+      '官方-角色/德赫奴/德赫奴3.png'
+    ],
+    videos: [
+      { src: '官方-角色/视频/德赫奴.mp4', label: '德赫奴展示' },
+      { src: '官方-角色/视频/德赫奴技能.mp4', label: '技能演示' }
+    ]
+  },
+  {
+    key: 'laxia',
+    name: '拉夏·贝乌斯',
+    title: '第十三席恶魔',
+    tags: ['官方', '恶魔', '契约'],
+    cover: '官方-角色/拉夏·贝乌斯/拉夏1.jpeg',
+    desc:
+      '汇流地的管理者之一，与阿塔尔定下契约的「第十三席恶魔」。' +
+      '以自身手段深入调查汇流地的异变。',
+    quote: '汇流地的管理者之一。',
+    images: [
+      '官方-角色/拉夏·贝乌斯/拉夏1.jpeg',
+      '官方-角色/拉夏·贝乌斯/拉夏2.png',
+      '官方-角色/拉夏·贝乌斯/拉夏3.jpeg',
+      '官方-角色/拉夏·贝乌斯/拉夏4.jpeg',
+      '官方-角色/拉夏·贝乌斯/拉夏5.jpeg'
+    ],
+    videos: []
+  },
+  {
+    key: 'meisaidesi',
+    name: '梅赛德斯',
+    title: '神秘旅者',
+    tags: ['官方', '待补充'],
+    cover: '官方-角色/梅赛德斯/梅赛德斯1.jpeg',
+    desc: '在汇流地中出现的另一位神秘角色，其背景和目的尚待揭晓。',
+    quote: '背景仍待补充。',
+    images: [
+      '官方-角色/梅赛德斯/梅赛德斯1.jpeg',
+      '官方-角色/梅赛德斯/梅赛德斯2.png'
+    ],
+    videos: []
+  },
+  {
+    key: 'xilan',
+    name: '夕岚',
+    title: '暮色之岚',
+    tags: ['官方', '猎人', '异化'],
+    cover: '官方-角色/夕岚/夕岚1.jpeg',
+    desc:
+      '汇流地中的猎人之一。受生命法则影响，在踏入汇流地深层后' +
+      '逐渐产生扭曲与异化。拥有丰富的人气二创作品。',
+    quote: '汇流地中的猎人之一。',
+    images: [
+      '官方-角色/夕岚/夕岚1.jpeg',
+      '官方-角色/夕岚/夕岚2.jpeg',
+      '官方-角色/夕岚/夕岚3.jpeg',
+      '官方-角色/夕岚/夕岚4.jpeg',
+      '官方-角色/夕岚/夕岚5.png',
+      '官方-角色/夕岚/夕岚6.png',
+      '官方-角色/夕岚/夕岚7.jpeg',
+      '官方-角色/夕岚/夕岚8.jpeg',
+      '官方-角色/夕岚/夕岚9.gif'
+    ],
+    videos: [
+      { src: '官方-角色/视频/夕岚玩家二创1.mp4', label: '玩家二创一' },
+      { src: '官方-角色/视频/夕岚玩家二创2.mp4', label: '玩家二创二' },
+      { src: '官方-角色/视频/夕岚我的世界.mp4', label: '我的世界' }
+    ]
+  }
+];
+
+const conceptCards = [
+  {
+    title: '登场角色：德赫奴',
+    src: '官方-概念/登场角色：德赫奴.png',
+    tag: '官方宣传物料'
+  },
+  {
+    title: '登场角色：拉夏·贝乌斯',
+    src: '官方-概念/登场角色：拉夏·贝乌斯.png',
+    tag: '官方宣传物料'
+  },
+  {
+    title: '游戏登入界面',
+    src: '官方-概念/登入界面.jpeg',
+    tag: '官方宣传物料'
+  },
+  {
+    title: '制作人补充设想',
+    src: '官方-概念/一醉关于游戏定位的补充和设想~.jpeg',
+    tag: '官方资料'
+  },
+  {
+    title: '白国主与拉夏的角色定位',
+    src: '官方-概念/白国主&拉夏的角色定位.png',
+    tag: '角色定位'
+  }
+];
+
+for (let index = 1; index <= 15; index += 1) {
+  const ext = [1, 2, 3, 5, 7].includes(index) ? 'jpeg' : 'png';
+  conceptCards.push({
+    title: `原官方世界观概念图 ${index}`,
+    src: `官方-概念/官方概念（原官方世界观）/${index}_官方概念（原官方世界观）.${ext}`,
+    tag: '世界观'
+  });
+}
+
+const artists = [
+  ['阿钰钰钰', '玩家-二创图/阿钰钰钰/', ['阿钰钰钰拉夏1.gif', '阿钰钰钰拉夏2.gif', '阿钰钰钰夕岚1.png']],
+  ['初月wy', '玩家-二创图/初月wy/', ['初月wy夕岚1.png', '初月wy夕岚2.png']],
+  ['电子水泥沥灰', '玩家-二创图/电子水泥沥灰/', ['电子水泥沥灰夕岚1.jpeg']],
+  ['范斯', '玩家-二创图/范斯/', ['范斯拉夏1.jpeg', '范斯拉夏2.jpeg', '范斯拉夏3.png', '范斯拉夏4.jpeg', '范斯拉夏5.jpeg', '范斯拉夏6.jpeg', '范斯拉夏7.jpeg']],
+  ['共创（已获取画师同意）', '玩家-二创图/共创（已获取画师同意）/', ['共创（已获取画师同意）1.jpeg', '共创（已获取画师同意）2.jpeg', '共创（已获取画师同意）3.jpeg', '共创（已获取画师同意）4.jpeg', '共创（已获取画师同意）5.jpeg', '共创（已获取画师同意）6.jpeg', '共创（已获取画师同意）7.jpeg', '共创（已获取画师同意）8.jpeg', '共创（已获取画师同意）9.jpeg', '共创（已获取画师同意）11.jpeg', '共创（已获取画师同意）12.jpeg', '共创（已获取画师同意）13.jpeg']],
+  ['精神病系教主', '玩家-二创图/精神病系教主/', ['精神病系教主拉夏1.jpeg', '精神病系教主拉夏2.jpeg', '精神病系教主拉夏3.jpeg']],
+  ['莲生', '玩家-二创图/莲生/', ['莲生夕岚1.png', '莲生夕岚2.png']],
+  ['皮皮', '玩家-二创图/皮皮/', ['皮皮阿塔尔1.png', '皮皮德赫奴1.jpeg', '皮皮夕岚1.jpeg', '皮皮夕岚2.jpeg', '皮皮夕岚3.jpeg', '皮皮夕岚4.jpeg']],
+  ['巧枝椅', '玩家-二创图/巧枝椅/', ['巧枝椅水墨1.jpeg', '巧枝椅水墨2.jpeg', '巧枝椅水墨3.jpeg', '巧枝椅水墨4.jpeg', '巧枝椅水墨5.jpeg', '巧枝椅水墨6.jpeg', '巧枝椅夕岚1.jpeg', '巧枝椅夕岚2.jpeg']],
+  ['夕岚老公', '玩家-二创图/夕岚老公/', ['夕岚老公夕岚1.jpeg', '夕岚老公夕岚2.png']],
+  ['心理素质叼差', '玩家-二创图/心理素质叼差/', ['心理素质叼差阿塔尔1.jpeg', '心理素质叼差拉夏1.jpeg', '心理素质叼差拉夏2.jpeg', '心理素质叼差拉夏3.jpeg', '心理素质叼差拉夏4.jpeg', '心理素质叼差梅赛德斯1.jpeg', '心理素质叼差夕岚1.jpeg', '心理素质叼差夕岚2.jpeg']],
+  ['鸭鸭', '玩家-二创图/鸭鸭（待补充整理）/', ['鸭鸭夕岚1.jpeg', '鸭鸭夕岚2.jpeg', '鸭鸭夕岚3.jpeg', '鸭鸭夕岚4.jpeg', '鸭鸭夕岚6.jpeg', '鸭鸭夕岚7.jpeg', '鸭鸭夕岚8.png', '鸭鸭夕岚9.png', '鸭鸭夕岚10.png', '鸭鸭夕岚11.png']],
+  ['hsj', '玩家-二创图/hsj/', ['hsj拉夏1.jpeg']],
+  ['jk凯威', '玩家-二创图/jk凯威/', ['jk凯威阿塔尔1.jpeg', 'jk凯威拉夏1.png']]
+].map(([name, base, files]) => ({
+  name,
+  base,
+  files,
+  entries: files.map((file) => ({
+    title: file.replace(/\.(jpeg|jpg|png|gif)$/i, ''),
+    src: base + file,
+    artist: name,
+    type: file.toLowerCase().endsWith('.gif') ? '动图' : '图片',
+    character: detectCharacter(file)
+  }))
+}));
+
+const jokes = [
+  ['罗老师的画饼', '罗老师24年年初在游戏官群画的饼'],
+  ['版号戏谈', '可惜，本来一测那会儿就要申请版号的'],
+  ['群友“虾”的嚣张', '虾自从线下测试见过罗老师后就放开了自己'],
+  ['虾是罗老师的狗', '一段很有社区记忆点的群聊片段'],
+  ['罗老师疯狂星期四V50', '真的给安装包吗'],
+  ['虾你在干什么', '不是哥们'],
+  ['两个屑屑的家伙', '屑屑的罗老师和群友“小孩”'],
+  ['瑟瑟，不要瑟瑟', '有一段时间群里有点闹腾'],
+  ['游戏备用名', '关于备用名的社区讨论'],
+  ['备用名后续的讨论1', '时间流逝'],
+  ['备用名后续的讨论2', '群友都很活跃'],
+  ['汇流地的往事', '多少故事随风而去，徒留满地狼藉'],
+  ['似曾相识', '一段疑似前脚说完后脚忘记的聊天记录'],
+  ['傲娇的罗老师什么时候直播', '希望知诸还有复活的那一天']
+].map(([title, desc], index) => ({
+  title,
+  desc,
+  src: `群友笑话合集/${index + 1}_群友笑话合集.${[1, 2, 7, 8, 9, 10, 11, 12].includes(index + 1) ? 'png' : 'jpeg'}`
+}));
+
+const splashVideos = [
+  ['random', '随机播放'],
+  ['atal', '阿塔尔'],
+  ['atal_skill', '阿塔尔技能特效'],
+  ['atal_huimu', '阿塔尔回睦'],
+  ['dehenu', '德赫奴'],
+  ['dehenu_skill', '德赫奴技能'],
+  ['xilan_world', '夕岚我的世界'],
+  ['xilan_fan_1', '夕岚玩家二创1'],
+  ['xilan_fan_2', '夕岚玩家二创2']
+];
+
+function detectCharacter(file) {
+  for (const name of ['阿塔尔', '德赫奴', '拉夏', '梅赛德斯', '夕岚']) {
+    if (file.includes(name)) {
+      return name;
+    }
+  }
+  return '综合';
+}
+
+function htmlPage({ title, active, hero, body, extraClass = '' }) {
+  return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${title}</title>
+  <link href="lib/font-awesome.css" rel="stylesheet">
+  <link href="lib/app-theme.css" rel="stylesheet">
+</head>
+<body class="${extraClass}">
+  ${nav(active)}
+  <main class="app-shell">
+    ${heroBlock(hero)}
+    ${body}
+  </main>
+  ${footer()}
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox-close" data-lightbox-close aria-label="关闭">×</button>
+    <button class="lightbox-action" data-favorite-current>收藏</button>
+    <img id="lightboxImg" alt="预览">
+    <p id="lightboxCaption"></p>
+  </div>
+  <script src="app-ui.js"></script>
+</body>
+</html>
+`;
+}
+
+function nav(active) {
+  return `<nav class="archive-nav">
+    <a class="brand" href="zy.html" aria-label="诸神终应知晓首页">
+      <img src="logo/logo.png" alt="">
+      <span><strong>诸神终应知晓</strong><small>玩家自制史记</small></span>
+    </a>
+    <button class="nav-toggle" data-nav-toggle aria-label="打开导航">☰</button>
+    <ul class="nav-menu" data-nav-menu>
+      ${pages.map((page) => `<li><a class="${page.label === active ? 'active' : ''}" href="${page.href}">${page.label}</a></li>`).join('')}
+      <li><a href="https://docs.qq.com/sheet/DVXVaQWZOcUFyRlNr?tab=BB08J2">问答</a></li>
+      <li><a href="https://www.taptap.cn/app/513986">论坛</a></li>
+    </ul>
+  </nav>`;
+}
+
+function heroBlock(hero) {
+  return `<section class="hero-panel">
+    <div>
+      <p class="eyebrow">${hero.eyebrow}</p>
+      <h1>${hero.title}</h1>
+      <p class="hero-desc">${hero.desc}</p>
+    </div>
+    <div class="hero-actions">
+      <label class="search-box">
+        <span>搜索</span>
+        <input data-search="${hero.searchScope || 'global'}" type="search" placeholder="搜索角色、作者、资料">
+      </label>
+      <a class="ghost-button" href="settings.html">版权与设置</a>
+    </div>
+  </section>`;
+}
+
+function footer() {
+  return `<footer class="archive-footer">
+    <p>本应用为玩家整理的非商业纪念资料集，不代表官方立场或官方消息。</p>
+    <p>游戏官方内容及相关知识产权归上海魔王圆桌科技有限公司所有；玩家作品权利归各自创作者所有。</p>
+  </footer>`;
+}
+
+function card({ title, desc, src, href, meta, kind, favoriteId }) {
+  const openAttr = href ? `href="${href}"` : `href="${src}" data-lightbox-src="${src}"`;
+  const favorite = favoriteId ? `<button class="fav-button" data-favorite="${favoriteId}" aria-label="收藏${title}">收藏</button>` : '';
+  return `<article class="archive-card" data-search-text="${escapeAttr([title, desc, meta, kind].join(' '))}" data-kind="${kind || ''}">
+    <a ${openAttr}>
+      <img src="${src}" alt="${title}" loading="lazy" decoding="async">
+      <span class="card-kind">${kind || '档案'}</span>
+    </a>
+    <div class="card-body">
+      <p class="card-meta">${meta || ''}</p>
+      <h3>${title}</h3>
+      <p>${desc}</p>
+      ${favorite}
+    </div>
+  </article>`;
+}
+
+function escapeAttr(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function homePage() {
+  const body = `<section class="stats-grid">
+    <div><strong>${characters.length}</strong><span>角色档案</span></div>
+    <div><strong>${conceptCards.length}</strong><span>概念资料</span></div>
+    <div><strong>${artists.reduce((sum, item) => sum + item.files.length, 0)}</strong><span>二创作品</span></div>
+    <div><strong>${jokes.length}</strong><span>社区切片</span></div>
+  </section>
+  <section class="section-head">
+    <p class="eyebrow">Archive Entrance</p>
+    <h2>进入汇流地档案馆</h2>
+  </section>
+  <section class="feature-grid">
+    ${card({ title: '官方角色', desc: '角色身份、设定、图集与视频资料。', src: 'zy/诸神终应知晓角色设定.jpg', href: 'gfjs.html', meta: '角色档案', kind: '官方' })}
+    ${card({ title: '官方概念', desc: '宣传物料、世界观与早期概念图。', src: 'zy/诸神终应知晓概念图.jpg', href: 'gfgn.html', meta: '概念图鉴', kind: '官方' })}
+    ${card({ title: '玩家二创', desc: '按作者和角色整理的玩家创作。', src: 'zy/玩家二创.jpg', href: 'wjec.html', meta: '社群共创', kind: '二创' })}
+    ${card({ title: '群友笑话', desc: '留住社区里的轻松片段。', src: 'zy/群友笑话合集.jpg', href: 'qyxhhj.html', meta: '社区记忆', kind: '笑话' })}
+  </section>
+  <section class="split-panel">
+    <div>
+      <p class="eyebrow">My Archive</p>
+      <h2>我的档案</h2>
+      <p>收藏、最近浏览与免责声明偏好仅保存在当前设备。你可以把常看的角色、概念图和二创作品留在这里，方便回溯。</p>
+    </div>
+    <div class="mini-list" data-favorite-list></div>
+  </section>`;
+  return htmlPage({
+    title: '诸神终应知晓 · 玩家自制史记',
+    active: '首页',
+    hero: {
+      eyebrow: 'Abyss Knights Archive',
+      title: '诸神终应知晓<br>玩家自制史记',
+      desc: '以档案馆的形式，整理官方物料、角色信息、玩家二创和社群记忆。',
+      searchScope: 'global'
+    },
+    body
+  });
+}
+
+function charactersPage() {
+  const body = `<section class="section-head">
+    <p class="eyebrow">Character Files</p>
+    <h2>登场角色</h2>
+  </section>
+  <section class="character-grid">
+    ${characters.map((item) => card({
+      title: item.name,
+      desc: item.desc,
+      src: item.cover,
+      meta: item.title,
+      kind: item.tags.join(' / '),
+      favoriteId: `character:${item.key}`
+    })).join('')}
+  </section>
+  <section class="detail-stack">
+    ${characters.map((item) => characterDetail(item)).join('')}
+  </section>`;
+  return htmlPage({
+    title: '角色档案 · 诸神终应知晓',
+    active: '角色',
+    hero: {
+      eyebrow: 'Character Archive',
+      title: '角色档案',
+      desc: '用档案卡区分已确认资料、待补充信息和视频图集。',
+      searchScope: 'page'
+    },
+    body
+  });
+}
+
+function characterDetail(item) {
+  const media = item.images.map((src) => card({
+    title: item.name,
+    desc: item.title,
+    src,
+    meta: '角色图集',
+    kind: '图片',
+    favoriteId: `image:${src}`
+  })).join('');
+  const videos = item.videos.map((video) => `<article class="video-card" data-search-text="${escapeAttr(item.name + ' ' + video.label)}">
+    <video controls preload="metadata">
+      <source src="${video.src}" type="video/mp4">
+    </video>
+    <p>${video.label}</p>
+  </article>`).join('');
+  return `<article class="dossier" data-search-text="${escapeAttr(item.name + ' ' + item.title + ' ' + item.desc)}">
+    <div>
+      <p class="eyebrow">${item.title}</p>
+      <h2>${item.name}</h2>
+      <p>${item.desc}</p>
+      <blockquote>${item.quote}</blockquote>
+    </div>
+    <div class="media-grid">${media}</div>
+    ${videos ? `<div class="video-grid">${videos}</div>` : ''}
+  </article>`;
+}
+
+function conceptsPage() {
+  const body = `<section class="filter-row" data-filter-group>
+    ${['全部', '官方宣传物料', '官方资料', '角色定位', '世界观'].map((name) => `<button data-filter="${name}">${name}</button>`).join('')}
+  </section>
+  <section class="masonry-grid">
+    ${conceptCards.map((item) => card({
+      title: item.title,
+      desc: '来自官方公开物料或早期世界观资料。',
+      src: item.src,
+      meta: item.tag,
+      kind: item.tag,
+      favoriteId: `concept:${item.src}`
+    })).join('')}
+  </section>
+  <section class="scroll-panel">
+    <p class="eyebrow">Worldview</p>
+    <h2>汇流地记录</h2>
+    <p>汇流地是生死之河的彼方，一切生命形式的末路。时间、空间、历史与神话交织重叠，循环因未知灾祸陷入停滞。</p>
+    <p>阿塔尔成为代号「送葬人」的猎人，开始履行契约——狩猎神明。</p>
+  </section>`;
+  return htmlPage({
+    title: '官方概念 · 诸神终应知晓',
+    active: '概念',
+    hero: {
+      eyebrow: 'Concept Archive',
+      title: '官方概念与世界观',
+      desc: '将宣传物料、角色定位和早期世界观拆成可筛选的档案。',
+      searchScope: 'page'
+    },
+    body
+  });
+}
+
+function fanArtPage() {
+  const entries = artists.flatMap((artist) => artist.entries);
+  const filters = ['全部', '阿塔尔', '德赫奴', '拉夏', '梅赛德斯', '夕岚', '综合', '动图'];
+  const body = `<section class="filter-row" data-filter-group>
+    ${filters.map((name) => `<button data-filter="${name}">${name}</button>`).join('')}
+  </section>
+  <section class="artist-summary">
+    ${artists.map((artist) => `<a href="#artist-${slug(artist.name)}">${artist.name}<span>${artist.files.length}</span></a>`).join('')}
+  </section>
+  ${artists.map((artist) => `<section class="artist-block" id="artist-${slug(artist.name)}">
+    <div class="section-head compact">
+      <p class="eyebrow">Artist</p>
+      <h2>${artist.name}</h2>
+    </div>
+    <div class="masonry-grid">
+      ${artist.entries.map((item) => card({
+        title: item.title,
+        desc: `${item.artist} · ${item.character}`,
+        src: item.src,
+        meta: item.type,
+        kind: item.type === '动图' ? '动图' : item.character,
+        favoriteId: `fanart:${item.src}`
+      })).join('')}
+    </div>
+  </section>`).join('')}
+  <script type="application/json" id="fanart-data">${JSON.stringify(entries)}</script>`;
+  return htmlPage({
+    title: '玩家二创 · 诸神终应知晓',
+    active: '二创',
+    hero: {
+      eyebrow: 'Community Gallery',
+      title: '玩家二创作品',
+      desc: '按作者、角色和文件类型快速筛选，保留创作者归属。',
+      searchScope: 'page'
+    },
+    body
+  });
+}
+
+function jokesPage() {
+  const body = `<section class="masonry-grid">
+    ${jokes.map((item, index) => card({
+      title: item.title,
+      desc: item.desc,
+      src: item.src,
+      meta: `社区切片 ${index + 1}/${jokes.length}`,
+      kind: '笑话',
+      favoriteId: `joke:${item.src}`
+    })).join('')}
+  </section>`;
+  return htmlPage({
+    title: '群友笑话合集 · 诸神终应知晓',
+    active: '笑话',
+    hero: {
+      eyebrow: 'Community Memory',
+      title: '群友笑话合集',
+      desc: '以留言板和档案卡的形式，保存社群里轻松又有记忆点的片段。',
+      searchScope: 'page'
+    },
+    body
+  });
+}
+
+function settingsPage() {
+  const body = `<section class="settings-grid">
+    <article class="settings-card">
+      <p class="eyebrow">About</p>
+      <h2>关于本应用</h2>
+      <dl>
+        <dt>版本</dt><dd>玩家自制史记 v1.1.0</dd>
+        <dt>内容来源</dt><dd>官方公开物料、玩家社群整理与玩家二创授权内容</dd>
+        <dt>本地数据</dt><dd>收藏、最近浏览和免责声明偏好仅保存在当前设备</dd>
+        <dt>联系作者</dt><dd>china19210703@163.com</dd>
+      </dl>
+    </article>
+    <article class="settings-card">
+      <p class="eyebrow">Copyright</p>
+      <h2>版权与声明</h2>
+      <p>《诸神终应知晓》游戏官方内容、官方美术、官方概念设定、官方宣传物料及相关知识产权归上海魔王圆桌科技有限公司所有。</p>
+      <p>本应用为玩家社群自发整理的非商业纪念资料集，不代表上海魔王圆桌科技有限公司或任何官方立场，也不构成官方消息发布渠道。</p>
+      <p>玩家二创作品的权利归各自创作者所有；收录目的仅为纪念、学习与交流。若权利人希望补充署名、修正信息或移除内容，请联系整理者处理。</p>
+    </article>
+    <article class="settings-card">
+      <p class="eyebrow">Display</p>
+      <h2>屏幕方向</h2>
+      <p>可以固定竖屏、固定横屏，也可以开启横竖切换，让应用跟随设备方向变化。</p>
+      <div class="orientation-options" data-orientation-options>
+        <button class="wide-button" data-orientation-option="portrait">竖屏</button>
+        <button class="wide-button" data-orientation-option="landscape">横屏</button>
+        <button class="wide-button" data-orientation-option="auto">横竖切换</button>
+      </div>
+      <p class="settings-note" data-orientation-status>当前方向：读取中</p>
+    </article>
+    <article class="settings-card">
+      <p class="eyebrow">Opening Video</p>
+      <h2>启动视频</h2>
+      <p>默认每次启动随机播放一个应用内视频；也可以固定为指定视频。系统启动页本身不能播放视频，视频会在应用启动层开始播放。</p>
+      <div class="video-options" data-splash-video-options>
+        ${splashVideos.map(([value, label]) => `<button class="wide-button" data-splash-video-option="${value}">${label}</button>`).join('')}
+      </div>
+      <p class="settings-note" data-splash-video-status>当前视频：读取中</p>
+    </article>
+    <article class="settings-card">
+      <p class="eyebrow">Actions</p>
+      <h2>本地操作</h2>
+      <button class="wide-button" data-clear-favorites>清空收藏</button>
+      <button class="wide-button" data-clear-disclaimer>恢复首次声明提示</button>
+      <a class="wide-button" href="zy.html">返回档案馆首页</a>
+    </article>
+  </section>`;
+  return htmlPage({
+    title: '设置 · 诸神终应知晓',
+    active: '设置',
+    hero: {
+      eyebrow: 'Settings',
+      title: '设置与版权说明',
+      desc: '查看版本、版权归属、玩家共创声明和本地数据说明。',
+      searchScope: 'page'
+    },
+    body
+  });
+}
+
+function slug(value) {
+  return Buffer.from(value).toString('hex');
+}
+
+writeFileSync(join(assetsRoot, 'zy.html'), homePage());
+writeFileSync(join(assetsRoot, 'gfjs.html'), charactersPage());
+writeFileSync(join(assetsRoot, 'gfgn.html'), conceptsPage());
+writeFileSync(join(assetsRoot, 'wjec.html'), fanArtPage());
+writeFileSync(join(assetsRoot, 'qyxhhj.html'), jokesPage());
+writeFileSync(join(assetsRoot, 'settings.html'), settingsPage());
+
+writeFileSync(join(assetsRoot, 'lib', 'app-theme.css'), `:root {
+  --bg: #09090d;
+  --panel: rgba(22, 22, 30, .78);
+  --panel-strong: rgba(28, 25, 30, .94);
+  --gold: #d4a754;
+  --gold-soft: #f0d78c;
+  --text: #eee4d2;
+  --muted: rgba(238, 228, 210, .62);
+  --line: rgba(212, 167, 84, .18);
+  --danger: #8b2e28;
+}
+* { box-sizing: border-box; }
+html {
+  width: 100%;
+  overflow-x: hidden;
+  background: var(--bg);
+  color: var(--text);
+}
+body {
+  margin: 0;
+  width: 100%;
+  overflow-x: hidden;
+  min-height: 100vh;
+  font-family: "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(212, 167, 84, .18), transparent 30%),
+    radial-gradient(circle at 85% 18%, rgba(112, 48, 42, .18), transparent 28%),
+    linear-gradient(180deg, #08080c 0%, #121118 48%, #09090d 100%);
+  letter-spacing: .01em;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+  background-size: 38px 38px;
+  mask-image: radial-gradient(circle at center, black, transparent 78%);
+}
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+button, input { font: inherit; }
+.archive-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px clamp(16px, 4vw, 42px);
+  background: rgba(9, 9, 13, .82);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(18px);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  max-width: calc(100% - 56px);
+}
+.brand img { width: 42px; height: 42px; object-fit: contain; border-radius: 10px; }
+.brand span { min-width: 0; }
+.brand strong { display: block; color: var(--gold-soft); font-size: 16px; }
+.brand small { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+.nav-menu { display: flex; align-items: center; gap: 8px; padding: 0; margin: 0; list-style: none; }
+.nav-menu a {
+  display: block;
+  padding: 9px 12px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.nav-menu a.active, .nav-menu a:hover {
+  color: var(--gold-soft);
+  border-color: var(--line);
+  background: rgba(212, 167, 84, .08);
+}
+.nav-toggle { display: none; flex: 0 0 auto; }
+.app-shell { width: min(1180px, calc(100% - 28px)); margin: 0 auto; padding: 28px 0 96px; }
+.hero-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 380px);
+  gap: 28px;
+  align-items: end;
+  padding: clamp(26px, 6vw, 64px);
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  background:
+    linear-gradient(135deg, rgba(212, 167, 84, .1), transparent 36%),
+    rgba(16, 15, 22, .82);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, .36);
+}
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--gold);
+  font-size: 12px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+h1, h2, h3, p { margin-top: 0; }
+h1, h2, h3, p, a, span, dd, dt, blockquote {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+h1 { margin-bottom: 16px; font-size: clamp(32px, 8vw, 68px); line-height: 1.04; }
+h2 { font-size: clamp(24px, 5vw, 38px); }
+.hero-desc, .archive-card p, .settings-card p, .scroll-panel p, .split-panel p {
+  color: var(--muted);
+  line-height: 1.8;
+}
+.hero-actions { display: grid; gap: 12px; }
+.hero-panel > *, .split-panel > *, .settings-card > *, .archive-card > * {
+  min-width: 0;
+}
+.search-box {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255,255,255,.035);
+}
+.search-box span { color: var(--gold); font-size: 12px; letter-spacing: .12em; }
+.search-box input {
+  width: 100%;
+  color: var(--text);
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 16px;
+}
+.ghost-button, .wide-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 46px;
+  padding: 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  color: var(--gold-soft);
+  background: rgba(212, 167, 84, .08);
+}
+.stats-grid, .feature-grid, .character-grid, .masonry-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 22px;
+}
+.stats-grid div, .archive-card, .settings-card, .scroll-panel, .split-panel, .dossier {
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--panel);
+  box-shadow: 0 18px 50px rgba(0,0,0,.25);
+  overflow: hidden;
+}
+.stats-grid div { padding: 22px; }
+.stats-grid strong { display: block; color: var(--gold-soft); font-size: 32px; }
+.stats-grid span { color: var(--muted); }
+.section-head { margin: 46px 0 14px; }
+.section-head.compact { margin: 30px 0 14px; }
+.archive-card { position: relative; }
+.archive-card > a { position: relative; display: block; overflow: hidden; }
+.archive-card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; transition: transform .35s ease; }
+.archive-card:hover img { transform: scale(1.045); }
+.card-kind {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: #15110a;
+  background: var(--gold-soft);
+  font-size: 12px;
+}
+.card-body { padding: 16px; }
+.card-meta { margin-bottom: 8px; color: var(--gold)!important; font-size: 12px; }
+.fav-button, .lightbox-action {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 12px;
+  color: var(--gold-soft);
+  background: rgba(212, 167, 84, .08);
+}
+.fav-button.active, .lightbox-action.active { background: var(--gold); color: #100b04; }
+.split-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  padding: 26px;
+  margin-top: 28px;
+}
+.mini-list { display: grid; gap: 8px; }
+.mini-list a { color: var(--muted); border-bottom: 1px solid rgba(255,255,255,.06); padding-bottom: 8px; }
+.dossier { padding: clamp(20px, 4vw, 34px); margin-top: 24px; }
+.dossier blockquote {
+  margin: 18px 0 0;
+  padding-left: 16px;
+  color: var(--gold-soft);
+  border-left: 2px solid var(--gold);
+}
+.media-grid, .video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+.video-card { padding: 12px; border: 1px solid var(--line); border-radius: 18px; background: rgba(0,0,0,.22); }
+.video-card video { width: 100%; border-radius: 14px; background: #000; }
+.filter-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0; }
+.filter-row button {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 10px 14px;
+  color: var(--muted);
+  background: rgba(255,255,255,.035);
+}
+.filter-row button.active { color: #100b04; background: var(--gold-soft); }
+.masonry-grid { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
+.artist-summary { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0; }
+.artist-summary a {
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+}
+.artist-summary span { margin-left: 8px; color: var(--gold); }
+.scroll-panel { padding: 26px; margin-top: 28px; }
+.settings-grid { display: grid; grid-template-columns: 1fr; gap: 18px; margin-top: 24px; }
+.settings-card { padding: 24px; }
+.settings-card dl { display: grid; grid-template-columns: 120px 1fr; gap: 12px; color: var(--muted); }
+.settings-card dt { color: var(--gold); }
+.settings-note { margin: 14px 0 0; font-size: 13px; }
+.orientation-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+.video-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+.orientation-options .wide-button, .video-options .wide-button { margin-top: 0; }
+.orientation-options .wide-button.active, .video-options .wide-button.active {
+  color: #100b04;
+  background: var(--gold-soft);
+}
+.wide-button { width: 100%; margin-top: 10px; }
+.archive-footer {
+  width: min(1180px, calc(100% - 28px));
+  margin: 0 auto;
+  padding: 26px 0 110px;
+  color: rgba(238, 228, 210, .45);
+  font-size: 12px;
+  line-height: 1.8;
+  text-align: center;
+  border-top: 1px solid var(--line);
+}
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  background: rgba(0,0,0,.92);
+}
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 94vw; max-height: 82vh; object-fit: contain; border-radius: 12px; }
+.lightbox-close, .lightbox-action { position: fixed; top: 18px; }
+.lightbox-close { right: 18px; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); color: var(--text); background: rgba(0,0,0,.5); font-size: 28px; }
+.lightbox-action { left: 18px; }
+#lightboxCaption { position: fixed; bottom: 20px; color: var(--muted); }
+.is-hidden { display: none!important; }
+@media (max-width: 820px) {
+  .archive-nav { align-items: flex-start; }
+  .nav-toggle { display: block; border: 1px solid var(--line); border-radius: 12px; color: var(--gold-soft); background: transparent; padding: 8px 10px; }
+  .nav-menu { display: none; position: absolute; top: 66px; right: 14px; flex-direction: column; min-width: 180px; padding: 12px; border: 1px solid var(--line); border-radius: 18px; background: rgba(10,10,15,.96); }
+  .nav-menu.show { display: flex; }
+  .hero-panel, .split-panel { grid-template-columns: 1fr; }
+  .stats-grid, .feature-grid, .character-grid { grid-template-columns: 1fr 1fr; }
+  .settings-card dl { grid-template-columns: 1fr; }
+  .orientation-options, .video-options { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+  .app-shell { width: calc(100% - 24px); padding-top: 24px; }
+  .hero-panel { padding: 26px 22px; border-radius: 24px; overflow: hidden; }
+  h1 { font-size: clamp(30px, 9vw, 36px); }
+  h2 { font-size: clamp(26px, 8vw, 32px); }
+  h1, h2, .settings-card dd {
+    line-break: anywhere;
+    word-break: break-all;
+  }
+  .stats-grid, .feature-grid, .character-grid, .masonry-grid { grid-template-columns: 1fr; }
+}
+`);
+
+writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
+  'use strict';
+
+  var favoritesKey = 'zhushen:favorites:v1';
+  var recentKey = 'zhushen:recent:v1';
+
+  function readList(key) {
+    try {
+      return JSON.parse(localStorage.getItem(key) || '[]');
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function writeList(key, list) {
+    localStorage.setItem(key, JSON.stringify(list.slice(0, 80)));
+  }
+
+  function toggleFavorite(id, title, href) {
+    var list = readList(favoritesKey);
+    var index = list.findIndex(function (item) { return item.id === id; });
+    if (index >= 0) {
+      list.splice(index, 1);
+    } else {
+      list.unshift({id: id, title: title, href: href});
+    }
+    writeList(favoritesKey, list);
+    syncFavorites();
+  }
+
+  function syncFavorites() {
+    var list = readList(favoritesKey);
+    var ids = list.map(function (item) { return item.id; });
+    document.querySelectorAll('[data-favorite]').forEach(function (button) {
+      button.classList.toggle('active', ids.indexOf(button.dataset.favorite) >= 0);
+      button.textContent = ids.indexOf(button.dataset.favorite) >= 0 ? '已收藏' : '收藏';
+    });
+    document.querySelectorAll('[data-favorite-list]').forEach(function (node) {
+      if (list.length === 0) {
+        node.innerHTML = '<p>暂无收藏。点资料卡片里的收藏按钮后，会在这里显示。</p>';
+        return;
+      }
+      node.innerHTML = list.slice(0, 6).map(function (item) {
+        return '<a href="' + item.href + '">' + item.title + '</a>';
+      }).join('');
+    });
+  }
+
+  function installFavorites() {
+    document.addEventListener('click', function (event) {
+      var button = event.target.closest('[data-favorite]');
+      if (!button) {
+        return;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      var card = button.closest('.archive-card');
+      var title = card ? card.querySelector('h3').textContent : '收藏';
+      var link = card && card.querySelector('a') ? card.querySelector('a') : null;
+      var href = link ? link.getAttribute('href') : location.pathname.split('/').pop();
+      toggleFavorite(button.dataset.favorite, title, href);
+    });
+    syncFavorites();
+  }
+
+  function installSearch() {
+    document.querySelectorAll('[data-search]').forEach(function (input) {
+      input.addEventListener('input', function () {
+        var keyword = input.value.trim().toLowerCase();
+        document.querySelectorAll('[data-search-text]').forEach(function (node) {
+          var text = node.dataset.searchText.toLowerCase();
+          node.classList.toggle('is-hidden', keyword && text.indexOf(keyword) < 0);
+        });
+      });
+    });
+  }
+
+  function installFilters() {
+    document.querySelectorAll('[data-filter-group]').forEach(function (group) {
+      var buttons = Array.from(group.querySelectorAll('[data-filter]'));
+      buttons.forEach(function (button, index) {
+        if (index === 0) {
+          button.classList.add('active');
+        }
+        button.addEventListener('click', function () {
+          buttons.forEach(function (item) { item.classList.remove('active'); });
+          button.classList.add('active');
+          var filter = button.dataset.filter;
+          document.querySelectorAll('.archive-card').forEach(function (card) {
+            var kind = card.dataset.kind || '';
+            var text = card.dataset.searchText || '';
+            var visible = filter === '全部' || kind.indexOf(filter) >= 0 || text.indexOf(filter) >= 0;
+            card.classList.toggle('is-hidden', !visible);
+          });
+        });
+      });
+    });
+  }
+
+  function installLightbox() {
+    var box = document.getElementById('lightbox');
+    var image = document.getElementById('lightboxImg');
+    var caption = document.getElementById('lightboxCaption');
+    var current = null;
+    if (!box || !image) {
+      return;
+    }
+    document.addEventListener('click', function (event) {
+      var link = event.target.closest('[data-lightbox-src]');
+      if (!link) {
+        return;
+      }
+      event.preventDefault();
+      current = {
+        src: link.dataset.lightboxSrc,
+        title: link.closest('.archive-card').querySelector('h3').textContent
+      };
+      image.src = current.src;
+      caption.textContent = current.title;
+      box.classList.add('active');
+      box.setAttribute('aria-hidden', 'false');
+    });
+    document.querySelectorAll('[data-lightbox-close]').forEach(function (button) {
+      button.addEventListener('click', close);
+    });
+    box.addEventListener('click', function (event) {
+      if (event.target === box) {
+        close();
+      }
+    });
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        close();
+      }
+    });
+    document.querySelectorAll('[data-favorite-current]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        if (current) {
+          toggleFavorite('lightbox:' + current.src, current.title, current.src);
+        }
+      });
+    });
+    function close() {
+      box.classList.remove('active');
+      box.setAttribute('aria-hidden', 'true');
+      image.removeAttribute('src');
+    }
+  }
+
+  function installNavigation() {
+    document.querySelectorAll('[data-nav-toggle]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        var menu = document.querySelector('[data-nav-menu]');
+        if (menu) {
+          menu.classList.toggle('show');
+        }
+      });
+    });
+  }
+
+  function installSettings() {
+    var orientationLabels = {
+      portrait: '竖屏',
+      landscape: '横屏',
+      auto: '横竖切换'
+    };
+    var splashVideoLabels = ${JSON.stringify(Object.fromEntries(splashVideos))};
+
+    function getOrientationMode() {
+      if (window.Android && typeof window.Android.getOrientationMode === 'function') {
+        return window.Android.getOrientationMode();
+      }
+      return localStorage.getItem('zhushen_orientation_mode') || 'auto';
+    }
+
+    function setOrientationMode(mode) {
+      if (window.Android && typeof window.Android.setOrientationMode === 'function') {
+        window.Android.setOrientationMode(mode);
+        return;
+      }
+      localStorage.setItem('zhushen_orientation_mode', mode);
+    }
+
+    function syncOrientationControls() {
+      var mode = getOrientationMode();
+      document.querySelectorAll('[data-orientation-option]').forEach(function (button) {
+        button.classList.toggle('active', button.dataset.orientationOption === mode);
+      });
+      document.querySelectorAll('[data-orientation-status]').forEach(function (node) {
+        node.textContent = '当前方向：' + (orientationLabels[mode] || '横竖切换');
+      });
+    }
+
+    function getSplashVideoMode() {
+      if (window.Android && typeof window.Android.getSplashVideoMode === 'function') {
+        return window.Android.getSplashVideoMode();
+      }
+      return localStorage.getItem('zhushen_splash_video_mode') || 'random';
+    }
+
+    function setSplashVideoMode(mode) {
+      if (window.Android && typeof window.Android.setSplashVideoMode === 'function') {
+        window.Android.setSplashVideoMode(mode);
+        return;
+      }
+      localStorage.setItem('zhushen_splash_video_mode', mode);
+    }
+
+    function syncSplashVideoControls() {
+      var mode = getSplashVideoMode();
+      document.querySelectorAll('[data-splash-video-option]').forEach(function (button) {
+        button.classList.toggle('active', button.dataset.splashVideoOption === mode);
+      });
+      document.querySelectorAll('[data-splash-video-status]').forEach(function (node) {
+        node.textContent = '当前视频：' + (splashVideoLabels[mode] || '随机播放');
+      });
+    }
+
+    document.querySelectorAll('[data-clear-favorites]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        localStorage.removeItem(favoritesKey);
+        syncFavorites();
+        alert('收藏已清空');
+      });
+    });
+    document.querySelectorAll('[data-clear-disclaimer]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        if (window.Android) {
+          window.Android.setSkipDisclaimer(false);
+        }
+        alert('首次声明提示已恢复');
+      });
+    });
+    document.querySelectorAll('[data-orientation-option]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        setOrientationMode(button.dataset.orientationOption);
+        syncOrientationControls();
+      });
+    });
+    document.querySelectorAll('[data-splash-video-option]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        setSplashVideoMode(button.dataset.splashVideoOption);
+        syncSplashVideoControls();
+      });
+    });
+    syncOrientationControls();
+    syncSplashVideoControls();
+  }
+
+  function recordRecent() {
+    var title = document.title;
+    var href = location.pathname.split('/').pop();
+    var list = readList(recentKey).filter(function (item) { return item.href !== href; });
+    list.unshift({title: title, href: href});
+    writeList(recentKey, list);
+  }
+
+  installNavigation();
+  installSearch();
+  installFilters();
+  installLightbox();
+  installFavorites();
+  installSettings();
+  recordRecent();
+})();
+`);
+
+console.log('UI 页面已生成。');

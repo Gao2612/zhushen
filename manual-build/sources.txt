@@ -1,0 +1,1 @@
+C:\Program Files\Reasonix\zhushen-game\manual-build\src\com\zhushen\game\MainActivity.java

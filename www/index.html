@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0a0f">
+<title>诸神终应知晓</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --gold: #d4a754;
+    --gold-light: #f0d78c;
+    --gold-dark: #8b6914;
+    --bg: #0a0a0f;
+    --bg-card: #12121a;
+  }
+
+  body {
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    background: var(--bg);
+    color: #e0d5c0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* ── 星空背景 ── */
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle var(--dur) ease-in-out infinite;
+    animation-delay: var(--delay);
+    opacity: 0;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.15; }
+    50% { opacity: 0.8; }
+  }
+
+  /* ── 光晕 ── */
+  .glow-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.12;
+    animation: orb-drift 12s ease-in-out infinite;
+  }
+
+  .glow-orb:nth-child(1) {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+    top: -80px; right: -60px;
+  }
+
+  .glow-orb:nth-child(2) {
+    width: 250px; height: 250px;
+    background: radial-gradient(circle, var(--gold-dark) 0%, transparent 70%);
+    bottom: -60px; left: -40px;
+    animation-delay: -6s;
+  }
+
+  @keyframes orb-drift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(20px, -15px) scale(1.08); }
+    50% { transform: translate(-10px, 10px) scale(0.95); }
+    75% { transform: translate(15px, 5px) scale(1.05); }
+  }
+
+  /* ── 主体内容 ── */
+  .main {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+  }
+
+  /* ── 装饰纹样 ── */
+  .ornament {
+    width: 120px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.6;
+  }
+
+  .ornament::before,
+  .ornament::after {
+    content: "◆";
+    position: absolute;
+    color: var(--gold);
+    font-size: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.8;
+  }
+
+  .ornament-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ornament-wrap .diamond {
+    color: var(--gold);
+    font-size: 8px;
+    opacity: 0.7;
+  }
+
+  /* ── 标题 ── */
+  .title-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .app-icon {
+    width: 90px;
+    height: 90px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #1a1520 0%, #0d0d18 100%);
+    border: 2px solid rgba(212, 167, 84, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 44px;
+    box-shadow:
+      0 0 30px rgba(212, 167, 84, 0.15),
+      0 8px 32px rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .app-icon::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border-radius: 20px;
+    background: linear-gradient(180deg,
+      rgba(212, 167, 84, 0.08) 0%,
+      transparent 50%,
+      rgba(0, 0, 0, 0.3) 100%);
+  }
+
+  .title {
+    font-size: clamp(26px, 6vw, 36px);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 40%, var(--gold-dark) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 12px rgba(212, 167, 84, 0.4));
+    line-height: 1.3;
+  }
+
+  /* ── 卡片 ── */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid rgba(212, 167, 84, 0.12);
+    border-radius: 16px;
+    padding: 32px 28px;
+    max-width: 320px;
+    width: 100%;
+    box-shadow:
+      0 0 60px rgba(212, 167, 84, 0.04),
+      0 8px 32px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+  }
+
+  .card-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gold-light);
+    margin-bottom: 14px;
+    letter-spacing: 0.08em;
+  }
+
+  .card-desc {
+    font-size: 15px;
+    color: rgba(224, 213, 192, 0.7);
+    line-height: 1.8;
+  }
+
+  .card-desc .highlight {
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  /* ── 底部 ── */
+  .footer {
+    position: fixed;
+    bottom: 28px;
+    z-index: 2;
+    text-align: center;
+  }
+
+  .footer-text {
+    font-size: 12px;
+    color: rgba(224, 213, 192, 0.25);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── 粒子效果（纯 CSS） ── */
+  .particle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1;
+    width: 3px;
+    height: 3px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: float-up var(--dur2) linear infinite;
+    animation-delay: var(--delay2);
+    left: var(--x);
+    bottom: -10px;
+    opacity: 0;
+  }
+
+  @keyframes float-up {
+    0% {
+      opacity: 0;
+      transform: translateY(0) scale(0.5);
+    }
+    10% { opacity: 0.7; }
+    80% { opacity: 0.3; }
+    100% {
+      opacity: 0;
+      transform: translateY(-110vh) scale(1.2);
+    }
+  }
+
+  /* ── 脉冲圆环 ── */
+  .pulse-ring {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 1px solid rgba(212, 167, 84, 0.2);
+    animation: pulse 3s ease-out infinite;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .pulse-ring:nth-child(2) { animation-delay: 1s; }
+  .pulse-ring:nth-child(3) { animation-delay: 2s; }
+
+  @keyframes pulse {
+    0% {
+      width: 100px; height: 100px;
+      opacity: 0.5;
+      border-color: rgba(212, 167, 84, 0.25);
+    }
+    100% {
+      width: 300px; height: 300px;
+      opacity: 0;
+      border-color: rgba(212, 167, 84, 0);
+    }
+  }
+</style>
+</head>
+<body>
+
+  <!-- 星空 -->
+  <div class="stars" id="stars"></div>
+
+  <!-- 光晕 -->
+  <div class="glow-orb"></div>
+  <div class="glow-orb"></div>
+
+  <!-- 粒子 -->
+  <div id="particles"></div>
+
+  <!-- 主体 -->
+  <main class="main">
+    <!-- 脉冲圆环 -->
+    <div style="position:relative;width:90px;height:90px;">
+      <div class="pulse-ring"></div>
+      <div class="pulse-ring"></div>
+      <div class="pulse-ring"></div>
+      <div class="app-icon">⚔️</div>
+    </div>
+
+    <!-- 标题 -->
+    <div class="title-section">
+      <div class="title">诸神终应知晓</div>
+      <div class="ornament-wrap">
+        <span class="diamond">◆</span>
+        <span style="display:inline-block;width:80px;height:1px;background:linear-gradient(90deg,transparent,rgba(212,167,84,0.5),transparent);"></span>
+        <span class="diamond">◆</span>
+      </div>
+    </div>
+
+    <!-- 卡片 -->
+    <div class="card">
+      <div class="card-title">⚡ 敬请期待</div>
+      <div class="card-desc">
+        新游戏准备中<span class="highlight">……</span>
+      </div>
+      <div style="margin-top:18px;font-size:13px;color:rgba(224,213,192,0.4);line-height:1.7;">
+        诸神的命运之轮即将转动<br>
+        请保持关注
+      </div>
+    </div>
+  </main>
+
+  <!-- 底部 -->
+  <div class="footer">
+    <div class="footer-text">© 2025 诸神终应知晓 · All Rights Reserved</div>
+  </div>
+
+<script>
+  // 生成星空
+  (function() {
+    var starsEl = document.getElementById('stars');
+    var count = 80;
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < count; i++) {
+      var s = document.createElement('div');
+      s.className = 'star';
+      s.style.left = Math.random() * 100 + '%';
+      s.style.top = Math.random() * 100 + '%';
+      s.style.setProperty('--dur', (2 + Math.random() * 4) + 's');
+      s.style.setProperty('--delay', Math.random() * 5 + 's');
+      s.style.width = s.style.height = (1 + Math.random() * 2) + 'px';
+      frag.appendChild(s);
+    }
+    starsEl.appendChild(frag);
+  })();
+
+  // 生成上升粒子
+  (function() {
+    var particlesEl = document.getElementById('particles');
+    var count = 20;
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < count; i++) {
+      var p = document.createElement('div');
+      p.className = 'particle';
+      p.style.setProperty('--x', Math.random() * 100 + '%');
+      p.style.setProperty('--dur2', (4 + Math.random() * 8) + 's');
+      p.style.setProperty('--delay2', Math.random() * 10 + 's');
+      frag.appendChild(p);
+    }
+    particlesEl.appendChild(frag);
+  })();
+</script>
+
+</body>
+</html>

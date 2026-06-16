@@ -1,0 +1,89 @@
+apply plugin: 'com.android.application'
+
+def releaseSigningConfigured = [
+    'ZHUSHEN_KEYSTORE',
+    'ZHUSHEN_KEYSTORE_PASSWORD',
+    'ZHUSHEN_KEY_ALIAS',
+    'ZHUSHEN_KEY_PASSWORD'
+].every { System.getenv(it) }
+
+android {
+    namespace = "com.zhushen.game"
+    compileSdk = rootProject.ext.compileSdkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    defaultConfig {
+        applicationId "com.zhushen.game"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 2
+        versionName "1.1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        aaptOptions {
+            ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
+            noCompress 'mp4', 'webm', 'ogg'
+        }
+    }
+
+    sourceSets {
+        main {
+            assets.srcDirs = ['../../manual-build/assets']
+        }
+    }
+
+    signingConfigs {
+        release {
+            def storePath = System.getenv('ZHUSHEN_KEYSTORE')
+            if (releaseSigningConfigured) {
+                storeFile file(storePath)
+                storePassword System.getenv('ZHUSHEN_KEYSTORE_PASSWORD')
+                keyAlias System.getenv('ZHUSHEN_KEY_ALIAS')
+                keyPassword System.getenv('ZHUSHEN_KEY_PASSWORD')
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
+            if (releaseSigningConfigured) {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.activity:activity:$androidxActivityVersion"
+    implementation "androidx.core:core:$androidxCoreVersion"
+    implementation "androidx.webkit:webkit:$androidxWebkitVersion"
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
+}
+
+gradle.taskGraph.whenReady { graph ->
+    def releaseRequested = graph.allTasks.any {
+        it.path == ':app:assembleRelease' || it.path == ':app:bundleRelease'
+    }
+    def allowUnsigned = project.findProperty('allowUnsignedRelease') == 'true'
+    if (releaseRequested && !releaseSigningConfigured && !allowUnsigned) {
+        throw new GradleException(
+            '正式构建缺少签名环境变量：ZHUSHEN_KEYSTORE、' +
+            'ZHUSHEN_KEYSTORE_PASSWORD、ZHUSHEN_KEY_ALIAS、' +
+            'ZHUSHEN_KEY_PASSWORD'
+        )
+    }
+}

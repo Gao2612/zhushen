@@ -1,0 +1,20 @@
+{
+  "appId": "com.zhushen.game",
+  "appName": "诸神终应知晓",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#0a0a0f",
+      "showSpinner": false,
+      "spinnerColor": "#d4a754"
+    },
+    "StatusBar": {
+      "style": "dark",
+      "backgroundColor": "#0a0a0f"
+    }
+  }
+}
