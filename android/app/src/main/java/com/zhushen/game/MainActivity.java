@@ -281,7 +281,6 @@ public final class MainActivity extends ComponentActivity {
     private TextureView createSplashVideoView() {
         TextureView textureView = new TextureView(this);
         textureView.setOpaque(false);
-        textureView.setBackgroundColor(Color.parseColor("#0a0a0f"));
         textureView.setOnClickListener(view -> startApplication());
         textureView.setSurfaceTextureListener(
             new TextureView.SurfaceTextureListener() {
