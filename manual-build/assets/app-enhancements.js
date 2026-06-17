@@ -64,6 +64,19 @@
     }
   }
 
+  function isDesktopClient() {
+    return !!(
+      window.ZhushenDesktop
+      && typeof window.ZhushenDesktop.openInternal === 'function'
+    );
+  }
+
+  function isDesktopInternalUrl(href) {
+    return /^https:\/\/(docs\.qq\.com|www\.taptap\.cn|taptap\.cn)\//.test(
+      href
+    );
+  }
+
   function hideDuplicateNavigation() {
     var navigation = document.querySelector('.nav-menu');
     if (!navigation) {
@@ -88,14 +101,16 @@
       appendNavigationLink(
         navigation,
         '玩家问答',
-        'https://docs.qq.com/sheet/DVXVaQWZOcUFyRlNr?tab=BB08J2'
+        'https://docs.qq.com/sheet/DVXVaQWZOcUFyRlNr?tab=BB08J2',
+        '_app_questions'
       );
     }
     if (!hasForumLink) {
       appendNavigationLink(
         navigation,
         '游戏论坛',
-        'https://www.taptap.cn/app/513986'
+        'https://www.taptap.cn/app/513986',
+        '_app_forum'
       );
     }
     if (!document.getElementById('_app_qq_group')) {
@@ -122,6 +137,12 @@
     if (id) {
       link.id = id;
     }
+    if (isDesktopClient() && isDesktopInternalUrl(href)) {
+      link.addEventListener('click', function (event) {
+        event.preventDefault();
+        window.ZhushenDesktop.openInternal(href, label);
+      });
+    }
     item.appendChild(link);
     navigation.appendChild(item);
   }
@@ -141,6 +162,47 @@
     });
     item.appendChild(link);
     navigation.appendChild(item);
+  }
+
+  function installDesktopControls() {
+    if (!isDesktopClient()) {
+      return;
+    }
+    var card = document.querySelector('[data-desktop-settings]');
+    var fullscreenButton = document.querySelector('[data-desktop-fullscreen]');
+    var startupButton = document.querySelector('[data-desktop-startup]');
+    var status = document.querySelector('[data-desktop-status]');
+    if (card) {
+      card.hidden = false;
+    }
+    if (fullscreenButton) {
+      fullscreenButton.addEventListener('click', function () {
+        window.ZhushenDesktop.toggleFullscreen().then(function (enabled) {
+          fullscreenButton.textContent = enabled ? '退出全屏' : '全屏显示';
+        });
+      });
+    }
+    if (startupButton) {
+      startupButton.addEventListener('click', function () {
+        var current = startupButton.dataset.enabled === 'true';
+        window.ZhushenDesktop.setStartupEnabled(!current)
+          .then(updateStartupButton);
+      });
+      window.ZhushenDesktop.getStartupEnabled().then(updateStartupButton);
+    }
+
+    function updateStartupButton(enabled) {
+      if (startupButton) {
+        startupButton.dataset.enabled = enabled ? 'true' : 'false';
+        startupButton.textContent = enabled ? '关闭开机自启' : '开机自启动';
+        startupButton.classList.toggle('active', enabled);
+      }
+      if (status) {
+        status.textContent = enabled
+          ? '桌面功能：已开启开机自启动'
+          : '桌面功能：未开启开机自启动';
+      }
+    }
   }
 
   function createDialog(title, description) {
@@ -275,6 +337,7 @@
     installStyles();
     configureImages();
     hideDuplicateNavigation();
+    installDesktopControls();
     installCountdown();
     showDisclaimer();
   }

@@ -485,6 +485,7 @@ function htmlPage({ title, active, hero, body, extraClass = '' }) {
     <p id="lightboxCaption"></p>
   </div>
   <script src="app-ui.js"></script>
+  <script src="app-enhancements.js"></script>
 </body>
 </html>
 `;
@@ -893,6 +894,16 @@ function settingsPage() {
       </div>
       <p class="settings-note" data-background-music-status>当前音乐：读取中</p>
     </article>
+    <article class="settings-card desktop-settings-card" data-desktop-settings hidden>
+      <p class="eyebrow">Desktop Client</p>
+      <h2>桌面客户端</h2>
+      <p>这些选项仅在 Windows 桌面客户端内生效；网页和安卓版本不会显示。</p>
+      <div class="desktop-options">
+        <button class="wide-button" data-desktop-fullscreen>全屏显示</button>
+        <button class="wide-button" data-desktop-startup>开机自启动</button>
+      </div>
+      <p class="settings-note" data-desktop-status>桌面功能：读取中</p>
+    </article>
     <article class="settings-card">
       <p class="eyebrow">Actions</p>
       <h2>本地操作</h2>
@@ -943,7 +954,17 @@ html {
   overflow-x: hidden;
   background: var(--bg);
   color: var(--text);
+  scrollbar-color: rgba(240, 215, 140, .36) rgba(9, 9, 13, .88);
+  scrollbar-width: thin;
 }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: rgba(9, 9, 13, .88); }
+::-webkit-scrollbar-thumb {
+  border: 2px solid rgba(9, 9, 13, .88);
+  border-radius: 999px;
+  background: rgba(240, 215, 140, .36);
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(240, 215, 140, .54); }
 body {
   margin: 0;
   width: 100%;
