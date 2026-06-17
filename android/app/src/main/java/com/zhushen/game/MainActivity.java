@@ -82,6 +82,13 @@ public final class MainActivity extends ComponentActivity {
     private static final String PREF_SKIP_DISCLAIMER = "disclaimer_skip";
     private static final String PREF_ORIENTATION_MODE = "orientation_mode";
     private static final String PREF_SPLASH_VIDEO_MODE = "splash_video_mode";
+    private static final String PREF_BACKGROUND_MUSIC_ENABLED =
+        "background_music_enabled";
+    private static final String PREF_BACKGROUND_MUSIC_VOLUME =
+        "background_music_volume";
+    private static final String BACKGROUND_MUSIC_ASSET_PATH =
+        "audio/background_music.m4a";
+    private static final int DEFAULT_BACKGROUND_MUSIC_VOLUME = 45;
     private static final String ORIENTATION_PORTRAIT = "portrait";
     private static final String ORIENTATION_LANDSCAPE = "landscape";
     private static final String ORIENTATION_AUTO = "auto";
@@ -136,6 +143,7 @@ public final class MainActivity extends ComponentActivity {
     private TextureView splashVideoView;
     private MediaPlayer splashPlayer;
     private MediaPlayer pendingSplashPlayer;
+    private MediaPlayer backgroundMusicPlayer;
     private Surface splashSurface;
     private ImageView splash;
     private TextView hintText;
@@ -149,6 +157,7 @@ public final class MainActivity extends ComponentActivity {
     private boolean firstLoad = true;
     private boolean gameStarted = false;
     private boolean exitTwice = false;
+    private boolean backgroundMusicPausedByLifecycle = false;
     private String pendingSaveUrl;
     private Uri currentExternalUri;
     private TextView browserTitle;
@@ -745,6 +754,157 @@ public final class MainActivity extends ComponentActivity {
         pendingSplashPlayer = null;
     }
 
+    private boolean isBackgroundMusicEnabled() {
+        return preferences.getBoolean(PREF_BACKGROUND_MUSIC_ENABLED, true);
+    }
+
+    private int getBackgroundMusicVolumePercent() {
+        return clampVolumePercent(
+            preferences.getInt(
+                PREF_BACKGROUND_MUSIC_VOLUME,
+                DEFAULT_BACKGROUND_MUSIC_VOLUME
+            )
+        );
+    }
+
+    private int clampVolumePercent(int percent) {
+        if (percent < 0) {
+            return 0;
+        }
+        if (percent > 100) {
+            return 100;
+        }
+        return percent;
+    }
+
+    private float getBackgroundMusicVolume() {
+        return getBackgroundMusicVolumePercent() / 100f;
+    }
+
+    private void applyBackgroundMusicVolume() {
+        if (backgroundMusicPlayer == null) {
+            return;
+        }
+        float volume = getBackgroundMusicVolume();
+        backgroundMusicPlayer.setVolume(volume, volume);
+    }
+
+    private void startBackgroundMusicIfEnabled() {
+        if (!gameStarted || !isBackgroundMusicEnabled()) {
+            releaseBackgroundMusicPlayer();
+            return;
+        }
+        if (backgroundMusicPlayer != null) {
+            applyBackgroundMusicVolume();
+            try {
+                if (!backgroundMusicPlayer.isPlaying()) {
+                    backgroundMusicPlayer.start();
+                }
+            } catch (IllegalStateException error) {
+                Log.w(TAG, "background_music_resume_failed", error);
+                releaseBackgroundMusicPlayer();
+            }
+            return;
+        }
+        prepareBackgroundMusic();
+    }
+
+    private void prepareBackgroundMusic() {
+        AssetFileDescriptor descriptor = null;
+        MediaPlayer player = null;
+        try {
+            descriptor = getAssets().openFd(BACKGROUND_MUSIC_ASSET_PATH);
+            player = new MediaPlayer();
+            player.setDataSource(
+                descriptor.getFileDescriptor(),
+                descriptor.getStartOffset(),
+                descriptor.getLength()
+            );
+            descriptor.close();
+            descriptor = null;
+            player.setLooping(true);
+            backgroundMusicPlayer = player;
+            applyBackgroundMusicVolume();
+            player.setOnPreparedListener(preparedPlayer -> {
+                if (backgroundMusicPlayer != preparedPlayer) {
+                    preparedPlayer.release();
+                    return;
+                }
+                if (!gameStarted || !isBackgroundMusicEnabled()) {
+                    releaseBackgroundMusicPlayer();
+                    return;
+                }
+                preparedPlayer.start();
+            });
+            player.setOnErrorListener((ignoredPlayer, what, extra) -> {
+                Log.w(
+                    TAG,
+                    "background_music_play_failed what=" + what +
+                        " extra=" + extra
+                );
+                if (backgroundMusicPlayer == ignoredPlayer) {
+                    backgroundMusicPlayer = null;
+                }
+                releasePlayer(ignoredPlayer);
+                return true;
+            });
+            player.prepareAsync();
+            player = null;
+        } catch (Exception error) {
+            Log.w(TAG, "background_music_prepare_failed", error);
+            if (backgroundMusicPlayer != null) {
+                releaseBackgroundMusicPlayer();
+            } else if (player != null) {
+                releasePlayer(player);
+            }
+        } finally {
+            if (descriptor != null) {
+                try {
+                    descriptor.close();
+                } catch (IOException error) {
+                    Log.d(
+                        TAG,
+                        "background_music_descriptor_close_failed",
+                        error
+                    );
+                }
+            }
+        }
+    }
+
+    private void pauseBackgroundMusicForLifecycle() {
+        backgroundMusicPausedByLifecycle = false;
+        if (backgroundMusicPlayer == null) {
+            return;
+        }
+        try {
+            if (backgroundMusicPlayer.isPlaying()) {
+                backgroundMusicPlayer.pause();
+                backgroundMusicPausedByLifecycle = true;
+            }
+        } catch (IllegalStateException error) {
+            Log.w(TAG, "background_music_pause_failed", error);
+            releaseBackgroundMusicPlayer();
+        }
+    }
+
+    private void resumeBackgroundMusicForLifecycle() {
+        if (!backgroundMusicPausedByLifecycle) {
+            return;
+        }
+        backgroundMusicPausedByLifecycle = false;
+        startBackgroundMusicIfEnabled();
+    }
+
+    private void releaseBackgroundMusicPlayer() {
+        if (backgroundMusicPlayer == null) {
+            return;
+        }
+        releasePlayer(backgroundMusicPlayer);
+        backgroundMusicPlayer = null;
+        backgroundMusicPausedByLifecycle = false;
+    }
+
     private void releasePlayer(MediaPlayer player) {
         if (player == null) {
             return;
@@ -785,6 +945,7 @@ public final class MainActivity extends ComponentActivity {
         hintText.setVisibility(View.GONE);
         releaseSplashPlayer();
         splashVideoView.setVisibility(View.GONE);
+        startBackgroundMusicIfEnabled();
         showLoading();
         loadPage(HOME_PAGE);
     }
@@ -1384,6 +1545,7 @@ public final class MainActivity extends ComponentActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        pauseBackgroundMusicForLifecycle();
         if (webView != null) {
             webView.onPause();
         }
@@ -1395,6 +1557,7 @@ public final class MainActivity extends ComponentActivity {
         if (webView != null) {
             webView.onResume();
         }
+        resumeBackgroundMusicForLifecycle();
     }
 
     @Override
@@ -1411,6 +1574,7 @@ public final class MainActivity extends ComponentActivity {
         }
         releasePendingSplashPlayer();
         releaseSplashPlayer();
+        releaseBackgroundMusicPlayer();
         if (splashSurface != null) {
             splashSurface.release();
             splashSurface = null;
@@ -1484,6 +1648,42 @@ public final class MainActivity extends ComponentActivity {
                 PREF_SPLASH_VIDEO_MODE,
                 SPLASH_VIDEO_RANDOM
             );
+        }
+
+        @JavascriptInterface
+        public void setBackgroundMusicEnabled(boolean enabled) {
+            preferences.edit()
+                .putBoolean(PREF_BACKGROUND_MUSIC_ENABLED, enabled)
+                .apply();
+            mainHandler.post(() -> {
+                if (enabled) {
+                    startBackgroundMusicIfEnabled();
+                    return;
+                }
+                releaseBackgroundMusicPlayer();
+            });
+        }
+
+        @JavascriptInterface
+        public boolean isBackgroundMusicEnabled() {
+            return MainActivity.this.isBackgroundMusicEnabled();
+        }
+
+        @JavascriptInterface
+        public void setBackgroundMusicVolume(int percent) {
+            int normalizedPercent = clampVolumePercent(percent);
+            preferences.edit()
+                .putInt(PREF_BACKGROUND_MUSIC_VOLUME, normalizedPercent)
+                .apply();
+            mainHandler.post(() -> {
+                applyBackgroundMusicVolume();
+                startBackgroundMusicIfEnabled();
+            });
+        }
+
+        @JavascriptInterface
+        public int getBackgroundMusicVolume() {
+            return getBackgroundMusicVolumePercent();
         }
     }
 

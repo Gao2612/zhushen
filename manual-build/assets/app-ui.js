@@ -216,6 +216,52 @@
       });
     }
 
+    function isBackgroundMusicEnabled() {
+      if (window.Android && typeof window.Android.isBackgroundMusicEnabled === 'function') {
+        return window.Android.isBackgroundMusicEnabled();
+      }
+      return localStorage.getItem('zhushen_background_music_enabled') !== 'false';
+    }
+
+    function setBackgroundMusicEnabled(enabled) {
+      if (window.Android && typeof window.Android.setBackgroundMusicEnabled === 'function') {
+        window.Android.setBackgroundMusicEnabled(enabled);
+        return;
+      }
+      localStorage.setItem('zhushen_background_music_enabled', String(enabled));
+    }
+
+    function getBackgroundMusicVolume() {
+      if (window.Android && typeof window.Android.getBackgroundMusicVolume === 'function') {
+        return window.Android.getBackgroundMusicVolume();
+      }
+      return Number(localStorage.getItem('zhushen_background_music_volume') || '45');
+    }
+
+    function setBackgroundMusicVolume(percent) {
+      var normalizedPercent = Math.max(0, Math.min(100, Number(percent) || 0));
+      if (window.Android && typeof window.Android.setBackgroundMusicVolume === 'function') {
+        window.Android.setBackgroundMusicVolume(normalizedPercent);
+        return;
+      }
+      localStorage.setItem('zhushen_background_music_volume', String(normalizedPercent));
+    }
+
+    function syncBackgroundMusicControls() {
+      var enabled = isBackgroundMusicEnabled();
+      var volume = getBackgroundMusicVolume();
+      document.querySelectorAll('[data-background-music-toggle]').forEach(function (button) {
+        button.classList.toggle('active', enabled);
+        button.textContent = enabled ? '关闭背景音乐' : '开启背景音乐';
+      });
+      document.querySelectorAll('[data-background-music-volume]').forEach(function (input) {
+        input.value = String(volume);
+      });
+      document.querySelectorAll('[data-background-music-status]').forEach(function (node) {
+        node.textContent = '当前音乐：' + (enabled ? '开启' : '关闭') + ' · 音量 ' + volume + '%';
+      });
+    }
+
     document.querySelectorAll('[data-clear-favorites]').forEach(function (button) {
       button.addEventListener('click', function () {
         localStorage.removeItem(favoritesKey);
@@ -243,8 +289,21 @@
         syncSplashVideoControls();
       });
     });
+    document.querySelectorAll('[data-background-music-toggle]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        setBackgroundMusicEnabled(!isBackgroundMusicEnabled());
+        syncBackgroundMusicControls();
+      });
+    });
+    document.querySelectorAll('[data-background-music-volume]').forEach(function (input) {
+      input.addEventListener('input', function () {
+        setBackgroundMusicVolume(input.value);
+        syncBackgroundMusicControls();
+      });
+    });
     syncOrientationControls();
     syncSplashVideoControls();
+    syncBackgroundMusicControls();
   }
 
   function recordRecent() {

@@ -25,7 +25,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
-            noCompress 'mp4', 'webm', 'ogg'
+            noCompress 'mp4', 'webm', 'ogg', 'm4a', 'aac'
         }
     }
 

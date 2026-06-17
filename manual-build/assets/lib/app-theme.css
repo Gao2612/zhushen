@@ -247,10 +247,32 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   gap: 10px;
   margin-top: 14px;
 }
-.orientation-options .wide-button, .video-options .wide-button { margin-top: 0; }
-.orientation-options .wide-button.active, .video-options .wide-button.active {
+.audio-options {
+  display: grid;
+  grid-template-columns: minmax(160px, 220px) 1fr;
+  gap: 14px;
+  align-items: center;
+  margin-top: 14px;
+}
+.orientation-options .wide-button,
+.video-options .wide-button,
+.audio-options .wide-button {
+  margin-top: 0;
+}
+.orientation-options .wide-button.active,
+.video-options .wide-button.active,
+.audio-options .wide-button.active {
   color: #100b04;
   background: var(--gold-soft);
+}
+.range-control {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+}
+.range-control input {
+  width: 100%;
+  accent-color: var(--gold);
 }
 .wide-button { width: 100%; margin-top: 10px; }
 .archive-footer {
@@ -288,7 +310,7 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   .hero-panel, .split-panel { grid-template-columns: 1fr; }
   .stats-grid, .feature-grid, .character-grid { grid-template-columns: 1fr 1fr; }
   .settings-card dl { grid-template-columns: 1fr; }
-  .orientation-options, .video-options { grid-template-columns: 1fr; }
+  .orientation-options, .video-options, .audio-options { grid-template-columns: 1fr; }
 }
 @media (max-width: 520px) {
   .app-shell { width: calc(100% - 24px); padding-top: 24px; }

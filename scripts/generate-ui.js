@@ -551,6 +551,19 @@ function settingsPage() {
       <p class="settings-note" data-splash-video-status>当前视频：读取中</p>
     </article>
     <article class="settings-card">
+      <p class="eyebrow">Background Music</p>
+      <h2>背景音乐</h2>
+      <p>进入档案馆后循环播放内置音乐；可以关闭，也可以调整音量。应用退到后台时会自动暂停，回到前台后继续。</p>
+      <div class="audio-options" data-background-music-options>
+        <button class="wide-button" data-background-music-toggle>音乐开关</button>
+        <label class="range-control">
+          <span>音量</span>
+          <input data-background-music-volume type="range" min="0" max="100" step="5">
+        </label>
+      </div>
+      <p class="settings-note" data-background-music-status>当前音乐：读取中</p>
+    </article>
+    <article class="settings-card">
       <p class="eyebrow">Actions</p>
       <h2>本地操作</h2>
       <button class="wide-button" data-clear-favorites>清空收藏</button>
@@ -831,10 +844,32 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   gap: 10px;
   margin-top: 14px;
 }
-.orientation-options .wide-button, .video-options .wide-button { margin-top: 0; }
-.orientation-options .wide-button.active, .video-options .wide-button.active {
+.audio-options {
+  display: grid;
+  grid-template-columns: minmax(160px, 220px) 1fr;
+  gap: 14px;
+  align-items: center;
+  margin-top: 14px;
+}
+.orientation-options .wide-button,
+.video-options .wide-button,
+.audio-options .wide-button {
+  margin-top: 0;
+}
+.orientation-options .wide-button.active,
+.video-options .wide-button.active,
+.audio-options .wide-button.active {
   color: #100b04;
   background: var(--gold-soft);
+}
+.range-control {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+}
+.range-control input {
+  width: 100%;
+  accent-color: var(--gold);
 }
 .wide-button { width: 100%; margin-top: 10px; }
 .archive-footer {
@@ -872,7 +907,7 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   .hero-panel, .split-panel { grid-template-columns: 1fr; }
   .stats-grid, .feature-grid, .character-grid { grid-template-columns: 1fr 1fr; }
   .settings-card dl { grid-template-columns: 1fr; }
-  .orientation-options, .video-options { grid-template-columns: 1fr; }
+  .orientation-options, .video-options, .audio-options { grid-template-columns: 1fr; }
 }
 @media (max-width: 520px) {
   .app-shell { width: calc(100% - 24px); padding-top: 24px; }
@@ -1105,6 +1140,52 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
       });
     }
 
+    function isBackgroundMusicEnabled() {
+      if (window.Android && typeof window.Android.isBackgroundMusicEnabled === 'function') {
+        return window.Android.isBackgroundMusicEnabled();
+      }
+      return localStorage.getItem('zhushen_background_music_enabled') !== 'false';
+    }
+
+    function setBackgroundMusicEnabled(enabled) {
+      if (window.Android && typeof window.Android.setBackgroundMusicEnabled === 'function') {
+        window.Android.setBackgroundMusicEnabled(enabled);
+        return;
+      }
+      localStorage.setItem('zhushen_background_music_enabled', String(enabled));
+    }
+
+    function getBackgroundMusicVolume() {
+      if (window.Android && typeof window.Android.getBackgroundMusicVolume === 'function') {
+        return window.Android.getBackgroundMusicVolume();
+      }
+      return Number(localStorage.getItem('zhushen_background_music_volume') || '45');
+    }
+
+    function setBackgroundMusicVolume(percent) {
+      var normalizedPercent = Math.max(0, Math.min(100, Number(percent) || 0));
+      if (window.Android && typeof window.Android.setBackgroundMusicVolume === 'function') {
+        window.Android.setBackgroundMusicVolume(normalizedPercent);
+        return;
+      }
+      localStorage.setItem('zhushen_background_music_volume', String(normalizedPercent));
+    }
+
+    function syncBackgroundMusicControls() {
+      var enabled = isBackgroundMusicEnabled();
+      var volume = getBackgroundMusicVolume();
+      document.querySelectorAll('[data-background-music-toggle]').forEach(function (button) {
+        button.classList.toggle('active', enabled);
+        button.textContent = enabled ? '关闭背景音乐' : '开启背景音乐';
+      });
+      document.querySelectorAll('[data-background-music-volume]').forEach(function (input) {
+        input.value = String(volume);
+      });
+      document.querySelectorAll('[data-background-music-status]').forEach(function (node) {
+        node.textContent = '当前音乐：' + (enabled ? '开启' : '关闭') + ' · 音量 ' + volume + '%';
+      });
+    }
+
     document.querySelectorAll('[data-clear-favorites]').forEach(function (button) {
       button.addEventListener('click', function () {
         localStorage.removeItem(favoritesKey);
@@ -1132,8 +1213,21 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
         syncSplashVideoControls();
       });
     });
+    document.querySelectorAll('[data-background-music-toggle]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        setBackgroundMusicEnabled(!isBackgroundMusicEnabled());
+        syncBackgroundMusicControls();
+      });
+    });
+    document.querySelectorAll('[data-background-music-volume]').forEach(function (input) {
+      input.addEventListener('input', function () {
+        setBackgroundMusicVolume(input.value);
+        syncBackgroundMusicControls();
+      });
+    });
     syncOrientationControls();
     syncSplashVideoControls();
+    syncBackgroundMusicControls();
   }
 
   function recordRecent() {
