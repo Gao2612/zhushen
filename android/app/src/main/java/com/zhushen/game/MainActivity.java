@@ -135,6 +135,7 @@ public final class MainActivity extends ComponentActivity {
     private WebView webView;
     private TextureView splashVideoView;
     private MediaPlayer splashPlayer;
+    private MediaPlayer pendingSplashPlayer;
     private Surface splashSurface;
     private ImageView splash;
     private TextView hintText;
@@ -306,6 +307,7 @@ public final class MainActivity extends ComponentActivity {
                 public boolean onSurfaceTextureDestroyed(
                     SurfaceTexture surfaceTexture
                 ) {
+                    releasePendingSplashPlayer();
                     releaseSplashPlayer();
                     if (splashSurface != null) {
                         splashSurface.release();
@@ -632,9 +634,13 @@ public final class MainActivity extends ComponentActivity {
     private void prepareSplashVideo(Surface surface) {
         SplashVideo video = selectSplashVideo();
         releaseSplashPlayer();
+        releasePendingSplashPlayer();
+        AssetFileDescriptor descriptor = null;
+        MediaPlayer player = null;
         try {
-            AssetFileDescriptor descriptor = getAssets().openFd(video.assetPath);
-            MediaPlayer player = new MediaPlayer();
+            descriptor = getAssets().openFd(video.assetPath);
+            player = new MediaPlayer();
+            pendingSplashPlayer = player;
             player.setSurface(surface);
             player.setDataSource(
                 descriptor.getFileDescriptor(),
@@ -642,9 +648,15 @@ public final class MainActivity extends ComponentActivity {
                 descriptor.getLength()
             );
             descriptor.close();
+            descriptor = null;
             player.setLooping(true);
             player.setVolume(0f, 0f);
             player.setOnPreparedListener(preparedPlayer -> {
+                if (pendingSplashPlayer != preparedPlayer) {
+                    preparedPlayer.release();
+                    return;
+                }
+                pendingSplashPlayer = null;
                 if (gameStarted) {
                     preparedPlayer.release();
                     return;
@@ -660,17 +672,32 @@ public final class MainActivity extends ComponentActivity {
                     TAG,
                     "splash_video_play_failed what=" + what + " extra=" + extra
                 );
+                pendingSplashPlayer = null;
                 if (splash != null && !gameStarted) {
                     splash.setVisibility(View.VISIBLE);
                 }
-                releaseSplashPlayer();
+                releasePlayer(ignoredPlayer);
                 return true;
             });
             player.prepareAsync();
-        } catch (IOException error) {
+            player = null;
+        } catch (Exception error) {
             Log.w(TAG, "splash_video_prepare_failed", error);
+            if (pendingSplashPlayer != null) {
+                releasePendingSplashPlayer();
+            } else if (player != null) {
+                releasePlayer(player);
+            }
             if (splash != null && !gameStarted) {
                 splash.setVisibility(View.VISIBLE);
+            }
+        } finally {
+            if (descriptor != null) {
+                try {
+                    descriptor.close();
+                } catch (IOException error) {
+                    Log.d(TAG, "splash_video_descriptor_close_failed", error);
+                }
             }
         }
     }
@@ -707,13 +734,28 @@ public final class MainActivity extends ComponentActivity {
         if (splashPlayer == null) {
             return;
         }
+        releasePlayer(splashPlayer);
+        splashPlayer = null;
+    }
+
+    private void releasePendingSplashPlayer() {
+        if (pendingSplashPlayer == null) {
+            return;
+        }
+        releasePlayer(pendingSplashPlayer);
+        pendingSplashPlayer = null;
+    }
+
+    private void releasePlayer(MediaPlayer player) {
+        if (player == null) {
+            return;
+        }
         try {
-            splashPlayer.stop();
+            player.stop();
         } catch (IllegalStateException error) {
             Log.d(TAG, "splash_player_stop_ignored", error);
         }
-        splashPlayer.release();
-        splashPlayer = null;
+        player.release();
     }
 
     private TextView createHintText() {
@@ -1368,6 +1410,7 @@ public final class MainActivity extends ComponentActivity {
             webView.destroy();
             webView = null;
         }
+        releasePendingSplashPlayer();
         releaseSplashPlayer();
         if (splashSurface != null) {
             splashSurface.release();
