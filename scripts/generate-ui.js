@@ -225,14 +225,29 @@ const officialPosts = [
     date: '2024/01/05',
     sourceName: '诸神终应知晓',
     category: 'PV',
-    url: 'https://www.taptap.cn/moment/492288870839223557?group_id=708622',
+    sourceUrl: 'https://www.taptap.cn/moment/492288870839223557?group_id=708622',
     summary:
       '首曝 PV 以“为神明带回死亡”为核心宣言，公开了汇流地、送葬人和同行者命运的基础氛围。',
     quote: '去为诸神带回死亡吧，「送葬人」。',
+    content: [
+      '官方正文将故事定位在少女的归乡之路上，关键词是杀戮、成长、救赎与成王。',
+      'PV 同时把汇流地称作尘世的墓地与摇篮，强调它即将向玩家展开。',
+      '帖子里的情绪核心不是单纯展示战斗，而是送葬人和数十位同行者的邂逅、别离与命运。'
+    ],
     points: [
       '故事围绕杀戮、成长、救赎与成王展开。',
       '汇流地被描述为尘世的墓地与摇篮。',
       '强调与数十位拥有闪耀灵魂的同行者相遇和别离。'
+    ],
+    media: [
+      {
+        type: 'video',
+        src: 'official-posts/492288870839223557/pv.mp4',
+        poster: 'official-posts/492288870839223557/cover.jpg',
+        label: '实机首曝 PV'
+      },
+      { type: 'image', src: 'official-posts/492288870839223557/media-01.jpg', label: 'PV 帖内配图' },
+      { type: 'image', src: 'official-posts/492288870839223557/media-02.jpg', label: 'PV 帖内封面' }
     ]
   },
   {
@@ -241,14 +256,23 @@ const officialPosts = [
     date: '2024/01/05',
     sourceName: '诸神终应知晓',
     category: '实机影像',
-    url: 'https://www.taptap.cn/moment/492294102788866561?group_id=708622',
+    sourceUrl: 'https://www.taptap.cn/moment/492294102788866561?group_id=708622',
     summary:
       '官方发布手机端实机试玩影像，注明设备为 RedMi K70，并提示内容仍处开发阶段。',
     quote: '游戏开发中，不代表最终品质。',
+    content: [
+      '这条动态的核心是手机端实机试玩影像，标题明确标注 Player Reaction。',
+      '官方正文注明试玩设备为 RedMi K70，并把内容限定在开发中版本。',
+      '静态页面只稳定暴露视频封面和帖内图片，因此本卡片内置封面图，不伪造视频源。'
+    ],
     points: [
       '视频内容为玩家-投资人罗老师的实机试玩反应。',
       '素材重点展示移动端实机运行效果。',
       '官方明确标注最终品质仍以正式版本为准。'
+    ],
+    media: [
+      { type: 'image', src: 'official-posts/492294102788866561/media-01.jpg', label: '实机影像帖内配图' },
+      { type: 'image', src: 'official-posts/492294102788866561/media-02.jpg', label: 'Player Reaction 视频封面' }
     ]
   },
   {
@@ -257,14 +281,23 @@ const officialPosts = [
     date: '2024/03/06',
     sourceName: '诸神终应知晓',
     category: '社群',
-    url: 'https://www.taptap.cn/moment/499956228982573909?group_id=708622',
+    sourceUrl: 'https://www.taptap.cn/moment/499956228982573909?group_id=708622',
     summary:
       '官方宣布玩家群建立，公开群号，并配套发布抽奖活动与首曝 PV、实拍录制入口。',
     quote: '官方玩家群现已建立。',
+    content: [
+      '官方在正文中感谢玩家关注，并公开玩家群建立信息。',
+      '帖子把加群截图互动、抽奖活动和官方内容入口放在同一条动态里。',
+      '本卡片保留群号、活动性质和官方配图，不收录评论区参与截图。'
+    ],
     points: [
       '官方玩家群号：130340208。',
       '帖子包含加群互动抽奖活动说明。',
       '官方整理了首曝 PV 与实拍录制两个延伸入口。'
+    ],
+    media: [
+      { type: 'image', src: 'official-posts/499956228982573909/media-01.jpg', label: '官方玩家群配图一' },
+      { type: 'image', src: 'official-posts/499956228982573909/media-02.jpg', label: '官方玩家群配图二' }
     ]
   },
   {
@@ -273,14 +306,31 @@ const officialPosts = [
     date: '2024/03/06',
     sourceName: '诸神终应知晓',
     category: '线下试玩',
-    url: 'https://www.taptap.cn/moment/514519781039145122?group_id=708622',
+    sourceUrl: 'https://www.taptap.cn/moment/514519781039145122?group_id=708622',
     summary:
       '官方回顾上海线下试玩活动，集中回应操作、性能、技能反馈、养成和游戏定位等问题。',
     quote: '试玩内容为9个月前的临时版本。',
+    content: [
+      '官方说明线下试玩以群内招募方式在上海举行，用来和玩家见面并收集反馈。',
+      '正文的重点是答疑：从移动端误触、角色切换、性能表现到技能理解都有回应。',
+      '制作组强调测试版本较早，许多问题已经在后续规划或优化中。'
+    ],
     points: [
       '误触、切换角色、处决灵敏度、掉帧与穿模均被列入后续优化。',
       '制作人说明正式切人方案会包含头像点击与双指划屏两种方式。',
       '官方将定位描述为带动作要素的刷子游戏，并确认女主锁定。'
+    ],
+    media: [
+      { type: 'image', src: 'official-posts/514519781039145122/media-01.jpg', label: '线下试玩图一' },
+      { type: 'image', src: 'official-posts/514519781039145122/media-02.jpg', label: '线下试玩图二' },
+      { type: 'image', src: 'official-posts/514519781039145122/media-03.jpg', label: '线下试玩图三' },
+      { type: 'image', src: 'official-posts/514519781039145122/media-04.jpg', label: '线下试玩图四' },
+      { type: 'image', src: 'official-posts/514519781039145122/media-05.jpg', label: '线下试玩图五' },
+      { type: 'image', src: 'official-posts/514519781039145122/media-06.jpg', label: '线下试玩图六' },
+      { type: 'image', src: 'official-posts/514519781039145122/media-07.jpg', label: '线下试玩图七' },
+      { type: 'image', src: 'official-posts/514519781039145122/media-08.jpg', label: '线下试玩图八' },
+      { type: 'image', src: 'official-posts/514519781039145122/media-09.jpg', label: '线下试玩图九' },
+      { type: 'image', src: 'official-posts/514519781039145122/media-10.jpg', label: '线下试玩图十' }
     ]
   },
   {
@@ -289,14 +339,24 @@ const officialPosts = [
     date: '2024/04/05',
     sourceName: '诸神终应知晓',
     category: '线下参展',
-    url: 'https://www.taptap.cn/moment/525136274135190081?group_id=708622',
+    sourceUrl: 'https://www.taptap.cn/moment/525136274135190081?group_id=708622',
     summary:
       '官方宣布首次参展成都 ComiDay27，提供实机试玩、周边领取和 BOSS 挑战等活动。',
     quote: '黑暗幻想 X 3D点划激爽ACT。',
+    content: [
+      '这条动态是参展预告，核心信息是成都 ComiDay27 的时间、地点和展位。',
+      '现场内容包括实机试玩、周边领取、BOSS 挑战和正式测试资格相关活动。',
+      '卡片内置了帖子宣传图，方便在应用里直接查看参展信息。'
+    ],
     points: [
       '活动时间为 4.5 至 4.6。',
       '活动地点为成都西博城会展中心 14 号馆。',
       '展位编号为 T17-19，并设置正式测试资格挑战。'
+    ],
+    media: [
+      { type: 'image', src: 'official-posts/525136274135190081/media-01.jpg', label: 'ComiDay27 参展图一' },
+      { type: 'image', src: 'official-posts/525136274135190081/media-02.jpg', label: 'ComiDay27 参展图二' },
+      { type: 'image', src: 'official-posts/525136274135190081/media-03.jpg', label: 'ComiDay27 参展图三' }
     ]
   },
   {
@@ -305,14 +365,22 @@ const officialPosts = [
     date: '2024/05/01',
     sourceName: '诸神终应知晓',
     category: '线下参展',
-    url: 'https://www.taptap.cn/moment/534736525926074207?group_id=708622',
+    sourceUrl: 'https://www.taptap.cn/moment/534736525926074207?group_id=708622',
     summary:
       '官方宣布参加广州核聚变，现场开放首曝版实机试玩、周边领取与 BOSS 挑战。',
     quote: '现场有游戏实机可试玩。',
+    content: [
+      '官方把这条动态作为广州核聚变参展公告，说明现场会开放游戏实机试玩。',
+      '活动内容延续线下试玩、周边领取、BOSS 挑战和互动赠票。',
+      '帖子内的主视觉图已放入卡片画廊，可直接在应用里查看。'
+    ],
     points: [
       '活动时间为 5.18 至 5.19。',
       '活动地点为广州保利世贸博览馆 6 号馆。',
       '展位编号为 A18，并设置互动赠票活动。'
+    ],
+    media: [
+      { type: 'image', src: 'official-posts/534736525926074207/media-01.jpg', label: '核聚变参展图' }
     ]
   },
   {
@@ -321,14 +389,36 @@ const officialPosts = [
     date: '2024/05/27',
     sourceName: '魔王圆桌',
     category: '参展回顾',
-    url: 'https://www.taptap.cn/moment/544236913331014741?group_id=708622',
+    sourceUrl: 'https://www.taptap.cn/moment/544236913331014741?group_id=708622',
     summary:
       '魔王圆桌回顾上海线下测、成都 ComicDay 与广州核聚变，并继续公开试玩反馈答疑。',
     quote: '一千多名玩家试玩过游戏。',
+    content: [
+      '这篇回顾把三次线下见面串成一条时间线：上海线下测、成都 ComicDay、广州核聚变。',
+      '正文继续回应动作手感、闪避、普攻判定、QTE 倒计时、画质差异等玩家反馈。',
+      '卡片保留了大量现场图和一张 GIF，作为参展过程的视觉档案。'
+    ],
     points: [
       '回顾三次线下见面，并感谢玩家志愿者协助。',
       '闪避、操作队列、普攻判定、QTE 倒计时等问题进入优化讨论。',
       '官方说明 PC 端画质会高于手机端，但不会与移动端割裂。'
+    ],
+    media: [
+      { type: 'image', src: 'official-posts/544236913331014741/media-01.jpg', label: '参展回顾图一' },
+      { type: 'image', src: 'official-posts/544236913331014741/media-02.jpg', label: '参展回顾图二' },
+      { type: 'image', src: 'official-posts/544236913331014741/media-03.jpg', label: '参展回顾图三' },
+      { type: 'image', src: 'official-posts/544236913331014741/media-04.jpg', label: '参展回顾图四' },
+      { type: 'image', src: 'official-posts/544236913331014741/media-05.jpg', label: '参展回顾图五' },
+      { type: 'image', src: 'official-posts/544236913331014741/media-06.jpg', label: '参展回顾图六' },
+      { type: 'image', src: 'official-posts/544236913331014741/media-07.jpg', label: '参展回顾图七' },
+      { type: 'image', src: 'official-posts/544236913331014741/media-08.jpg', label: '参展回顾图八' },
+      { type: 'image', src: 'official-posts/544236913331014741/media-09.jpg', label: '参展回顾图九' },
+      { type: 'image', src: 'official-posts/544236913331014741/media-10.jpg', label: '参展回顾图十' },
+      { type: 'image', src: 'official-posts/544236913331014741/media-11.jpg', label: '参展回顾图十一' },
+      { type: 'image', src: 'official-posts/544236913331014741/media-12.jpg', label: '参展回顾图十二' },
+      { type: 'image', src: 'official-posts/544236913331014741/media-13.jpg', label: '参展回顾图十三' },
+      { type: 'image', src: 'official-posts/544236913331014741/media-14.jpg', label: '参展回顾静态封面' },
+      { type: 'gif', src: 'official-posts/544236913331014741/media-15.gif', label: '参展回顾 GIF' }
     ]
   },
   {
@@ -337,14 +427,23 @@ const officialPosts = [
     date: '2024/08/02',
     sourceName: '魔王圆桌',
     category: '研发冻结',
-    url: 'https://www.taptap.cn/moment/568559847222545007?group_id=708622',
+    sourceUrl: 'https://www.taptap.cn/moment/568559847222545007?group_id=708622',
     summary:
       '魔王圆桌宣布《诸神终应知晓》无限期冻结研发，并发布来自一醉与罗莎的告别文字。',
     quote: '我只愿诸位——勇气常在。',
+    content: [
+      '官方在 2024 年 8 月 2 日宣布项目无限期冻结研发。',
+      '帖子由制作组公告、一醉的长文和罗莎的告别文字构成，语气明显偏向阶段性告别。',
+      '卡片保留了帖内 GIF 与静态封面，用作研发冻结公告的视觉档案。'
+    ],
     points: [
       '官方说明在与各方沟通后决定无限期冻结研发。',
       '一醉以长文向玩家和行业朋友告别。',
       '罗莎表示短暂告别是为了更好的再见做准备。'
+    ],
+    media: [
+      { type: 'gif', src: 'official-posts/568559847222545007/media-01.gif', label: '研发冻结公告 GIF' },
+      { type: 'image', src: 'official-posts/568559847222545007/media-02.jpg', label: '研发冻结公告封面' }
     ]
   }
 ];
@@ -490,6 +589,39 @@ function homePage() {
   });
 }
 
+function renderOfficialContent(post) {
+  return `<div class="official-content">
+    <p class="official-label">帖子正文档案</p>
+    ${post.content.map((line) => `<p>${line}</p>`).join('')}
+  </div>`;
+}
+
+function renderOfficialMedia(post) {
+  if (!post.media.length) {
+    return '';
+  }
+  const videos = post.media
+    .filter((item) => item.type === 'video')
+    .map((item) => `<article class="official-video">
+      <video controls preload="metadata" poster="${item.poster}">
+        <source src="${item.src}" type="video/mp4">
+      </video>
+      <p>${item.label}</p>
+    </article>`)
+    .join('');
+  const gallery = post.media
+    .filter((item) => item.type !== 'video')
+    .map((item) => `<a class="official-media-card" href="${item.src}" data-lightbox-src="${item.src}" data-favorite-id="official-media:${item.src}">
+      <img src="${item.src}" alt="${item.label}" loading="lazy" decoding="async">
+      <span>${item.label}</span>
+    </a>`)
+    .join('');
+  return `<div class="official-media">
+    ${videos ? `<div class="official-video-grid">${videos}</div>` : ''}
+    ${gallery ? `<div class="official-gallery">${gallery}</div>` : ''}
+  </div>`;
+}
+
 function officialPostCard(post, index) {
   return `<article class="official-post" data-search-text="${escapeAttr([
     post.title,
@@ -497,7 +629,9 @@ function officialPostCard(post, index) {
     post.sourceName,
     post.category,
     post.summary,
-    post.points.join(' ')
+    post.content.join(' '),
+    post.points.join(' '),
+    post.media.map((item) => item.label).join(' ')
   ].join(' '))}" data-kind="${post.category}">
     <div class="official-index">${String(index + 1).padStart(2, '0')}</div>
     <div class="official-body">
@@ -505,11 +639,13 @@ function officialPostCard(post, index) {
       <h2>${post.title}</h2>
       <p>${post.summary}</p>
       <blockquote>${post.quote}</blockquote>
+      ${renderOfficialContent(post)}
       <ul>
         ${post.points.map((point) => `<li>${point}</li>`).join('')}
       </ul>
+      ${renderOfficialMedia(post)}
       <div class="official-actions">
-        <a class="ghost-button" href="${post.url}">查看原帖</a>
+        <span class="official-source">来源：TapTap 官方动态，已整理为应用内档案</span>
         <button class="fav-button" data-favorite="official:${post.id}">收藏</button>
       </div>
     </div>
@@ -519,9 +655,9 @@ function officialPostCard(post, index) {
 function officialPage() {
   const categories = ['全部', ...Array.from(new Set(officialPosts.map((post) => post.category)))];
   const body = `<section class="scroll-panel">
-    <p class="eyebrow">Source Boundary</p>
-    <h2>只整理官方发布，不收录评论区</h2>
-    <p>本页依据用户提供的 TapTap 动态链接整理帖子正文，保留来源、日期、分类、摘要和关键点。评论区、用户回复和互动楼层不进入档案。</p>
+    <p class="eyebrow">Official Archive</p>
+    <h2>官方动态卡片</h2>
+    <p>收录 TapTap 官方动态的正文整理、官方图片、GIF 与可用视频；评论区、用户回复和互动楼层不进入档案。</p>
   </section>
   <section class="filter-row" data-filter-group>
     ${categories.map((name) => `<button data-filter="${name}">${name}</button>`).join('')}
@@ -1033,6 +1169,24 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   color: var(--gold-soft);
   background: rgba(212, 167, 84, .08);
 }
+.official-content {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid rgba(212, 167, 84, .2);
+  border-radius: 18px;
+  background: rgba(0,0,0,.18);
+}
+.official-content p {
+  margin: 0;
+}
+.official-label {
+  color: var(--gold);
+  font-size: 12px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
 .official-body ul {
   display: grid;
   gap: 8px;
@@ -1040,11 +1194,76 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   color: var(--muted);
   line-height: 1.7;
 }
+.official-media {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+.official-video-grid {
+  display: grid;
+  gap: 12px;
+}
+.official-video {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(0,0,0,.24);
+}
+.official-video video {
+  display: block;
+  width: 100%;
+  max-height: 62vh;
+  border-radius: 16px;
+  background: #000;
+}
+.official-video p {
+  margin-top: 10px;
+  color: var(--gold-soft);
+}
+.official-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+.official-media-card {
+  position: relative;
+  min-height: 132px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255,255,255,.035);
+}
+.official-media-card img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  transition: transform .35s ease;
+}
+.official-media-card:hover img {
+  transform: scale(1.045);
+}
+.official-media-card span {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  padding: 6px 8px;
+  border-radius: 999px;
+  color: var(--text);
+  background: rgba(0,0,0,.64);
+  font-size: 12px;
+}
 .official-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 10px;
   margin-top: 18px;
+}
+.official-source {
+  color: var(--muted);
+  font-size: 13px;
 }
 .filter-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0; }
 .filter-row button {

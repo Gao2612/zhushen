@@ -250,6 +250,24 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   color: var(--gold-soft);
   background: rgba(212, 167, 84, .08);
 }
+.official-content {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid rgba(212, 167, 84, .2);
+  border-radius: 18px;
+  background: rgba(0,0,0,.18);
+}
+.official-content p {
+  margin: 0;
+}
+.official-label {
+  color: var(--gold);
+  font-size: 12px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
 .official-body ul {
   display: grid;
   gap: 8px;
@@ -257,11 +275,76 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   color: var(--muted);
   line-height: 1.7;
 }
+.official-media {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+.official-video-grid {
+  display: grid;
+  gap: 12px;
+}
+.official-video {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(0,0,0,.24);
+}
+.official-video video {
+  display: block;
+  width: 100%;
+  max-height: 62vh;
+  border-radius: 16px;
+  background: #000;
+}
+.official-video p {
+  margin-top: 10px;
+  color: var(--gold-soft);
+}
+.official-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+.official-media-card {
+  position: relative;
+  min-height: 132px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255,255,255,.035);
+}
+.official-media-card img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  transition: transform .35s ease;
+}
+.official-media-card:hover img {
+  transform: scale(1.045);
+}
+.official-media-card span {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  padding: 6px 8px;
+  border-radius: 999px;
+  color: var(--text);
+  background: rgba(0,0,0,.64);
+  font-size: 12px;
+}
 .official-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 10px;
   margin-top: 18px;
+}
+.official-source {
+  color: var(--muted);
+  font-size: 13px;
 }
 .filter-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0; }
 .filter-row button {
