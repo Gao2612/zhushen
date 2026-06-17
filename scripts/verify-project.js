@@ -5,6 +5,7 @@ const root = resolve(__dirname, '..');
 const assetsRoot = join(root, 'manual-build', 'assets');
 const pages = [
   'zy.html',
+  'official.html',
   'gfjs.html',
   'gfgn.html',
   'wjec.html',

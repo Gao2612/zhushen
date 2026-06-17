@@ -583,15 +583,16 @@ public final class MainActivity extends ComponentActivity {
         tabs.setVisibility(View.GONE);
         tabs.setPadding(0, dp(2), 0, dp(2));
 
-        String[] names = {"首页", "角色", "概念", "二创", "笑话"};
+        String[] names = {"首页", "官方", "角色", "概念", "二创", "笑话"};
         String[] pages = {
             "zy.html",
+            "official.html",
             "gfjs.html",
             "gfgn.html",
             "wjec.html",
             "qyxhhj.html"
         };
-        String[] icons = {"⌂", "角", "概", "创", "趣"};
+        String[] icons = {"⌂", "官", "角", "概", "创", "趣"};
 
         for (int index = 0; index < names.length; index++) {
             TextView tab = createTab(names[index], icons[index], pages[index]);
@@ -609,6 +610,7 @@ public final class MainActivity extends ComponentActivity {
         TextView tab = new TextView(this);
         tab.setTag(page);
         tab.setText(icon + "\n" + name);
+        tab.setBackgroundColor(Color.parseColor("#101016"));
         tab.setTextSize(12);
         tab.setTextColor(Color.parseColor("#99ffffff"));
         tab.setGravity(Gravity.CENTER);
@@ -961,6 +963,7 @@ public final class MainActivity extends ComponentActivity {
 
     private boolean isKnownPage(String page) {
         return "zy.html".equals(page)
+            || "official.html".equals(page)
             || "gfjs.html".equals(page)
             || "gfgn.html".equals(page)
             || "wjec.html".equals(page)

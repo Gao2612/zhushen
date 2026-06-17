@@ -86,7 +86,7 @@
           buttons.forEach(function (item) { item.classList.remove('active'); });
           button.classList.add('active');
           var filter = button.dataset.filter;
-          document.querySelectorAll('.archive-card').forEach(function (card) {
+          document.querySelectorAll('.archive-card, .official-post').forEach(function (card) {
             var kind = card.dataset.kind || '';
             var text = card.dataset.searchText || '';
             var visible = filter === '全部' || kind.indexOf(filter) >= 0 || text.indexOf(filter) >= 0;

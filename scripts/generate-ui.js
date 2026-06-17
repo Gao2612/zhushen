@@ -6,6 +6,7 @@ const assetsRoot = join(root, 'manual-build', 'assets');
 
 const pages = [
   { href: 'zy.html', label: '首页' },
+  { href: 'official.html', label: '官方发布' },
   { href: 'gfjs.html', label: '角色' },
   { href: 'gfgn.html', label: '概念' },
   { href: 'wjec.html', label: '二创' },
@@ -217,6 +218,137 @@ const splashVideos = [
   ['xilan_fan_2', '夕岚玩家二创2']
 ];
 
+const officialPosts = [
+  {
+    id: '492288870839223557',
+    title: '实机首曝 PV',
+    date: '2024/01/05',
+    sourceName: '诸神终应知晓',
+    category: 'PV',
+    url: 'https://www.taptap.cn/moment/492288870839223557?group_id=708622',
+    summary:
+      '首曝 PV 以“为神明带回死亡”为核心宣言，公开了汇流地、送葬人和同行者命运的基础氛围。',
+    quote: '去为诸神带回死亡吧，「送葬人」。',
+    points: [
+      '故事围绕杀戮、成长、救赎与成王展开。',
+      '汇流地被描述为尘世的墓地与摇篮。',
+      '强调与数十位拥有闪耀灵魂的同行者相遇和别离。'
+    ]
+  },
+  {
+    id: '492294102788866561',
+    title: '手机实拍录制 Player Reaction',
+    date: '2024/01/05',
+    sourceName: '诸神终应知晓',
+    category: '实机影像',
+    url: 'https://www.taptap.cn/moment/492294102788866561?group_id=708622',
+    summary:
+      '官方发布手机端实机试玩影像，注明设备为 RedMi K70，并提示内容仍处开发阶段。',
+    quote: '游戏开发中，不代表最终品质。',
+    points: [
+      '视频内容为玩家-投资人罗老师的实机试玩反应。',
+      '素材重点展示移动端实机运行效果。',
+      '官方明确标注最终品质仍以正式版本为准。'
+    ]
+  },
+  {
+    id: '499956228982573909',
+    title: '官方玩家群现已建立',
+    date: '2024/03/06',
+    sourceName: '诸神终应知晓',
+    category: '社群',
+    url: 'https://www.taptap.cn/moment/499956228982573909?group_id=708622',
+    summary:
+      '官方宣布玩家群建立，公开群号，并配套发布抽奖活动与首曝 PV、实拍录制入口。',
+    quote: '官方玩家群现已建立。',
+    points: [
+      '官方玩家群号：130340208。',
+      '帖子包含加群互动抽奖活动说明。',
+      '官方整理了首曝 PV 与实拍录制两个延伸入口。'
+    ]
+  },
+  {
+    id: '514519781039145122',
+    title: '线下试玩活动回顾',
+    date: '2024/03/06',
+    sourceName: '诸神终应知晓',
+    category: '线下试玩',
+    url: 'https://www.taptap.cn/moment/514519781039145122?group_id=708622',
+    summary:
+      '官方回顾上海线下试玩活动，集中回应操作、性能、技能反馈、养成和游戏定位等问题。',
+    quote: '试玩内容为9个月前的临时版本。',
+    points: [
+      '误触、切换角色、处决灵敏度、掉帧与穿模均被列入后续优化。',
+      '制作人说明正式切人方案会包含头像点击与双指划屏两种方式。',
+      '官方将定位描述为带动作要素的刷子游戏，并确认女主锁定。'
+    ]
+  },
+  {
+    id: '525136274135190081',
+    title: '线下参展 ComiDay27',
+    date: '2024/04/05',
+    sourceName: '诸神终应知晓',
+    category: '线下参展',
+    url: 'https://www.taptap.cn/moment/525136274135190081?group_id=708622',
+    summary:
+      '官方宣布首次参展成都 ComiDay27，提供实机试玩、周边领取和 BOSS 挑战等活动。',
+    quote: '黑暗幻想 X 3D点划激爽ACT。',
+    points: [
+      '活动时间为 4.5 至 4.6。',
+      '活动地点为成都西博城会展中心 14 号馆。',
+      '展位编号为 T17-19，并设置正式测试资格挑战。'
+    ]
+  },
+  {
+    id: '534736525926074207',
+    title: '诸神终应知晓 X 核聚变',
+    date: '2024/05/01',
+    sourceName: '诸神终应知晓',
+    category: '线下参展',
+    url: 'https://www.taptap.cn/moment/534736525926074207?group_id=708622',
+    summary:
+      '官方宣布参加广州核聚变，现场开放首曝版实机试玩、周边领取与 BOSS 挑战。',
+    quote: '现场有游戏实机可试玩。',
+    points: [
+      '活动时间为 5.18 至 5.19。',
+      '活动地点为广州保利世贸博览馆 6 号馆。',
+      '展位编号为 A18，并设置互动赠票活动。'
+    ]
+  },
+  {
+    id: '544236913331014741',
+    title: '参展回顾',
+    date: '2024/05/27',
+    sourceName: '魔王圆桌',
+    category: '参展回顾',
+    url: 'https://www.taptap.cn/moment/544236913331014741?group_id=708622',
+    summary:
+      '魔王圆桌回顾上海线下测、成都 ComicDay 与广州核聚变，并继续公开试玩反馈答疑。',
+    quote: '一千多名玩家试玩过游戏。',
+    points: [
+      '回顾三次线下见面，并感谢玩家志愿者协助。',
+      '闪避、操作队列、普攻判定、QTE 倒计时等问题进入优化讨论。',
+      '官方说明 PC 端画质会高于手机端，但不会与移动端割裂。'
+    ]
+  },
+  {
+    id: '568559847222545007',
+    title: '不要祈祷，不要合上战斗的双手',
+    date: '2024/08/02',
+    sourceName: '魔王圆桌',
+    category: '研发冻结',
+    url: 'https://www.taptap.cn/moment/568559847222545007?group_id=708622',
+    summary:
+      '魔王圆桌宣布《诸神终应知晓》无限期冻结研发，并发布来自一醉与罗莎的告别文字。',
+    quote: '我只愿诸位——勇气常在。',
+    points: [
+      '官方说明在与各方沟通后决定无限期冻结研发。',
+      '一醉以长文向玩家和行业朋友告别。',
+      '罗莎表示短暂告别是为了更好的再见做准备。'
+    ]
+  }
+];
+
 function detectCharacter(file) {
   for (const name of ['阿塔尔', '德赫奴', '拉夏', '梅赛德斯', '夕岚']) {
     if (file.includes(name)) {
@@ -324,7 +456,7 @@ function homePage() {
     <div><strong>${characters.length}</strong><span>角色档案</span></div>
     <div><strong>${conceptCards.length}</strong><span>概念资料</span></div>
     <div><strong>${artists.reduce((sum, item) => sum + item.files.length, 0)}</strong><span>二创作品</span></div>
-    <div><strong>${jokes.length}</strong><span>社区切片</span></div>
+    <div><strong>${officialPosts.length}</strong><span>官方发布</span></div>
   </section>
   <section class="section-head">
     <p class="eyebrow">Archive Entrance</p>
@@ -333,6 +465,7 @@ function homePage() {
   <section class="feature-grid">
     ${card({ title: '官方角色', desc: '角色身份、设定、图集与视频资料。', src: 'zy/诸神终应知晓角色设定.jpg', href: 'gfjs.html', meta: '角色档案', kind: '官方' })}
     ${card({ title: '官方概念', desc: '宣传物料、世界观与早期概念图。', src: 'zy/诸神终应知晓概念图.jpg', href: 'gfgn.html', meta: '概念图鉴', kind: '官方' })}
+    ${card({ title: '官方发布', desc: '整理 TapTap 官方动态正文，不收录评论区内容。', src: 'zy/诸神终应知晓概念图.jpg', href: 'official.html', meta: '官方动态', kind: '公告' })}
     ${card({ title: '玩家二创', desc: '按作者和角色整理的玩家创作。', src: 'zy/玩家二创.jpg', href: 'wjec.html', meta: '社群共创', kind: '二创' })}
     ${card({ title: '群友笑话', desc: '留住社区里的轻松片段。', src: 'zy/群友笑话合集.jpg', href: 'qyxhhj.html', meta: '社区记忆', kind: '笑话' })}
   </section>
@@ -352,6 +485,58 @@ function homePage() {
       title: '诸神终应知晓<br>玩家自制史记',
       desc: '以档案馆的形式，整理官方物料、角色信息、玩家二创和社群记忆。',
       searchScope: 'global'
+    },
+    body
+  });
+}
+
+function officialPostCard(post, index) {
+  return `<article class="official-post" data-search-text="${escapeAttr([
+    post.title,
+    post.date,
+    post.sourceName,
+    post.category,
+    post.summary,
+    post.points.join(' ')
+  ].join(' '))}" data-kind="${post.category}">
+    <div class="official-index">${String(index + 1).padStart(2, '0')}</div>
+    <div class="official-body">
+      <p class="card-meta">${post.date} · ${post.sourceName} · ${post.category}</p>
+      <h2>${post.title}</h2>
+      <p>${post.summary}</p>
+      <blockquote>${post.quote}</blockquote>
+      <ul>
+        ${post.points.map((point) => `<li>${point}</li>`).join('')}
+      </ul>
+      <div class="official-actions">
+        <a class="ghost-button" href="${post.url}">查看原帖</a>
+        <button class="fav-button" data-favorite="official:${post.id}">收藏</button>
+      </div>
+    </div>
+  </article>`;
+}
+
+function officialPage() {
+  const categories = ['全部', ...Array.from(new Set(officialPosts.map((post) => post.category)))];
+  const body = `<section class="scroll-panel">
+    <p class="eyebrow">Source Boundary</p>
+    <h2>只整理官方发布，不收录评论区</h2>
+    <p>本页依据用户提供的 TapTap 动态链接整理帖子正文，保留来源、日期、分类、摘要和关键点。评论区、用户回复和互动楼层不进入档案。</p>
+  </section>
+  <section class="filter-row" data-filter-group>
+    ${categories.map((name) => `<button data-filter="${name}">${name}</button>`).join('')}
+  </section>
+  <section class="official-timeline">
+    ${officialPosts.map((post, index) => officialPostCard(post, index)).join('')}
+  </section>`;
+  return htmlPage({
+    title: '官方发布 · 诸神终应知晓',
+    active: '官方发布',
+    hero: {
+      eyebrow: 'Official Posts',
+      title: '官方发布档案',
+      desc: '从 TapTap 官方动态正文中整理 PV、实机、线下活动、答疑与研发冻结公告。',
+      searchScope: 'page'
     },
     body
   });
@@ -589,6 +774,7 @@ function slug(value) {
 }
 
 writeFileSync(join(assetsRoot, 'zy.html'), homePage());
+writeFileSync(join(assetsRoot, 'official.html'), officialPage());
 writeFileSync(join(assetsRoot, 'gfjs.html'), charactersPage());
 writeFileSync(join(assetsRoot, 'gfgn.html'), conceptsPage());
 writeFileSync(join(assetsRoot, 'wjec.html'), fanArtPage());
@@ -808,6 +994,58 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
 }
 .video-card { padding: 12px; border: 1px solid var(--line); border-radius: 18px; background: rgba(0,0,0,.22); }
 .video-card video { width: 100%; border-radius: 14px; background: #000; }
+.official-timeline {
+  display: grid;
+  gap: 18px;
+  margin-top: 24px;
+}
+.official-post {
+  display: grid;
+  grid-template-columns: 76px 1fr;
+  gap: 18px;
+  border: 1px solid var(--line);
+  border-radius: 26px;
+  background:
+    linear-gradient(135deg, rgba(212, 167, 84, .1), transparent 42%),
+    var(--panel);
+  box-shadow: 0 18px 50px rgba(0,0,0,.25);
+  overflow: hidden;
+}
+.official-index {
+  display: grid;
+  place-items: center;
+  color: rgba(16, 11, 4, .9);
+  background: var(--gold-soft);
+  font-family: Georgia, serif;
+  font-size: 26px;
+  font-weight: 700;
+}
+.official-body {
+  padding: 24px 24px 24px 0;
+}
+.official-body h2 {
+  margin: 8px 0 12px;
+}
+.official-body blockquote {
+  margin: 16px 0;
+  padding: 12px 14px;
+  border-left: 3px solid var(--gold);
+  color: var(--gold-soft);
+  background: rgba(212, 167, 84, .08);
+}
+.official-body ul {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0 0 18px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.official-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
 .filter-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0; }
 .filter-row button {
   border: 1px solid var(--line);
@@ -908,6 +1146,9 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   .stats-grid, .feature-grid, .character-grid { grid-template-columns: 1fr 1fr; }
   .settings-card dl { grid-template-columns: 1fr; }
   .orientation-options, .video-options, .audio-options { grid-template-columns: 1fr; }
+  .official-post { grid-template-columns: 1fr; }
+  .official-index { min-height: 58px; }
+  .official-body { padding: 22px; }
 }
 @media (max-width: 520px) {
   .app-shell { width: calc(100% - 24px); padding-top: 24px; }
@@ -1010,7 +1251,7 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
           buttons.forEach(function (item) { item.classList.remove('active'); });
           button.classList.add('active');
           var filter = button.dataset.filter;
-          document.querySelectorAll('.archive-card').forEach(function (card) {
+          document.querySelectorAll('.archive-card, .official-post').forEach(function (card) {
             var kind = card.dataset.kind || '';
             var text = card.dataset.searchText || '';
             var visible = filter === '全部' || kind.indexOf(filter) >= 0 || text.indexOf(filter) >= 0;
