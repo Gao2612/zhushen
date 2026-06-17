@@ -56,6 +56,7 @@ import androidx.activity.ComponentActivity;
 import androidx.activity.OnBackPressedCallback;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.view.WindowCompat;
 import androidx.webkit.WebViewAssetLoader;
 
 import java.io.File;
@@ -180,6 +181,7 @@ public final class MainActivity extends ComponentActivity {
             WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
         );
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        WindowCompat.setDecorFitsSystemWindows(window, true);
         window.setStatusBarColor(Color.parseColor("#0a0a0f"));
         window.setNavigationBarColor(Color.parseColor("#101016"));
     }
@@ -259,7 +261,6 @@ public final class MainActivity extends ComponentActivity {
             FrameLayout.LayoutParams.WRAP_CONTENT
         );
         tabParams.gravity = Gravity.BOTTOM;
-        tabParams.bottomMargin = getNavigationBarHeight();
         root.addView(tabBar, tabParams);
 
         splashVideoView = createSplashVideoView();
@@ -1776,18 +1777,6 @@ public final class MainActivity extends ComponentActivity {
         return (int) (
             value * getResources().getDisplayMetrics().density + 0.5f
         );
-    }
-
-    private int getNavigationBarHeight() {
-        int resourceId = getResources().getIdentifier(
-            "navigation_bar_height",
-            "dimen",
-            "android"
-        );
-        if (resourceId <= 0) {
-            return dp(28);
-        }
-        return getResources().getDimensionPixelSize(resourceId);
     }
 
     @Override

@@ -499,8 +499,6 @@ function nav(active) {
     <button class="nav-toggle" data-nav-toggle aria-label="打开导航">☰</button>
     <ul class="nav-menu" data-nav-menu>
       ${pages.map((page) => `<li><a class="${page.label === active ? 'active' : ''}" href="${page.href}">${page.label}</a></li>`).join('')}
-      <li><a href="https://docs.qq.com/sheet/DVXVaQWZOcUFyRlNr?tab=BB08J2">问答</a></li>
-      <li><a href="https://www.taptap.cn/app/513986">论坛</a></li>
     </ul>
   </nav>`;
 }
