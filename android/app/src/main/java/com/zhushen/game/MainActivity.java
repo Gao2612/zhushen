@@ -93,6 +93,7 @@ public final class MainActivity extends ComponentActivity {
     private static final String ORIENTATION_LANDSCAPE = "landscape";
     private static final String ORIENTATION_AUTO = "auto";
     private static final String SPLASH_VIDEO_RANDOM = "random";
+    private static final String SPLASH_VIDEO_NONE = "none";
     private static final SplashVideo[] SPLASH_VIDEOS = {
         new SplashVideo(
             "atal",
@@ -118,21 +119,6 @@ public final class MainActivity extends ComponentActivity {
             "dehenu_skill",
             "德赫奴技能",
             "官方-角色/视频/德赫奴技能.mp4"
-        ),
-        new SplashVideo(
-            "xilan_world",
-            "夕岚我的世界",
-            "官方-角色/视频/夕岚我的世界.mp4"
-        ),
-        new SplashVideo(
-            "xilan_fan_1",
-            "夕岚玩家二创1",
-            "官方-角色/视频/夕岚玩家二创1.mp4"
-        ),
-        new SplashVideo(
-            "xilan_fan_2",
-            "夕岚玩家二创2",
-            "官方-角色/视频/夕岚玩家二创2.mp4"
         )
     };
 
@@ -141,15 +127,19 @@ public final class MainActivity extends ComponentActivity {
 
     private WebView webView;
     private TextureView splashVideoView;
+    private TextureView nativeVideoView;
     private MediaPlayer splashPlayer;
     private MediaPlayer pendingSplashPlayer;
+    private MediaPlayer nativeVideoPlayer;
     private MediaPlayer backgroundMusicPlayer;
     private Surface splashSurface;
+    private Surface nativeVideoSurface;
     private ImageView splash;
     private TextView hintText;
     private LinearLayout loadingOverlay;
     private LinearLayout browserBar;
     private LinearLayout tabBar;
+    private FrameLayout nativeVideoOverlay;
     private ProgressBar progressBar;
     private Vibrator vibrator;
     private SharedPreferences preferences;
@@ -159,8 +149,10 @@ public final class MainActivity extends ComponentActivity {
     private boolean exitTwice = false;
     private boolean backgroundMusicPausedByLifecycle = false;
     private String pendingSaveUrl;
+    private String pendingNativeVideoAssetPath;
     private Uri currentExternalUri;
     private TextView browserTitle;
+    private TextView nativeVideoTitle;
     private final Random random = new Random();
 
     @Override
@@ -267,6 +259,7 @@ public final class MainActivity extends ComponentActivity {
             FrameLayout.LayoutParams.WRAP_CONTENT
         );
         tabParams.gravity = Gravity.BOTTOM;
+        tabParams.bottomMargin = getNavigationBarHeight();
         root.addView(tabBar, tabParams);
 
         splashVideoView = createSplashVideoView();
@@ -283,6 +276,9 @@ public final class MainActivity extends ComponentActivity {
         hintParams.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
         hintParams.bottomMargin = dp(50);
         root.addView(hintText, hintParams);
+
+        nativeVideoOverlay = createNativeVideoOverlay();
+        root.addView(nativeVideoOverlay, matchParentParams());
 
         return root;
     }
@@ -334,6 +330,85 @@ public final class MainActivity extends ComponentActivity {
         return textureView;
     }
 
+    private FrameLayout createNativeVideoOverlay() {
+        FrameLayout overlay = new FrameLayout(this);
+        overlay.setBackgroundColor(Color.BLACK);
+        overlay.setVisibility(View.GONE);
+
+        nativeVideoView = new TextureView(this);
+        nativeVideoView.setOpaque(false);
+        nativeVideoView.setSurfaceTextureListener(
+            new TextureView.SurfaceTextureListener() {
+                @Override
+                public void onSurfaceTextureAvailable(
+                    SurfaceTexture surfaceTexture,
+                    int width,
+                    int height
+                ) {
+                    nativeVideoSurface = new Surface(surfaceTexture);
+                    if (pendingNativeVideoAssetPath != null) {
+                        playNativeVideoAsset(pendingNativeVideoAssetPath);
+                    }
+                }
+
+                @Override
+                public void onSurfaceTextureSizeChanged(
+                    SurfaceTexture surfaceTexture,
+                    int width,
+                    int height
+                ) {
+                }
+
+                @Override
+                public boolean onSurfaceTextureDestroyed(
+                    SurfaceTexture surfaceTexture
+                ) {
+                    releaseNativeVideoPlayer();
+                    if (nativeVideoSurface != null) {
+                        nativeVideoSurface.release();
+                        nativeVideoSurface = null;
+                    }
+                    return true;
+                }
+
+                @Override
+                public void onSurfaceTextureUpdated(
+                    SurfaceTexture surfaceTexture
+                ) {
+                }
+            }
+        );
+        overlay.addView(nativeVideoView, matchParentParams());
+
+        nativeVideoTitle = new TextView(this);
+        nativeVideoTitle.setTextColor(Color.parseColor("#f7e7bf"));
+        nativeVideoTitle.setTextSize(16);
+        nativeVideoTitle.setSingleLine(true);
+        nativeVideoTitle.setPadding(dp(18), 0, dp(72), 0);
+        nativeVideoTitle.setGravity(Gravity.CENTER_VERTICAL);
+        FrameLayout.LayoutParams titleParams = new FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            dp(56)
+        );
+        titleParams.gravity = Gravity.TOP;
+        overlay.addView(nativeVideoTitle, titleParams);
+
+        TextView close = createBrowserBarButton("关闭");
+        close.setTextSize(15);
+        close.setBackgroundColor(Color.argb(160, 0, 0, 0));
+        close.setOnClickListener(view -> {
+            haptic();
+            closeNativeVideoOverlay();
+        });
+        FrameLayout.LayoutParams closeParams = new FrameLayout.LayoutParams(
+            dp(64),
+            dp(56)
+        );
+        closeParams.gravity = Gravity.TOP | Gravity.RIGHT;
+        overlay.addView(close, closeParams);
+        return overlay;
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     private WebView createWebView() {
         WebView view = new WebView(this);
@@ -353,7 +428,7 @@ public final class MainActivity extends ComponentActivity {
         settings.setAllowContentAccess(false);
         settings.setAllowFileAccessFromFileURLs(false);
         settings.setAllowUniversalAccessFromFileURLs(false);
-        settings.setMediaPlaybackRequiresUserGesture(true);
+        settings.setMediaPlaybackRequiresUserGesture(false);
         settings.setUseWideViewPort(true);
         settings.setLoadWithOverviewMode(true);
         settings.setSupportZoom(true);
@@ -642,9 +717,19 @@ public final class MainActivity extends ComponentActivity {
     }
 
     private void prepareSplashVideo(Surface surface) {
-        SplashVideo video = selectSplashVideo();
         releaseSplashPlayer();
         releasePendingSplashPlayer();
+        SplashVideo video = selectSplashVideo();
+        if (video == null) {
+            if (splashVideoView != null) {
+                splashVideoView.setVisibility(View.GONE);
+            }
+            if (splash != null && !gameStarted) {
+                splash.setVisibility(View.VISIBLE);
+            }
+            Log.i(TAG, "splash_video_disabled");
+            return;
+        }
         AssetFileDescriptor descriptor = null;
         MediaPlayer player = null;
         try {
@@ -717,6 +802,9 @@ public final class MainActivity extends ComponentActivity {
             PREF_SPLASH_VIDEO_MODE,
             SPLASH_VIDEO_RANDOM
         );
+        if (SPLASH_VIDEO_NONE.equals(mode)) {
+            return null;
+        }
         if (SPLASH_VIDEO_RANDOM.equals(mode)) {
             return SPLASH_VIDEOS[random.nextInt(SPLASH_VIDEOS.length)];
         }
@@ -729,6 +817,9 @@ public final class MainActivity extends ComponentActivity {
     }
 
     private String normalizeSplashVideoMode(String mode) {
+        if (SPLASH_VIDEO_NONE.equals(mode)) {
+            return SPLASH_VIDEO_NONE;
+        }
         if (SPLASH_VIDEO_RANDOM.equals(mode)) {
             return SPLASH_VIDEO_RANDOM;
         }
@@ -754,6 +845,109 @@ public final class MainActivity extends ComponentActivity {
         }
         releasePlayer(pendingSplashPlayer);
         pendingSplashPlayer = null;
+    }
+
+    private void openNativeVideo(String assetPath, String title) {
+        pendingNativeVideoAssetPath = assetPath;
+        if (nativeVideoTitle != null) {
+            nativeVideoTitle.setText(title == null || title.isEmpty()
+                ? "视频播放"
+                : title);
+        }
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        if (nativeVideoOverlay != null) {
+            nativeVideoOverlay.setVisibility(View.VISIBLE);
+            nativeVideoOverlay.bringToFront();
+        }
+        pauseBackgroundMusicForLifecycle();
+        if (nativeVideoSurface != null) {
+            playNativeVideoAsset(assetPath);
+        }
+    }
+
+    private void playNativeVideoAsset(String assetPath) {
+        if (nativeVideoSurface == null) {
+            pendingNativeVideoAssetPath = assetPath;
+            return;
+        }
+        releaseNativeVideoPlayer();
+        AssetFileDescriptor descriptor = null;
+        MediaPlayer player = null;
+        try {
+            descriptor = getAssets().openFd(assetPath);
+            player = new MediaPlayer();
+            nativeVideoPlayer = player;
+            player.setSurface(nativeVideoSurface);
+            player.setDataSource(
+                descriptor.getFileDescriptor(),
+                descriptor.getStartOffset(),
+                descriptor.getLength()
+            );
+            descriptor.close();
+            descriptor = null;
+            player.setLooping(false);
+            player.setVolume(1f, 1f);
+            player.setOnPreparedListener(preparedPlayer -> {
+                if (nativeVideoPlayer != preparedPlayer) {
+                    preparedPlayer.release();
+                    return;
+                }
+                preparedPlayer.start();
+                Log.i(TAG, "native_video_started asset=" + assetPath);
+            });
+            player.setOnCompletionListener(ignoredPlayer -> {
+                showToast("视频播放完成");
+            });
+            player.setOnErrorListener((ignoredPlayer, what, extra) -> {
+                Log.w(
+                    TAG,
+                    "native_video_play_failed asset=" + assetPath +
+                        " what=" + what + " extra=" + extra
+                );
+                showToast("视频播放失败");
+                closeNativeVideoOverlay();
+                return true;
+            });
+            player.prepareAsync();
+            player = null;
+        } catch (Exception error) {
+            Log.w(TAG, "native_video_prepare_failed asset=" + assetPath, error);
+            if (nativeVideoPlayer != null) {
+                releaseNativeVideoPlayer();
+            } else if (player != null) {
+                releasePlayer(player);
+            }
+            showToast("视频播放失败");
+            closeNativeVideoOverlay();
+        } finally {
+            if (descriptor != null) {
+                try {
+                    descriptor.close();
+                } catch (IOException error) {
+                    Log.d(TAG, "native_video_descriptor_close_failed", error);
+                }
+            }
+        }
+    }
+
+    private void closeNativeVideoOverlay() {
+        pendingNativeVideoAssetPath = null;
+        releaseNativeVideoPlayer();
+        if (nativeVideoOverlay != null) {
+            nativeVideoOverlay.setVisibility(View.GONE);
+        }
+        resumeBackgroundMusicForLifecycle();
+        applyOrientationMode(
+            preferences.getString(PREF_ORIENTATION_MODE, ORIENTATION_AUTO)
+        );
+    }
+
+    private void releaseNativeVideoPlayer() {
+        if (nativeVideoPlayer == null) {
+            return;
+        }
+        releasePlayer(nativeVideoPlayer);
+        nativeVideoPlayer = null;
     }
 
     private boolean isBackgroundMusicEnabled() {
@@ -837,6 +1031,11 @@ public final class MainActivity extends ComponentActivity {
                     return;
                 }
                 preparedPlayer.start();
+                Log.i(
+                    TAG,
+                    "background_music_started volume_percent=" +
+                        getBackgroundMusicVolumePercent()
+                );
             });
             player.setOnErrorListener((ignoredPlayer, what, extra) -> {
                 Log.w(
@@ -972,6 +1171,10 @@ public final class MainActivity extends ComponentActivity {
     }
 
     private boolean handleNavigation(Uri uri) {
+        if ("zhushen-video".equalsIgnoreCase(uri.getScheme())) {
+            openNativeVideoFromUri(uri);
+            return true;
+        }
         if (isTrustedAssetUri(uri)) {
             return false;
         }
@@ -993,12 +1196,28 @@ public final class MainActivity extends ComponentActivity {
         return true;
     }
 
+    private void openNativeVideoFromUri(Uri uri) {
+        String host = uri.getHost();
+        if (!"play".equalsIgnoreCase(host)) {
+            showToast("视频地址无效");
+            return;
+        }
+        try {
+            String src = uri.getQueryParameter("src");
+            String title = uri.getQueryParameter("title");
+            openNativeVideo(normalizeVideoAssetPath(src), title);
+        } catch (IllegalArgumentException error) {
+            Log.w(TAG, "native_video_uri_rejected uri=" + uri, error);
+            showToast("视频地址无效");
+        }
+    }
+
     private void openInternalBrowser(Uri uri) {
         currentExternalUri = uri;
         browserTitle.setText(labelForExternalHost(uri.getHost()));
         browserBar.setVisibility(View.VISIBLE);
         tabBar.setVisibility(View.GONE);
-        webView.setPadding(0, dp(52), 0, 0);
+        updateWebViewTopInset(dp(52));
         showLoading();
         webView.loadUrl(uri.toString());
     }
@@ -1013,8 +1232,21 @@ public final class MainActivity extends ComponentActivity {
             browserBar.setVisibility(View.GONE);
         }
         if (webView != null) {
-            webView.setPadding(0, 0, 0, 0);
+            updateWebViewTopInset(0);
         }
+    }
+
+    private void updateWebViewTopInset(int topInset) {
+        if (webView == null) {
+            return;
+        }
+        if (webView.getLayoutParams() instanceof FrameLayout.LayoutParams) {
+            FrameLayout.LayoutParams params =
+                (FrameLayout.LayoutParams) webView.getLayoutParams();
+            params.topMargin = topInset;
+            webView.setLayoutParams(params);
+        }
+        webView.setPadding(0, 0, 0, 0);
     }
 
     private String labelForExternalHost(String host) {
@@ -1152,6 +1384,32 @@ public final class MainActivity extends ComponentActivity {
             throw new IllegalArgumentException("不受信任的资源地址");
         }
         return Uri.decode(path.substring("/assets/".length()));
+    }
+
+    private String normalizeVideoAssetPath(String src) {
+        if (src == null || src.trim().isEmpty()) {
+            throw new IllegalArgumentException("视频地址为空");
+        }
+        String normalized = src.trim();
+        if (normalized.startsWith(BASE_URL)) {
+            normalized = normalized.substring(BASE_URL.length());
+        } else if (normalized.startsWith("/assets/")) {
+            normalized = normalized.substring("/assets/".length());
+        } else if (normalized.startsWith("https://")) {
+            Uri uri = Uri.parse(normalized);
+            if (!isTrustedAssetUri(uri)) {
+                throw new IllegalArgumentException("视频地址不是应用内资源");
+            }
+            normalized = assetPathFromUri(uri);
+        }
+        while (normalized.startsWith("/")) {
+            normalized = normalized.substring(1);
+        }
+        normalized = Uri.decode(normalized);
+        if (normalized.contains("..") || !normalized.endsWith(".mp4")) {
+            throw new IllegalArgumentException("视频资源路径不合法");
+        }
+        return normalized;
     }
 
     private void skipFully(InputStream stream, long amount) throws IOException {
@@ -1520,6 +1778,18 @@ public final class MainActivity extends ComponentActivity {
         );
     }
 
+    private int getNavigationBarHeight() {
+        int resourceId = getResources().getIdentifier(
+            "navigation_bar_height",
+            "dimen",
+            "android"
+        );
+        if (resourceId <= 0) {
+            return dp(28);
+        }
+        return getResources().getDimensionPixelSize(resourceId);
+    }
+
     @Override
     public void onRequestPermissionsResult(
         int requestCode,
@@ -1577,10 +1847,15 @@ public final class MainActivity extends ComponentActivity {
         }
         releasePendingSplashPlayer();
         releaseSplashPlayer();
+        closeNativeVideoOverlay();
         releaseBackgroundMusicPlayer();
         if (splashSurface != null) {
             splashSurface.release();
             splashSurface = null;
+        }
+        if (nativeVideoSurface != null) {
+            nativeVideoSurface.release();
+            nativeVideoSurface = null;
         }
         if (splash != null) {
             splash.setImageDrawable(null);
@@ -1590,6 +1865,12 @@ public final class MainActivity extends ComponentActivity {
 
     private void handleBackNavigation() {
         haptic();
+        if (nativeVideoOverlay != null
+            && nativeVideoOverlay.getVisibility() == View.VISIBLE) {
+            closeNativeVideoOverlay();
+            exitTwice = false;
+            return;
+        }
         if (webView != null && webView.canGoBack()) {
             webView.goBack();
             exitTwice = false;
@@ -1687,6 +1968,17 @@ public final class MainActivity extends ComponentActivity {
         @JavascriptInterface
         public int getBackgroundMusicVolume() {
             return getBackgroundMusicVolumePercent();
+        }
+
+        @JavascriptInterface
+        public void openNativeVideo(String src, String title) {
+            try {
+                String assetPath = normalizeVideoAssetPath(src);
+                mainHandler.post(() -> openNativeVideo(assetPath, title));
+            } catch (IllegalArgumentException error) {
+                Log.w(TAG, "native_video_path_rejected src=" + src, error);
+                mainHandler.post(() -> showToast("视频地址无效"));
+            }
         }
     }
 

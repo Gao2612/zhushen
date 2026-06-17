@@ -208,14 +208,12 @@ const jokes = [
 
 const splashVideos = [
   ['random', '随机播放'],
+  ['none', '关闭启动视频'],
   ['atal', '阿塔尔'],
   ['atal_skill', '阿塔尔技能特效'],
   ['atal_huimu', '阿塔尔回睦'],
   ['dehenu', '德赫奴'],
-  ['dehenu_skill', '德赫奴技能'],
-  ['xilan_world', '夕岚我的世界'],
-  ['xilan_fan_1', '夕岚玩家二创1'],
-  ['xilan_fan_2', '夕岚玩家二创2']
+  ['dehenu_skill', '德赫奴技能']
 ];
 
 const officialPosts = [
@@ -602,6 +600,10 @@ function renderOfficialContent(post) {
   </div>`;
 }
 
+function nativeVideoHref(src, title) {
+  return `zhushen-video://play?src=${encodeURIComponent(src)}&title=${encodeURIComponent(title)}`;
+}
+
 function renderOfficialMedia(post) {
   if (!post.media.length) {
     return '';
@@ -609,9 +611,10 @@ function renderOfficialMedia(post) {
   const videos = post.media
     .filter((item) => item.type === 'video')
     .map((item) => `<article class="official-video">
-      <video controls preload="metadata" poster="${item.poster}">
+      <video controls preload="auto" playsinline webkit-playsinline poster="${item.poster}">
         <source src="${item.src}" type="video/mp4">
       </video>
+      <a class="native-video-button" href="${nativeVideoHref(item.src, `${post.title} · ${item.label}`)}">应用内播放</a>
       <p>${item.label}</p>
     </article>`)
     .join('');
@@ -725,9 +728,10 @@ function characterDetail(item) {
     favoriteId: `image:${src}`
   })).join('');
   const videos = item.videos.map((video) => `<article class="video-card" data-search-text="${escapeAttr(item.name + ' ' + video.label)}">
-    <video controls preload="metadata">
+    <video controls preload="auto" playsinline webkit-playsinline>
       <source src="${video.src}" type="video/mp4">
     </video>
+    <a class="native-video-button" href="${nativeVideoHref(video.src, `${item.name} · ${video.label}`)}">应用内播放</a>
     <p>${video.label}</p>
   </article>`).join('');
   return `<article class="dossier" data-search-text="${escapeAttr(item.name + ' ' + item.title + ' ' + item.desc)}">
@@ -882,7 +886,8 @@ function settingsPage() {
       <h2>背景音乐</h2>
       <p>进入档案馆后循环播放内置音乐；可以关闭，也可以调整音量。应用退到后台时会自动暂停，回到前台后继续。</p>
       <div class="audio-options" data-background-music-options>
-        <button class="wide-button" data-background-music-toggle>音乐开关</button>
+        <button class="wide-button" data-background-music-set="true">开启背景音乐</button>
+        <button class="wide-button" data-background-music-set="false">关闭背景音乐</button>
         <label class="range-control">
           <span>音量</span>
           <input data-background-music-volume type="range" min="0" max="100" step="5">
@@ -1134,7 +1139,7 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   gap: 12px;
   margin-top: 18px;
 }
-.video-card { padding: 12px; border: 1px solid var(--line); border-radius: 18px; background: rgba(0,0,0,.22); }
+.video-card { position: relative; padding: 12px; border: 1px solid var(--line); border-radius: 18px; background: rgba(0,0,0,.22); }
 .video-card video { width: 100%; border-radius: 14px; background: #000; }
 .official-timeline {
   display: grid;
@@ -1210,6 +1215,7 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   gap: 12px;
 }
 .official-video {
+  position: relative;
   padding: 12px;
   border: 1px solid var(--line);
   border-radius: 20px;
@@ -1225,6 +1231,24 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
 .official-video p {
   margin-top: 10px;
   color: var(--gold-soft);
+}
+.native-video-button {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  z-index: 3;
+  border: 1px solid rgba(246, 217, 139, .45);
+  border-radius: 999px;
+  padding: 8px 14px;
+  color: #100b04;
+  background: rgba(246, 217, 139, .92);
+  font-size: 13px;
+  letter-spacing: .08em;
+  box-shadow: 0 10px 26px rgba(0,0,0,.32);
+}
+.video-card .native-video-button {
+  top: 20px;
+  right: 20px;
 }
 .official-gallery {
   display: grid;
@@ -1352,15 +1376,33 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   display: none;
   align-items: center;
   justify-content: center;
-  padding: 28px;
-  background: rgba(0,0,0,.92);
+  flex-direction: column;
+  padding: 0;
+  background: rgba(0,0,0,.96);
 }
 .lightbox.active { display: flex; }
-.lightbox img { max-width: 94vw; max-height: 82vh; object-fit: contain; border-radius: 12px; }
+.lightbox img {
+  width: auto;
+  height: auto;
+  max-width: 100vw;
+  max-height: 100vh;
+  object-fit: contain;
+  border-radius: 0;
+}
 .lightbox-close, .lightbox-action { position: fixed; top: 18px; }
 .lightbox-close { right: 18px; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); color: var(--text); background: rgba(0,0,0,.5); font-size: 28px; }
 .lightbox-action { left: 18px; }
-#lightboxCaption { position: fixed; bottom: 20px; color: var(--muted); }
+#lightboxCaption {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  left: 18px;
+  margin: 0;
+  color: var(--muted);
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(0,0,0,.72);
+}
+html.lightbox-open, html.lightbox-open body { overflow: hidden; }
 .is-hidden { display: none!important; }
 @media (max-width: 820px) {
   .archive-nav { align-items: flex-start; }
@@ -1503,12 +1545,14 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
       event.preventDefault();
       current = {
         src: link.dataset.lightboxSrc,
-        title: link.closest('.archive-card').querySelector('h3').textContent
+        title: getLightboxTitle(link)
       };
       image.src = current.src;
+      image.alt = current.title;
       caption.textContent = current.title;
       box.classList.add('active');
       box.setAttribute('aria-hidden', 'false');
+      document.documentElement.classList.add('lightbox-open');
     });
     document.querySelectorAll('[data-lightbox-close]').forEach(function (button) {
       button.addEventListener('click', close);
@@ -1533,7 +1577,27 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
     function close() {
       box.classList.remove('active');
       box.setAttribute('aria-hidden', 'true');
+      document.documentElement.classList.remove('lightbox-open');
       image.removeAttribute('src');
+      image.removeAttribute('alt');
+    }
+
+    function getLightboxTitle(link) {
+      var archiveCard = link.closest('.archive-card');
+      var officialPost = link.closest('.official-post');
+      var titleNode = archiveCard ? archiveCard.querySelector('h3') : null;
+      var postTitleNode = officialPost ? officialPost.querySelector('h2') : null;
+      var labelNode = link.querySelector('span');
+      var imageNode = link.querySelector('img');
+      var archiveTitle = titleNode ? titleNode.textContent : '';
+      var officialTitle = postTitleNode ? postTitleNode.textContent : '';
+      var mediaTitle = labelNode
+        ? labelNode.textContent
+        : imageNode
+          ? imageNode.alt
+          : '';
+      var title = [officialTitle, mediaTitle].filter(Boolean).join(' · ');
+      return title || archiveTitle || mediaTitle || '图片预览';
     }
   }
 
@@ -1546,6 +1610,58 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
         }
       });
     });
+  }
+
+  function installNativeVideoBridge() {
+    var canUseNativeVideo = !!(window.Android && window.Android.openNativeVideo);
+    document.querySelectorAll('[data-native-video-src]').forEach(function (button) {
+      button.addEventListener('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (canUseNativeVideo) {
+          try {
+            window.Android.openNativeVideo(
+              button.dataset.nativeVideoSrc,
+              button.dataset.nativeVideoTitle || '视频播放'
+            );
+            return;
+          } catch (error) {
+            canUseNativeVideo = false;
+          }
+        }
+        var article = button.closest('article');
+        var video = article ? article.querySelector('video') : null;
+        if (video) {
+          video.play();
+        }
+      });
+    });
+    if (!canUseNativeVideo) {
+      return;
+    }
+    document.querySelectorAll('video').forEach(function (video) {
+      video.addEventListener('click', function (event) {
+        var sourceNode = video.querySelector('source');
+        var source = video.currentSrc || (sourceNode ? sourceNode.getAttribute('src') : '');
+        if (!source) {
+          return;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+        video.pause();
+        window.Android.openNativeVideo(source, getVideoTitle(video));
+      }, true);
+    });
+
+    function getVideoTitle(video) {
+      var article = video.closest('article');
+      var label = article ? article.querySelector('p') : null;
+      var post = video.closest('.official-post');
+      var title = post ? post.querySelector('h2') : null;
+      return [title ? title.textContent : '', label ? label.textContent : '']
+        .filter(Boolean)
+        .join(' · ') || '视频播放';
+    }
   }
 
   function installSettings() {
@@ -1644,6 +1760,10 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
         button.classList.toggle('active', enabled);
         button.textContent = enabled ? '关闭背景音乐' : '开启背景音乐';
       });
+      document.querySelectorAll('[data-background-music-set]').forEach(function (button) {
+        var buttonEnabled = button.dataset.backgroundMusicSet === 'true';
+        button.classList.toggle('active', buttonEnabled === enabled);
+      });
       document.querySelectorAll('[data-background-music-volume]').forEach(function (input) {
         input.value = String(volume);
       });
@@ -1685,6 +1805,12 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
         syncBackgroundMusicControls();
       });
     });
+    document.querySelectorAll('[data-background-music-set]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        setBackgroundMusicEnabled(button.dataset.backgroundMusicSet === 'true');
+        syncBackgroundMusicControls();
+      });
+    });
     document.querySelectorAll('[data-background-music-volume]').forEach(function (input) {
       input.addEventListener('input', function () {
         setBackgroundMusicVolume(input.value);
@@ -1708,6 +1834,7 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
   installSearch();
   installFilters();
   installLightbox();
+  installNativeVideoBridge();
   installFavorites();
   installSettings();
   recordRecent();

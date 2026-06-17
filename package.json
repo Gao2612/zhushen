@@ -6,6 +6,7 @@
     "verify": "node scripts/verify-project.js",
     "build": "npm run verify && node scripts/build-android.js debug",
     "build:release": "npm run verify && node scripts/build-android.js release",
+    "package:pc": "node scripts/package-pc.js",
     "lint:android": "cd android && gradlew.bat :app:lintDebug --no-daemon"
   },
   "keywords": [

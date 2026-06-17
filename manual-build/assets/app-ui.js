@@ -113,12 +113,14 @@
       event.preventDefault();
       current = {
         src: link.dataset.lightboxSrc,
-        title: link.closest('.archive-card').querySelector('h3').textContent
+        title: getLightboxTitle(link)
       };
       image.src = current.src;
+      image.alt = current.title;
       caption.textContent = current.title;
       box.classList.add('active');
       box.setAttribute('aria-hidden', 'false');
+      document.documentElement.classList.add('lightbox-open');
     });
     document.querySelectorAll('[data-lightbox-close]').forEach(function (button) {
       button.addEventListener('click', close);
@@ -143,7 +145,27 @@
     function close() {
       box.classList.remove('active');
       box.setAttribute('aria-hidden', 'true');
+      document.documentElement.classList.remove('lightbox-open');
       image.removeAttribute('src');
+      image.removeAttribute('alt');
+    }
+
+    function getLightboxTitle(link) {
+      var archiveCard = link.closest('.archive-card');
+      var officialPost = link.closest('.official-post');
+      var titleNode = archiveCard ? archiveCard.querySelector('h3') : null;
+      var postTitleNode = officialPost ? officialPost.querySelector('h2') : null;
+      var labelNode = link.querySelector('span');
+      var imageNode = link.querySelector('img');
+      var archiveTitle = titleNode ? titleNode.textContent : '';
+      var officialTitle = postTitleNode ? postTitleNode.textContent : '';
+      var mediaTitle = labelNode
+        ? labelNode.textContent
+        : imageNode
+          ? imageNode.alt
+          : '';
+      var title = [officialTitle, mediaTitle].filter(Boolean).join(' · ');
+      return title || archiveTitle || mediaTitle || '图片预览';
     }
   }
 
@@ -158,13 +180,65 @@
     });
   }
 
+  function installNativeVideoBridge() {
+    var canUseNativeVideo = !!(window.Android && window.Android.openNativeVideo);
+    document.querySelectorAll('[data-native-video-src]').forEach(function (button) {
+      button.addEventListener('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (canUseNativeVideo) {
+          try {
+            window.Android.openNativeVideo(
+              button.dataset.nativeVideoSrc,
+              button.dataset.nativeVideoTitle || '视频播放'
+            );
+            return;
+          } catch (error) {
+            canUseNativeVideo = false;
+          }
+        }
+        var article = button.closest('article');
+        var video = article ? article.querySelector('video') : null;
+        if (video) {
+          video.play();
+        }
+      });
+    });
+    if (!canUseNativeVideo) {
+      return;
+    }
+    document.querySelectorAll('video').forEach(function (video) {
+      video.addEventListener('click', function (event) {
+        var sourceNode = video.querySelector('source');
+        var source = video.currentSrc || (sourceNode ? sourceNode.getAttribute('src') : '');
+        if (!source) {
+          return;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+        video.pause();
+        window.Android.openNativeVideo(source, getVideoTitle(video));
+      }, true);
+    });
+
+    function getVideoTitle(video) {
+      var article = video.closest('article');
+      var label = article ? article.querySelector('p') : null;
+      var post = video.closest('.official-post');
+      var title = post ? post.querySelector('h2') : null;
+      return [title ? title.textContent : '', label ? label.textContent : '']
+        .filter(Boolean)
+        .join(' · ') || '视频播放';
+    }
+  }
+
   function installSettings() {
     var orientationLabels = {
       portrait: '竖屏',
       landscape: '横屏',
       auto: '横竖切换'
     };
-    var splashVideoLabels = {"random":"随机播放","atal":"阿塔尔","atal_skill":"阿塔尔技能特效","atal_huimu":"阿塔尔回睦","dehenu":"德赫奴","dehenu_skill":"德赫奴技能","xilan_world":"夕岚我的世界","xilan_fan_1":"夕岚玩家二创1","xilan_fan_2":"夕岚玩家二创2"};
+    var splashVideoLabels = {"random":"随机播放","none":"关闭启动视频","atal":"阿塔尔","atal_skill":"阿塔尔技能特效","atal_huimu":"阿塔尔回睦","dehenu":"德赫奴","dehenu_skill":"德赫奴技能"};
 
     function getOrientationMode() {
       if (window.Android && typeof window.Android.getOrientationMode === 'function') {
@@ -254,6 +328,10 @@
         button.classList.toggle('active', enabled);
         button.textContent = enabled ? '关闭背景音乐' : '开启背景音乐';
       });
+      document.querySelectorAll('[data-background-music-set]').forEach(function (button) {
+        var buttonEnabled = button.dataset.backgroundMusicSet === 'true';
+        button.classList.toggle('active', buttonEnabled === enabled);
+      });
       document.querySelectorAll('[data-background-music-volume]').forEach(function (input) {
         input.value = String(volume);
       });
@@ -295,6 +373,12 @@
         syncBackgroundMusicControls();
       });
     });
+    document.querySelectorAll('[data-background-music-set]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        setBackgroundMusicEnabled(button.dataset.backgroundMusicSet === 'true');
+        syncBackgroundMusicControls();
+      });
+    });
     document.querySelectorAll('[data-background-music-volume]').forEach(function (input) {
       input.addEventListener('input', function () {
         setBackgroundMusicVolume(input.value);
@@ -318,6 +402,7 @@
   installSearch();
   installFilters();
   installLightbox();
+  installNativeVideoBridge();
   installFavorites();
   installSettings();
   recordRecent();

@@ -69,7 +69,7 @@
       <h2>启动视频</h2>
       <p>默认每次启动随机播放一个应用内视频；也可以固定为指定视频。系统启动页本身不能播放视频，视频会在应用启动层开始播放。</p>
       <div class="video-options" data-splash-video-options>
-        <button class="wide-button" data-splash-video-option="random">随机播放</button><button class="wide-button" data-splash-video-option="atal">阿塔尔</button><button class="wide-button" data-splash-video-option="atal_skill">阿塔尔技能特效</button><button class="wide-button" data-splash-video-option="atal_huimu">阿塔尔回睦</button><button class="wide-button" data-splash-video-option="dehenu">德赫奴</button><button class="wide-button" data-splash-video-option="dehenu_skill">德赫奴技能</button><button class="wide-button" data-splash-video-option="xilan_world">夕岚我的世界</button><button class="wide-button" data-splash-video-option="xilan_fan_1">夕岚玩家二创1</button><button class="wide-button" data-splash-video-option="xilan_fan_2">夕岚玩家二创2</button>
+        <button class="wide-button" data-splash-video-option="random">随机播放</button><button class="wide-button" data-splash-video-option="none">关闭启动视频</button><button class="wide-button" data-splash-video-option="atal">阿塔尔</button><button class="wide-button" data-splash-video-option="atal_skill">阿塔尔技能特效</button><button class="wide-button" data-splash-video-option="atal_huimu">阿塔尔回睦</button><button class="wide-button" data-splash-video-option="dehenu">德赫奴</button><button class="wide-button" data-splash-video-option="dehenu_skill">德赫奴技能</button>
       </div>
       <p class="settings-note" data-splash-video-status>当前视频：读取中</p>
     </article>
@@ -78,7 +78,8 @@
       <h2>背景音乐</h2>
       <p>进入档案馆后循环播放内置音乐；可以关闭，也可以调整音量。应用退到后台时会自动暂停，回到前台后继续。</p>
       <div class="audio-options" data-background-music-options>
-        <button class="wide-button" data-background-music-toggle>音乐开关</button>
+        <button class="wide-button" data-background-music-set="true">开启背景音乐</button>
+        <button class="wide-button" data-background-music-set="false">关闭背景音乐</button>
         <label class="range-control">
           <span>音量</span>
           <input data-background-music-volume type="range" min="0" max="100" step="5">
