@@ -263,7 +263,7 @@ const officialPosts = [
     content: [
       '这条动态的核心是手机端实机试玩影像，标题明确标注 Player Reaction。',
       '官方正文注明试玩设备为 RedMi K70，并把内容限定在开发中版本。',
-      '静态页面只稳定暴露视频封面和帖内图片，因此本卡片内置封面图，不伪造视频源。'
+      '已通过 TapTap 视频资源接口补齐 720p 应用内播放版本，保留原帖封面与帖内配图。'
     ],
     points: [
       '视频内容为玩家-投资人罗老师的实机试玩反应。',
@@ -271,6 +271,12 @@ const officialPosts = [
       '官方明确标注最终品质仍以正式版本为准。'
     ],
     media: [
+      {
+        type: 'video',
+        src: 'official-posts/492294102788866561/player-reaction.mp4',
+        poster: 'official-posts/492294102788866561/media-02.jpg',
+        label: '手机实拍录制 Player Reaction'
+      },
       { type: 'image', src: 'official-posts/492294102788866561/media-01.jpg', label: '实机影像帖内配图' },
       { type: 'image', src: 'official-posts/492294102788866561/media-02.jpg', label: 'Player Reaction 视频封面' }
     ]
