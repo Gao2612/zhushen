@@ -71,6 +71,14 @@
         <button class="wide-button" data-splash-video-option="random">随机播放</button><button class="wide-button" data-splash-video-option="none">关闭启动视频</button><button class="wide-button" data-splash-video-option="atal">阿塔尔</button><button class="wide-button" data-splash-video-option="atal_skill">阿塔尔技能特效</button><button class="wide-button" data-splash-video-option="atal_huimu">阿塔尔回眸</button><button class="wide-button" data-splash-video-option="dehenu">德赫奴</button><button class="wide-button" data-splash-video-option="dehenu_skill">德赫奴技能</button>
       </div>
       <p class="settings-note" data-splash-video-status>当前视频：读取中</p>
+      <div class="desktop-combo">
+        <span>进入方式</span>
+        <div class="segmented-actions">
+          <button data-splash-entry-mode="skippable">可点击跳过</button>
+          <button data-splash-entry-mode="complete">播放完进入</button>
+        </div>
+      </div>
+      <p class="settings-note" data-splash-entry-status>进入方式：读取中</p>
     </article>
     <article class="settings-card">
       <p class="eyebrow">Background Music</p>
@@ -90,19 +98,24 @@
       <p class="eyebrow">Desktop Client</p>
       <h2>桌面客户端</h2>
       <p>这些选项仅在 Windows 桌面客户端内生效；网页和安卓版本不会显示。</p>
+      <div class="desktop-combo">
+        <span>开机自启动</span>
+        <div class="segmented-actions">
+          <button data-desktop-startup-set="true">开启</button>
+          <button data-desktop-startup-set="false">关闭</button>
+        </div>
+      </div>
+      <div class="desktop-combo">
+        <span>窗口缩放</span>
+        <div class="segmented-actions">
+          <button data-desktop-zoom-out>缩小</button>
+          <button data-desktop-zoom-reset>恢复</button>
+          <button data-desktop-zoom-in>放大</button>
+        </div>
+      </div>
       <div class="desktop-options">
         <button class="wide-button" data-desktop-always-on-top>窗口置顶</button>
         <button class="wide-button" data-desktop-fullscreen>全屏显示</button>
-        <button class="wide-button" data-desktop-startup>开机自启动</button>
-      </div>
-      <div class="desktop-options">
-        <button class="wide-button" data-desktop-startup-set="true">开启开机自启</button>
-        <button class="wide-button" data-desktop-startup-set="false">关闭开机自启</button>
-      </div>
-      <div class="desktop-options">
-        <button class="wide-button" data-desktop-zoom-out>缩小</button>
-        <button class="wide-button" data-desktop-zoom-reset>恢复默认缩放</button>
-        <button class="wide-button" data-desktop-zoom-in>放大</button>
       </div>
       <div class="desktop-options">
         <button class="wide-button" data-desktop-export>导出本地数据</button>

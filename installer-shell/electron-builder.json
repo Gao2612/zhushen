@@ -1,0 +1,37 @@
+{
+  "appId": "com.zhushen.archive.installer",
+  "productName": "诸神终应知晓 安装卸载器",
+  "executableName": "zhushen-installer-shell",
+  "artifactName": "zhushen-installer-shell-${version}-${os}-${arch}.${ext}",
+  "directories": {
+    "output": "releases/installer-shell"
+  },
+  "files": [
+    "installer-shell/**/*",
+    "manual-build/assets/logo/**/*",
+    "manual-build/assets/official-posts/492288870839223557/pv.mp4",
+    "package.json"
+  ],
+  "extraMetadata": {
+    "main": "installer-shell/main.js"
+  },
+  "extraResources": [
+    {
+      "from": "releases/desktop/zhushen-archive-1.1.0-win-x64.exe",
+      "to": "installer/zhushen-archive-1.1.0-win-x64.exe"
+    }
+  ],
+  "asar": true,
+  "compression": "maximum",
+  "win": {
+    "icon": "manual-build/assets/logo/logo.png",
+    "target": [
+      {
+        "target": "portable",
+        "arch": [
+          "x64"
+        ]
+      }
+    ]
+  }
+}

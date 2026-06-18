@@ -282,6 +282,10 @@
       auto: '横竖切换'
     };
     var splashVideoLabels = {"random":"随机播放","none":"关闭启动视频","atal":"阿塔尔","atal_skill":"阿塔尔技能特效","atal_huimu":"阿塔尔回眸","dehenu":"德赫奴","dehenu_skill":"德赫奴技能"};
+    var splashEntryLabels = {
+      skippable: '可点击跳过',
+      complete: '播放完进入'
+    };
 
     function getOrientationMode() {
       if (window.Android && typeof window.Android.getOrientationMode === 'function') {
@@ -330,6 +334,24 @@
       });
       document.querySelectorAll('[data-splash-video-status]').forEach(function (node) {
         node.textContent = '当前视频：' + (splashVideoLabels[mode] || '随机播放');
+      });
+    }
+
+    function getSplashEntryMode() {
+      return localStorage.getItem('zhushen_splash_entry_mode') || 'skippable';
+    }
+
+    function setSplashEntryMode(mode) {
+      localStorage.setItem('zhushen_splash_entry_mode', mode);
+    }
+
+    function syncSplashEntryControls() {
+      var mode = getSplashEntryMode();
+      document.querySelectorAll('[data-splash-entry-mode]').forEach(function (button) {
+        button.classList.toggle('active', button.dataset.splashEntryMode === mode);
+      });
+      document.querySelectorAll('[data-splash-entry-status]').forEach(function (node) {
+        node.textContent = '进入方式：' + (splashEntryLabels[mode] || '可点击跳过');
       });
     }
 
@@ -410,6 +432,12 @@
         syncSplashVideoControls();
       });
     });
+    document.querySelectorAll('[data-splash-entry-mode]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        setSplashEntryMode(button.dataset.splashEntryMode);
+        syncSplashEntryControls();
+      });
+    });
     document.querySelectorAll('[data-background-music-toggle]').forEach(function (button) {
       button.addEventListener('click', function () {
         setBackgroundMusicEnabled(!isBackgroundMusicEnabled());
@@ -430,6 +458,7 @@
     });
     syncOrientationControls();
     syncSplashVideoControls();
+    syncSplashEntryControls();
     syncBackgroundMusicControls();
   }
 

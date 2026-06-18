@@ -970,6 +970,14 @@ function settingsPage() {
         ${splashVideos.map(([value, label]) => `<button class="wide-button" data-splash-video-option="${value}">${label}</button>`).join('')}
       </div>
       <p class="settings-note" data-splash-video-status>当前视频：读取中</p>
+      <div class="desktop-combo">
+        <span>进入方式</span>
+        <div class="segmented-actions">
+          <button data-splash-entry-mode="skippable">可点击跳过</button>
+          <button data-splash-entry-mode="complete">播放完进入</button>
+        </div>
+      </div>
+      <p class="settings-note" data-splash-entry-status>进入方式：读取中</p>
     </article>
     <article class="settings-card">
       <p class="eyebrow">Background Music</p>
@@ -989,19 +997,24 @@ function settingsPage() {
       <p class="eyebrow">Desktop Client</p>
       <h2>桌面客户端</h2>
       <p>这些选项仅在 Windows 桌面客户端内生效；网页和安卓版本不会显示。</p>
+      <div class="desktop-combo">
+        <span>开机自启动</span>
+        <div class="segmented-actions">
+          <button data-desktop-startup-set="true">开启</button>
+          <button data-desktop-startup-set="false">关闭</button>
+        </div>
+      </div>
+      <div class="desktop-combo">
+        <span>窗口缩放</span>
+        <div class="segmented-actions">
+          <button data-desktop-zoom-out>缩小</button>
+          <button data-desktop-zoom-reset>恢复</button>
+          <button data-desktop-zoom-in>放大</button>
+        </div>
+      </div>
       <div class="desktop-options">
         <button class="wide-button" data-desktop-always-on-top>窗口置顶</button>
         <button class="wide-button" data-desktop-fullscreen>全屏显示</button>
-        <button class="wide-button" data-desktop-startup>开机自启动</button>
-      </div>
-      <div class="desktop-options">
-        <button class="wide-button" data-desktop-startup-set="true">开启开机自启</button>
-        <button class="wide-button" data-desktop-startup-set="false">关闭开机自启</button>
-      </div>
-      <div class="desktop-options">
-        <button class="wide-button" data-desktop-zoom-out>缩小</button>
-        <button class="wide-button" data-desktop-zoom-reset>恢复默认缩放</button>
-        <button class="wide-button" data-desktop-zoom-in>放大</button>
       </div>
       <div class="desktop-options">
         <button class="wide-button" data-desktop-export>导出本地数据</button>
@@ -1522,6 +1535,40 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   color: #100b04;
   background: var(--gold-soft);
 }
+.desktop-combo {
+  display: grid;
+  grid-template-columns: minmax(96px, 150px) 1fr;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid rgba(212, 167, 84, .16);
+  border-radius: 16px;
+  background: rgba(255,255,255,.026);
+}
+.desktop-combo > span {
+  color: var(--gold);
+  font-size: 13px;
+  letter-spacing: .08em;
+}
+.segmented-actions {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 8px;
+}
+.segmented-actions button {
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--gold-soft);
+  background: rgba(212, 167, 84, .08);
+}
+.segmented-actions button.active,
+.segmented-actions button:hover {
+  color: #100b04;
+  background: var(--gold-soft);
+}
 .range-control {
   display: grid;
   gap: 8px;
@@ -1585,6 +1632,8 @@ html.lightbox-open, html.lightbox-open body { overflow: hidden; }
   .hero-panel, .split-panel { grid-template-columns: 1fr; }
   .stats-grid, .feature-grid, .character-grid { grid-template-columns: 1fr 1fr; }
   .settings-card dl { grid-template-columns: 1fr; }
+  .desktop-combo { grid-template-columns: 1fr; }
+  .segmented-actions { grid-auto-flow: row; }
   .orientation-options, .video-options, .audio-options { grid-template-columns: 1fr; }
   .official-post { grid-template-columns: 1fr; }
   .official-index { min-height: 58px; }
@@ -1887,6 +1936,10 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
       auto: '横竖切换'
     };
     var splashVideoLabels = ${JSON.stringify(Object.fromEntries(splashVideos))};
+    var splashEntryLabels = {
+      skippable: '可点击跳过',
+      complete: '播放完进入'
+    };
 
     function getOrientationMode() {
       if (window.Android && typeof window.Android.getOrientationMode === 'function') {
@@ -1935,6 +1988,24 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
       });
       document.querySelectorAll('[data-splash-video-status]').forEach(function (node) {
         node.textContent = '当前视频：' + (splashVideoLabels[mode] || '随机播放');
+      });
+    }
+
+    function getSplashEntryMode() {
+      return localStorage.getItem('zhushen_splash_entry_mode') || 'skippable';
+    }
+
+    function setSplashEntryMode(mode) {
+      localStorage.setItem('zhushen_splash_entry_mode', mode);
+    }
+
+    function syncSplashEntryControls() {
+      var mode = getSplashEntryMode();
+      document.querySelectorAll('[data-splash-entry-mode]').forEach(function (button) {
+        button.classList.toggle('active', button.dataset.splashEntryMode === mode);
+      });
+      document.querySelectorAll('[data-splash-entry-status]').forEach(function (node) {
+        node.textContent = '进入方式：' + (splashEntryLabels[mode] || '可点击跳过');
       });
     }
 
@@ -2015,6 +2086,12 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
         syncSplashVideoControls();
       });
     });
+    document.querySelectorAll('[data-splash-entry-mode]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        setSplashEntryMode(button.dataset.splashEntryMode);
+        syncSplashEntryControls();
+      });
+    });
     document.querySelectorAll('[data-background-music-toggle]').forEach(function (button) {
       button.addEventListener('click', function () {
         setBackgroundMusicEnabled(!isBackgroundMusicEnabled());
@@ -2035,6 +2112,7 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
     });
     syncOrientationControls();
     syncSplashVideoControls();
+    syncSplashEntryControls();
     syncBackgroundMusicControls();
   }
 

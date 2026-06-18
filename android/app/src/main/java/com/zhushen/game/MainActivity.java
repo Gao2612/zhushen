@@ -30,6 +30,8 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -181,9 +183,38 @@ public final class MainActivity extends ComponentActivity {
             WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
         );
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        WindowCompat.setDecorFitsSystemWindows(window, true);
+        WindowCompat.setDecorFitsSystemWindows(window, false);
         window.setStatusBarColor(Color.parseColor("#0a0a0f"));
-        window.setNavigationBarColor(Color.parseColor("#101016"));
+        window.setNavigationBarColor(Color.TRANSPARENT);
+        applyImmersiveSystemBars();
+    }
+
+    private void applyImmersiveSystemBars() {
+        Window window = getWindow();
+        View decorView = window.getDecorView();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowInsetsController controller = decorView.getWindowInsetsController();
+            if (controller == null) {
+                return;
+            }
+            controller.hide(
+                WindowInsets.Type.statusBars()
+                    | WindowInsets.Type.navigationBars()
+            );
+            controller.setSystemBarsBehavior(
+                WindowInsetsController
+                    .BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            );
+            return;
+        }
+        decorView.setSystemUiVisibility(
+            View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        );
     }
 
     private void applyOrientationMode(String mode) {
@@ -1816,10 +1847,19 @@ public final class MainActivity extends ComponentActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        applyImmersiveSystemBars();
         if (webView != null) {
             webView.onResume();
         }
         resumeBackgroundMusicForLifecycle();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            applyImmersiveSystemBars();
+        }
     }
 
     @Override

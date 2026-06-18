@@ -476,6 +476,40 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   color: #100b04;
   background: var(--gold-soft);
 }
+.desktop-combo {
+  display: grid;
+  grid-template-columns: minmax(96px, 150px) 1fr;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid rgba(212, 167, 84, .16);
+  border-radius: 16px;
+  background: rgba(255,255,255,.026);
+}
+.desktop-combo > span {
+  color: var(--gold);
+  font-size: 13px;
+  letter-spacing: .08em;
+}
+.segmented-actions {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 8px;
+}
+.segmented-actions button {
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--gold-soft);
+  background: rgba(212, 167, 84, .08);
+}
+.segmented-actions button.active,
+.segmented-actions button:hover {
+  color: #100b04;
+  background: var(--gold-soft);
+}
 .range-control {
   display: grid;
   gap: 8px;
@@ -539,6 +573,8 @@ html.lightbox-open, html.lightbox-open body { overflow: hidden; }
   .hero-panel, .split-panel { grid-template-columns: 1fr; }
   .stats-grid, .feature-grid, .character-grid { grid-template-columns: 1fr 1fr; }
   .settings-card dl { grid-template-columns: 1fr; }
+  .desktop-combo { grid-template-columns: 1fr; }
+  .segmented-actions { grid-auto-flow: row; }
   .orientation-options, .video-options, .audio-options { grid-template-columns: 1fr; }
   .official-post { grid-template-columns: 1fr; }
   .official-index { min-height: 58px; }

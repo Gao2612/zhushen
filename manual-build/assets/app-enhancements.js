@@ -31,6 +31,7 @@
       'padding-left:env(safe-area-inset-left);',
       'padding-right:env(safe-area-inset-right);}',
       'body.desktop-client{padding-bottom:0!important;}',
+      'body.desktop-client.has-desktop-dock{padding-bottom:82px!important;}',
       'img,video{content-visibility:auto;contain-intrinsic-size:auto 300px;}',
       '.navbar{transform:translateZ(0);}',
       'button,a,[onclick]{touch-action:manipulation;}',
@@ -81,7 +82,17 @@
       'background:linear-gradient(90deg,#8b6914,#f0d78c);',
       'box-shadow:0 0 22px rgba(240,215,140,.42);}',
       '.desktop-splash-progress-text{margin-top:12px;color:rgba(238,228,210,.76);',
-      'font-size:13px;letter-spacing:.14em;}'
+      'font-size:13px;letter-spacing:.14em;}',
+      '.desktop-dock{position:fixed;left:50%;bottom:16px;z-index:90;',
+      'display:flex;gap:8px;align-items:center;transform:translateX(-50%);',
+      'padding:10px;border:1px solid rgba(212,167,84,.22);',
+      'border-radius:999px;background:rgba(8,8,12,.82);',
+      'box-shadow:0 18px 52px rgba(0,0,0,.46);backdrop-filter:blur(18px);}',
+      '.desktop-dock a{min-width:64px;padding:10px 12px;border-radius:999px;',
+      'color:rgba(238,228,210,.66);text-align:center;text-decoration:none;',
+      'font-size:13px;letter-spacing:.08em;}',
+      '.desktop-dock a.active,.desktop-dock a:hover{color:#100b04;',
+      'background:#f0d78c;}'
     ].join('');
     document.head.appendChild(style);
   }
@@ -121,6 +132,8 @@
       return;
     }
     var videoSrc = getDesktopSplashVideo();
+    var entryMode = localStorage.getItem('zhushen_splash_entry_mode')
+      || 'skippable';
     if (!videoSrc) {
       return;
     }
@@ -138,7 +151,9 @@
     var progressText = createElement(
       'div',
       'desktop-splash-progress-text',
-      '首曝 PV 播放中 0%'
+      entryMode === 'complete'
+        ? '首曝 PV 播放中 0%'
+        : '点击可跳过 · 首曝 PV 播放中 0%'
     );
     video.src = videoSrc;
     video.muted = true;
@@ -169,7 +184,7 @@
       markReady();
     });
     overlay.addEventListener('click', function () {
-      if (overlay.classList.contains('ready')) {
+      if (entryMode !== 'complete' || overlay.classList.contains('ready')) {
         closeSplash();
       }
     });
@@ -182,9 +197,13 @@
         (video.currentTime / video.duration) * 100
       ));
       progressBar.style.width = percent + '%';
-      progressText.textContent = percent >= 100
-        ? '播放完成，点击进入档案馆'
-        : '首曝 PV 播放中 ' + percent + '%';
+      if (percent >= 100) {
+        progressText.textContent = '播放完成，点击进入档案馆';
+        return;
+      }
+      progressText.textContent = entryMode === 'complete'
+        ? '首曝 PV 播放中 ' + percent + '%'
+        : '点击可跳过 · 首曝 PV 播放中 ' + percent + '%';
     }
 
     function markReady() {
@@ -203,6 +222,34 @@
         overlay.remove();
       }, 360);
     }
+  }
+
+  function installDesktopDock() {
+    if (!isDesktopClient() || document.querySelector('.desktop-dock')) {
+      return;
+    }
+    var items = [
+      ['首页', 'zy.html'],
+      ['官方', 'official.html'],
+      ['角色', 'gfjs.html'],
+      ['概念', 'gfgn.html'],
+      ['二创', 'wjec.html'],
+      ['笑话', 'qyxhhj.html'],
+      ['设置', 'settings.html']
+    ];
+    var current = location.pathname.split('/').pop() || HOME_PAGE;
+    var dock = createElement('nav', 'desktop-dock');
+    dock.setAttribute('aria-label', '桌面底部导航');
+    items.forEach(function (item) {
+      var link = createElement('a', '', item[0]);
+      link.href = item[1];
+      if (item[1] === current) {
+        link.classList.add('active');
+      }
+      dock.appendChild(link);
+    });
+    document.body.appendChild(dock);
+    document.body.classList.add('has-desktop-dock');
   }
 
   function installDesktopMusic() {
@@ -432,8 +479,8 @@
         window.ZhushenDesktop.setStartupEnabled(!current)
           .then(updateStartupButton);
       });
-      window.ZhushenDesktop.getStartupEnabled().then(updateStartupButton);
     }
+    window.ZhushenDesktop.getStartupEnabled().then(updateStartupButton);
     startupSetButtons.forEach(function (button) {
       button.addEventListener('click', function () {
         window.ZhushenDesktop.setStartupEnabled(
@@ -692,6 +739,7 @@
     }
     configureImages();
     hideDuplicateNavigation();
+    installDesktopDock();
     installDesktopSplash();
     installDesktopMusic();
     installDesktopControls();
