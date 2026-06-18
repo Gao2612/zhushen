@@ -1,19 +1,75 @@
 const { app, BrowserWindow, dialog, ipcMain, shell } = require('electron');
-const { existsSync, readdirSync } = require('fs');
+const {
+  appendFileSync,
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  statSync
+} = require('fs');
 const { join } = require('path');
 const { spawn } = require('child_process');
 
 const appRoot = __dirname;
 const installerFileName = 'zhushen-archive-1.1.0-win-x64.exe';
-const bundledInstaller = join(
-  process.resourcesPath || appRoot,
-  'installer',
-  installerFileName
-);
 
 const getLocalAppData = () => {
   return process.env.LOCALAPPDATA
     || join(app.getPath('home'), 'AppData', 'Local');
+};
+
+const writeInstallerLog = (eventName, fields) => {
+  const logDir = join(app.getPath('userData'), 'logs');
+  mkdirSync(logDir, { recursive: true });
+  appendFileSync(
+    join(logDir, 'installer.log'),
+    JSON.stringify({
+      time: new Date().toISOString(),
+      event: eventName,
+      ...fields
+    }) + '\n',
+    'utf8'
+  );
+};
+
+const getInstallerCandidates = () => {
+  const resourcesPath = process.resourcesPath || '';
+  const paths = [
+    join(resourcesPath, 'installer', installerFileName),
+    join(resourcesPath, 'app.asar.unpacked', 'installer', installerFileName),
+    join(appRoot, '..', 'installer', installerFileName),
+    join(appRoot, 'installer', installerFileName)
+  ];
+  return [...new Set(paths)];
+};
+
+const findBundledInstallerSource = () => {
+  return getInstallerCandidates().find((path) => {
+    return existsSync(path);
+  }) || '';
+};
+
+const copyInstallerFromArchive = (sourcePath) => {
+  const targetDir = join(app.getPath('temp'), 'zhushen-installer-package');
+  const targetPath = join(targetDir, installerFileName);
+  mkdirSync(targetDir, { recursive: true });
+  const shouldCopy = !existsSync(targetPath)
+    || statSync(sourcePath).size !== statSync(targetPath).size;
+  if (shouldCopy) {
+    copyFileSync(sourcePath, targetPath);
+  }
+  return targetPath;
+};
+
+const resolveRunnableInstaller = () => {
+  const sourcePath = findBundledInstallerSource();
+  if (!sourcePath) {
+    return '';
+  }
+  if (!sourcePath.includes('.asar')) {
+    return sourcePath;
+  }
+  return copyInstallerFromArchive(sourcePath);
 };
 
 const getInstallDir = () => {
@@ -66,25 +122,39 @@ const createWindow = () => {
 ipcMain.handle('installer:status', () => {
   const installDir = getInstallDir();
   const appExe = join(installDir, 'zhushen-archive.exe');
+  const installerSource = findBundledInstallerSource();
+  writeInstallerLog('status', {
+    resourcesPath: process.resourcesPath || '',
+    appRoot,
+    installerSource,
+    installerCandidates: getInstallerCandidates()
+  });
   return {
-    installerExists: existsSync(bundledInstaller),
+    installerExists: Boolean(installerSource),
     installed: existsSync(appExe),
     installDir,
-    installerPath: bundledInstaller,
+    installerPath: installerSource,
     uninstallerPath: findInstalledUninstaller()
   };
 });
 
 ipcMain.handle('installer:install', async () => {
-  if (!existsSync(bundledInstaller)) {
+  const runnableInstaller = resolveRunnableInstaller();
+  writeInstallerLog('install', {
+    resourcesPath: process.resourcesPath || '',
+    appRoot,
+    runnableInstaller,
+    installerCandidates: getInstallerCandidates()
+  });
+  if (!runnableInstaller) {
     await dialog.showMessageBox({
       type: 'error',
       title: '未找到安装包',
-      message: '安装器中没有包含实际安装包。'
+      message: '安装器中没有包含实际安装包，请重新下载推荐安装器。'
     });
     return false;
   }
-  runDetached(bundledInstaller, []);
+  runDetached(runnableInstaller, []);
   return true;
 });
 

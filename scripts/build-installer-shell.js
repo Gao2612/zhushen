@@ -58,6 +58,11 @@ function copyAppFiles() {
     join(appTempDir, 'installer-shell'),
     { recursive: true }
   );
+  mkdirSync(join(appTempDir, 'installer'), { recursive: true });
+  cpSync(
+    desktopInstallerPath,
+    join(appTempDir, 'installer', 'zhushen-archive-1.1.0-win-x64.exe')
+  );
   cpSync(
     join(
       rootDir,
