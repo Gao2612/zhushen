@@ -1,5 +1,12 @@
 const { app, BrowserWindow, dialog, ipcMain, shell } = require('electron');
-const { existsSync, readdirSync, readFileSync, writeFileSync } = require('fs');
+const {
+  appendFileSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  writeFileSync
+} = require('fs');
 const { spawn } = require('child_process');
 const { dirname, join } = require('path');
 const { pathToFileURL } = require('url');
@@ -21,6 +28,31 @@ let musicWindow = null;
 let musicState = {
   enabled: true,
   volume: 45
+};
+
+const writeStartupLog = (message, detail) => {
+  try {
+    const logDir = join(app.getPath('userData'), 'logs');
+    mkdirSync(logDir, { recursive: true });
+    appendFileSync(
+      join(logDir, 'desktop-startup.log'),
+      JSON.stringify({
+        time: new Date().toISOString(),
+        message,
+        detail: detail || null
+      }) + '\n',
+      'utf8'
+    );
+  } catch (error) {
+    // 启动日志不能影响主流程。
+  }
+};
+
+const getErrorDetail = (error) => {
+  if (!error) {
+    return '';
+  }
+  return error.stack || error.message || String(error);
 };
 
 const isInternalUrl = (url) => {
@@ -109,7 +141,6 @@ const ensureMusicWindow = () => {
       webSecurity: true
     }
   });
-  musicWindow.setAudioMuted(false);
   musicWindow.on('closed', () => {
     musicWindow = null;
   });
@@ -474,6 +505,11 @@ const registerDesktopIpc = () => {
 };
 
 const createMainWindow = () => {
+  writeStartupLog('create_main_window_start', {
+    assetRoot,
+    home: join(assetRoot, 'zy.html'),
+    homeExists: existsSync(join(assetRoot, 'zy.html'))
+  });
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 780,
@@ -483,6 +519,7 @@ const createMainWindow = () => {
     title: '诸神终应知晓',
     icon: appIcon,
     autoHideMenuBar: true,
+    show: false,
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
@@ -490,6 +527,26 @@ const createMainWindow = () => {
       sandbox: true,
       webSecurity: true
     }
+  });
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show();
+    mainWindow.focus();
+    writeStartupLog('main_window_ready_to_show');
+  });
+  mainWindow.webContents.on('did-fail-load', (
+    event,
+    errorCode,
+    errorDescription,
+    validatedUrl
+  ) => {
+    writeStartupLog('main_window_did_fail_load', {
+      errorCode,
+      errorDescription,
+      validatedUrl
+    });
+  });
+  mainWindow.webContents.on('render-process-gone', (event, details) => {
+    writeStartupLog('main_window_render_process_gone', details);
   });
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
@@ -518,23 +575,54 @@ const createMainWindow = () => {
     mainWindow = null;
     destroyMusicWindow();
   });
-  mainWindow.loadFile(join(assetRoot, 'zy.html'));
+  mainWindow.loadFile(join(assetRoot, 'zy.html')).catch((error) => {
+    writeStartupLog('main_window_load_failed', getErrorDetail(error));
+    dialog.showErrorBox(
+      '诸神终应知晓启动失败',
+      '主窗口资源加载失败：\n' + getErrorDetail(error)
+    );
+  });
 };
 
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
 
-app.whenReady().then(() => {
-  registerDesktopIpc();
-  ensureMusicWindow();
-  createMainWindow();
-
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createMainWindow();
+const gotSingleInstanceLock = app.requestSingleInstanceLock();
+if (!gotSingleInstanceLock) {
+  app.quit();
+} else {
+  app.on('second-instance', () => {
+    if (!mainWindow) {
+      return;
     }
+    if (mainWindow.isMinimized()) {
+      mainWindow.restore();
+    }
+    mainWindow.show();
+    mainWindow.focus();
   });
-});
+
+  app.whenReady().then(() => {
+    try {
+      writeStartupLog('app_ready');
+      registerDesktopIpc();
+      createMainWindow();
+      ensureMusicWindow();
+    } catch (error) {
+      writeStartupLog('app_ready_failed', getErrorDetail(error));
+      dialog.showErrorBox(
+        '诸神终应知晓启动失败',
+        getErrorDetail(error)
+      );
+    }
+
+    app.on('activate', () => {
+      if (!mainWindow) {
+        createMainWindow();
+      }
+    });
+  });
+}
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

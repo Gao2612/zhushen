@@ -10,6 +10,7 @@
 !macroend
 
 !macro customUnInit
+  IfSilent continueUninstall
   MessageBox MB_ICONQUESTION|MB_YESNO \
     "确定要启动汇流地档案封存程序吗？$\r$\n$\r$\n如果想保留收藏、最近浏览和设置，请先取消卸载，并在应用设置页导出本地数据。" \
     IDYES continueUninstall
