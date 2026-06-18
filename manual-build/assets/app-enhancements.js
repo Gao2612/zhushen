@@ -30,6 +30,7 @@
       'padding-bottom:calc(72px + env(safe-area-inset-bottom));',
       'padding-left:env(safe-area-inset-left);',
       'padding-right:env(safe-area-inset-right);}',
+      'body.desktop-client{padding-bottom:0!important;}',
       'img,video{content-visibility:auto;contain-intrinsic-size:auto 300px;}',
       '.navbar{transform:translateZ(0);}',
       'button,a,[onclick]{touch-action:manipulation;}',
@@ -53,21 +54,34 @@
       'color:rgba(224,213,192,.58);}',
       '.app-check input{width:18px;height:18px;}',
       '.desktop-splash{position:fixed;inset:0;z-index:100000;',
-      'display:flex;align-items:center;justify-content:center;',
-      'background:#08080d;transition:opacity .36s ease;}',
+      'display:flex;align-items:stretch;justify-content:stretch;',
+      'background:#050507;transition:opacity .36s ease;cursor:default;}',
+      '.desktop-splash.ready{cursor:pointer;}',
       '.desktop-splash.closing{opacity:0;pointer-events:none;}',
-      '.desktop-splash-panel{position:relative;width:min(760px,82vw);',
-      'aspect-ratio:16/9;border:1px solid rgba(212,167,84,.26);',
-      'border-radius:28px;overflow:hidden;background:#050508;',
-      'box-shadow:0 28px 120px rgba(0,0,0,.72);}',
+      '.desktop-splash-panel{position:relative;width:100vw;height:100vh;',
+      'overflow:hidden;background:#050508;}',
       '.desktop-splash video,.desktop-splash img{width:100%;height:100%;',
       'object-fit:cover;}',
       '.desktop-splash img{display:none;}',
-      '.desktop-splash-title{position:absolute;left:32px;bottom:58px;',
-      'color:#fff8e8;font-size:34px;font-weight:800;letter-spacing:.08em;',
-      'text-shadow:0 4px 24px rgba(0,0,0,.75);}',
-      '.desktop-splash-subtitle{position:absolute;left:34px;bottom:30px;',
-      'color:#f0d78c;font-size:15px;letter-spacing:.18em;}'
+      '.desktop-splash-shade{position:absolute;inset:0;',
+      'background:linear-gradient(90deg,rgba(5,5,7,.88),rgba(5,5,7,.22) 46%,rgba(5,5,7,.72)),',
+      'linear-gradient(0deg,rgba(5,5,7,.88),transparent 42%);}',
+      '.desktop-splash-title{position:absolute;left:clamp(28px,6vw,82px);',
+      'bottom:clamp(112px,17vh,176px);color:#fff8e8;',
+      'font-size:clamp(38px,7vw,96px);font-weight:900;line-height:1;',
+      'letter-spacing:.08em;text-shadow:0 4px 34px rgba(0,0,0,.82);}',
+      '.desktop-splash-subtitle{position:absolute;left:clamp(32px,6vw,88px);',
+      'bottom:clamp(78px,13vh,128px);color:#f0d78c;',
+      'font-size:clamp(14px,1.6vw,22px);letter-spacing:.22em;}',
+      '.desktop-splash-progress{position:absolute;left:clamp(28px,6vw,82px);',
+      'right:clamp(28px,6vw,82px);bottom:clamp(36px,7vh,68px);}',
+      '.desktop-splash-progress-track{height:6px;border-radius:999px;',
+      'overflow:hidden;background:rgba(255,255,255,.18);}',
+      '.desktop-splash-progress-bar{height:100%;width:0%;border-radius:999px;',
+      'background:linear-gradient(90deg,#8b6914,#f0d78c);',
+      'box-shadow:0 0 22px rgba(240,215,140,.42);}',
+      '.desktop-splash-progress-text{margin-top:12px;color:rgba(238,228,210,.76);',
+      'font-size:13px;letter-spacing:.14em;}'
     ].join('');
     document.head.appendChild(style);
   }
@@ -115,29 +129,75 @@
     var panel = createElement('div', 'desktop-splash-panel');
     var video = document.createElement('video');
     var fallback = document.createElement('img');
+    var shade = createElement('div', 'desktop-splash-shade');
     var title = createElement('div', 'desktop-splash-title', '诸神终应知晓');
     var subtitle = createElement('div', 'desktop-splash-subtitle', '玩家自制史记');
+    var progress = createElement('div', 'desktop-splash-progress');
+    var progressTrack = createElement('div', 'desktop-splash-progress-track');
+    var progressBar = createElement('div', 'desktop-splash-progress-bar');
+    var progressText = createElement(
+      'div',
+      'desktop-splash-progress-text',
+      '首曝 PV 播放中 0%'
+    );
     video.src = videoSrc;
     video.muted = true;
     video.autoplay = true;
     video.playsInline = true;
-    video.loop = true;
+    video.loop = false;
     fallback.src = 'splash.jpg';
     fallback.alt = '诸神终应知晓';
+    progressTrack.appendChild(progressBar);
+    progress.appendChild(progressTrack);
+    progress.appendChild(progressText);
     panel.appendChild(video);
     panel.appendChild(fallback);
+    panel.appendChild(shade);
     panel.appendChild(title);
     panel.appendChild(subtitle);
+    panel.appendChild(progress);
     overlay.appendChild(panel);
     document.body.appendChild(overlay);
+    video.addEventListener('timeupdate', updateProgress);
+    video.addEventListener('loadedmetadata', updateProgress);
+    video.addEventListener('ended', markReady);
     video.play().catch(function () {
       video.style.display = 'none';
       fallback.style.display = 'block';
+      progressBar.style.width = '100%';
+      progressText.textContent = '视频不可自动播放，点击进入档案馆';
+      markReady();
     });
-    window.setTimeout(closeSplash, 2300);
-    overlay.addEventListener('click', closeSplash);
+    overlay.addEventListener('click', function () {
+      if (overlay.classList.contains('ready')) {
+        closeSplash();
+      }
+    });
+
+    function updateProgress() {
+      if (!Number.isFinite(video.duration) || video.duration <= 0) {
+        return;
+      }
+      var percent = Math.min(100, Math.round(
+        (video.currentTime / video.duration) * 100
+      ));
+      progressBar.style.width = percent + '%';
+      progressText.textContent = percent >= 100
+        ? '播放完成，点击进入档案馆'
+        : '首曝 PV 播放中 ' + percent + '%';
+    }
+
+    function markReady() {
+      progressBar.style.width = '100%';
+      progressText.textContent = '播放完成，点击进入档案馆';
+      overlay.classList.add('ready');
+    }
 
     function closeSplash() {
+      if (!overlay.parentElement) {
+        return;
+      }
+      video.pause();
       overlay.classList.add('closing');
       window.setTimeout(function () {
         overlay.remove();
@@ -150,6 +210,8 @@
       || typeof window.ZhushenDesktop.setMusicState !== 'function') {
       return;
     }
+    var fallbackAudio = null;
+    var fallbackTimeKey = 'zhushen_desktop_music_time';
     syncMusic();
     document.querySelectorAll('[data-background-music-set]').forEach(function (button) {
       button.addEventListener('click', function () {
@@ -172,10 +234,72 @@
       var volume = Number(
         localStorage.getItem('zhushen_background_music_volume') || '45'
       );
+      var enabled = localStorage.getItem('zhushen_background_music_enabled') !== 'false';
       window.ZhushenDesktop.setMusicState({
-        enabled: localStorage.getItem('zhushen_background_music_enabled') !== 'false',
+        enabled: enabled,
         volume: Math.max(0, Math.min(100, volume))
+      }).then(function (state) {
+        if (!state || state.enabled === false || !enabled) {
+          pauseFallbackAudio();
+        } else if (state.playing) {
+          pauseFallbackAudio();
+        } else {
+          playFallbackAudio(volume);
+        }
+        document.querySelectorAll('[data-background-music-status]').forEach(function (node) {
+          if (!state || state.enabled === false) {
+            return;
+          }
+          if (state.playing) {
+            node.textContent = '当前音乐：开启 · 正在播放 · 音量 '
+              + state.volume + '%';
+            return;
+          }
+          node.textContent = '当前音乐：开启 · 等待首次交互后播放 · 音量 '
+            + Math.max(0, Math.min(100, volume)) + '%';
+        });
       }).catch(function () {});
+    }
+
+    function getFallbackAudio() {
+      if (fallbackAudio) {
+        return fallbackAudio;
+      }
+      fallbackAudio = document.createElement('audio');
+      fallbackAudio.src = 'audio/background_music.oga';
+      fallbackAudio.loop = true;
+      fallbackAudio.preload = 'auto';
+      fallbackAudio.dataset.desktopFallbackMusic = 'true';
+      fallbackAudio.addEventListener('timeupdate', function () {
+        if (Number.isFinite(fallbackAudio.currentTime)) {
+          localStorage.setItem(
+            fallbackTimeKey,
+            String(Math.floor(fallbackAudio.currentTime))
+          );
+        }
+      });
+      document.body.appendChild(fallbackAudio);
+      return fallbackAudio;
+    }
+
+    function playFallbackAudio(volume) {
+      var audio = getFallbackAudio();
+      audio.volume = Math.max(0, Math.min(1, Number(volume || 0) / 100));
+      var savedTime = Number(localStorage.getItem(fallbackTimeKey) || '0');
+      if (savedTime > 0 && audio.currentTime < 1) {
+        try {
+          audio.currentTime = savedTime;
+        } catch (error) {
+          localStorage.removeItem(fallbackTimeKey);
+        }
+      }
+      audio.play().catch(function () {});
+    }
+
+    function pauseFallbackAudio() {
+      if (fallbackAudio) {
+        fallbackAudio.pause();
+      }
     }
   }
 
@@ -276,11 +400,13 @@
     );
     var fullscreenButton = document.querySelector('[data-desktop-fullscreen]');
     var startupButton = document.querySelector('[data-desktop-startup]');
+    var startupSetButtons = document.querySelectorAll('[data-desktop-startup-set]');
     var zoomInButton = document.querySelector('[data-desktop-zoom-in]');
     var zoomOutButton = document.querySelector('[data-desktop-zoom-out]');
     var zoomResetButton = document.querySelector('[data-desktop-zoom-reset]');
     var exportButton = document.querySelector('[data-desktop-export]');
     var importButton = document.querySelector('[data-desktop-import]');
+    var uninstallButton = document.querySelector('[data-desktop-uninstall]');
     var status = document.querySelector('[data-desktop-status]');
     if (card) {
       card.hidden = false;
@@ -308,6 +434,13 @@
       });
       window.ZhushenDesktop.getStartupEnabled().then(updateStartupButton);
     }
+    startupSetButtons.forEach(function (button) {
+      button.addEventListener('click', function () {
+        window.ZhushenDesktop.setStartupEnabled(
+          button.dataset.desktopStartupSet === 'true'
+        ).then(updateStartupButton);
+      });
+    });
     if (zoomInButton) {
       zoomInButton.addEventListener('click', function () {
         window.ZhushenDesktop.zoomIn().then(updateZoomStatus);
@@ -346,6 +479,21 @@
         });
       });
     }
+    if (uninstallButton) {
+      uninstallButton.addEventListener('click', function () {
+        if (typeof window.ZhushenDesktop.requestUninstall !== 'function') {
+          updateDesktopStatus('当前版本不支持应用内卸载');
+          return;
+        }
+        window.ZhushenDesktop.requestUninstall().then(function (result) {
+          if (!result || result.started) {
+            updateDesktopStatus('卸载器已启动');
+            return;
+          }
+          updateDesktopStatus('未启动卸载器：' + (result.reason || '已取消'));
+        });
+      });
+    }
     window.ZhushenDesktop.getZoomFactor().then(updateZoomStatus);
 
     function updateAlwaysOnTopButton(enabled) {
@@ -364,6 +512,10 @@
         startupButton.textContent = enabled ? '关闭开机自启' : '开机自启动';
         startupButton.classList.toggle('active', enabled);
       }
+      startupSetButtons.forEach(function (button) {
+        var isEnabledButton = button.dataset.desktopStartupSet === 'true';
+        button.classList.toggle('active', isEnabledButton === enabled);
+      });
       updateDesktopStatus(enabled
         ? '已开启开机自启动'
         : '未开启开机自启动');
@@ -535,6 +687,9 @@
 
   function run() {
     installStyles();
+    if (isDesktopClient()) {
+      document.body.classList.add('desktop-client');
+    }
     configureImages();
     hideDuplicateNavigation();
     installDesktopSplash();

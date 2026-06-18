@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld('ZhushenDesktop', {
     'desktop:open-internal',
     { url, title }
   ),
+  requestUninstall: () => ipcRenderer.invoke('desktop:request-uninstall'),
   resetZoom: () => ipcRenderer.invoke('desktop:reset-zoom'),
   setAlwaysOnTop: (enabled) => ipcRenderer.invoke(
     'desktop:set-always-on-top',

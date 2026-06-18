@@ -995,6 +995,10 @@ function settingsPage() {
         <button class="wide-button" data-desktop-startup>开机自启动</button>
       </div>
       <div class="desktop-options">
+        <button class="wide-button" data-desktop-startup-set="true">开启开机自启</button>
+        <button class="wide-button" data-desktop-startup-set="false">关闭开机自启</button>
+      </div>
+      <div class="desktop-options">
         <button class="wide-button" data-desktop-zoom-out>缩小</button>
         <button class="wide-button" data-desktop-zoom-reset>恢复默认缩放</button>
         <button class="wide-button" data-desktop-zoom-in>放大</button>
@@ -1002,8 +1006,9 @@ function settingsPage() {
       <div class="desktop-options">
         <button class="wide-button" data-desktop-export>导出本地数据</button>
         <button class="wide-button" data-desktop-import>导入本地数据</button>
+        <button class="wide-button danger-button" data-desktop-uninstall>卸载桌面客户端</button>
       </div>
-      <p class="settings-note">快捷键：F11 全屏，Ctrl+F 搜索，Ctrl+加号/减号缩放，Ctrl+0 恢复缩放，Alt+左/右前进后退。</p>
+      <p class="settings-note">快捷键：F11 全屏/退出全屏，Esc 退出全屏，Ctrl+F 搜索，Ctrl+加号/减号缩放，Ctrl+0 恢复缩放，Alt+左/右前进后退。</p>
       <p class="settings-note" data-desktop-status>桌面功能：读取中</p>
     </article>
     <article class="settings-card">
@@ -1233,6 +1238,15 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   border-radius: 16px;
   color: var(--gold-soft);
   background: rgba(212, 167, 84, .08);
+}
+.danger-button {
+  border-color: rgba(139, 46, 40, .58);
+  color: #f3b7ae;
+  background: rgba(139, 46, 40, .14);
+}
+.danger-button:hover {
+  color: #fff6ef;
+  background: rgba(139, 46, 40, .48);
 }
 .stats-grid, .feature-grid, .character-grid, .masonry-grid {
   display: grid;

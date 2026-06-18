@@ -1,6 +1,7 @@
 const { app, BrowserWindow, dialog, ipcMain, shell } = require('electron');
-const { readFileSync, writeFileSync } = require('fs');
-const { join } = require('path');
+const { existsSync, readdirSync, readFileSync, writeFileSync } = require('fs');
+const { spawn } = require('child_process');
+const { dirname, join } = require('path');
 const { pathToFileURL } = require('url');
 
 const assetRoot = join(__dirname, '..', 'manual-build', 'assets');
@@ -58,14 +59,32 @@ const getMusicHtml = () => {
 <audio id="music" src="${audioUrl}" loop preload="auto"></audio>
 <script>
 const music = document.getElementById('music');
+music.muted = false;
 window.applyMusicState = (state) => {
   const volume = Math.max(0, Math.min(1, Number(state.volume || 0) / 100));
   music.volume = volume;
+  music.muted = false;
   if (!state.enabled) {
     music.pause();
-    return false;
+    return Promise.resolve({
+      enabled: false,
+      playing: false,
+      paused: music.paused,
+      volume: Math.round(volume * 100)
+    });
   }
-  return music.play().then(() => true).catch(() => false);
+  return music.play().then(() => ({
+    enabled: true,
+    playing: !music.paused,
+    paused: music.paused,
+    volume: Math.round(volume * 100)
+  })).catch((error) => ({
+    enabled: true,
+    playing: false,
+    paused: music.paused,
+    volume: Math.round(volume * 100),
+    error: error && error.message ? error.message : String(error)
+  }));
 };
 </script>
 </body>
@@ -81,13 +100,16 @@ const ensureMusicWindow = () => {
     width: 320,
     height: 180,
     skipTaskbar: true,
+    paintWhenInitiallyHidden: true,
     webPreferences: {
-      contextIsolation: true,
+      backgroundThrottling: false,
+      contextIsolation: false,
       nodeIntegration: false,
-      sandbox: true,
+      sandbox: false,
       webSecurity: true
     }
   });
+  musicWindow.setAudioMuted(false);
   musicWindow.on('closed', () => {
     musicWindow = null;
   });
@@ -112,7 +134,12 @@ const applyMusicState = async () => {
       true
     );
   } catch (error) {
-    return false;
+    return {
+      enabled: musicState.enabled,
+      playing: false,
+      error: error && error.message ? error.message : String(error),
+      volume: musicState.volume
+    };
   }
 };
 
@@ -121,6 +148,39 @@ const destroyMusicWindow = () => {
     musicWindow.destroy();
   }
   musicWindow = null;
+};
+
+const getPossibleInstallDirs = () => {
+  const dirs = new Set();
+  dirs.add(dirname(process.execPath));
+  if (process.resourcesPath) {
+    dirs.add(dirname(process.resourcesPath));
+  }
+  return Array.from(dirs).filter((dir) => dir && existsSync(dir));
+};
+
+const findUninstaller = () => {
+  const candidateNames = [
+    'Uninstall 诸神终应知晓.exe',
+    '诸神终应知晓 Uninstaller.exe',
+    'uninstall.exe',
+    'uninst.exe'
+  ];
+  for (const dir of getPossibleInstallDirs()) {
+    for (const name of candidateNames) {
+      const candidate = join(dir, name);
+      if (existsSync(candidate)) {
+        return candidate;
+      }
+    }
+    const matched = readdirSync(dir).find((name) => {
+      return /\.exe$/i.test(name) && /(uninstall|uninst|卸载)/i.test(name);
+    });
+    if (matched) {
+      return join(dir, matched);
+    }
+  }
+  return '';
 };
 
 const createInternalWindow = (url, title) => {
@@ -209,6 +269,11 @@ const registerShortcuts = (window) => {
     }
     if (input.key === 'F11') {
       window.setFullScreen(!window.isFullScreen());
+      event.preventDefault();
+      return;
+    }
+    if (input.key === 'Escape' && window.isFullScreen()) {
+      window.setFullScreen(false);
       event.preventDefault();
       return;
     }
@@ -371,8 +436,40 @@ const registerDesktopIpc = () => {
       enabled: !!(payload && payload.enabled),
       volume: Math.max(0, Math.min(100, Number(payload && payload.volume) || 0))
     };
-    await applyMusicState();
-    return musicState;
+    return await applyMusicState();
+  });
+
+  ipcMain.handle('desktop:request-uninstall', async (event) => {
+    const senderWindow = getSenderWindow(event);
+    const uninstallerPath = findUninstaller();
+    if (!uninstallerPath) {
+      await dialog.showMessageBox(senderWindow, {
+        type: 'info',
+        title: '未找到卸载器',
+        message: '当前可能是便携版或开发版，未找到可直接启动的卸载程序。',
+        detail: '如果你安装的是正式安装版，可以从 Windows 设置或开始菜单中卸载。'
+      });
+      return { started: false, reason: 'not_found' };
+    }
+    const result = await dialog.showMessageBox(senderWindow, {
+      type: 'question',
+      buttons: ['开始卸载', '取消'],
+      defaultId: 1,
+      cancelId: 1,
+      title: '离开汇流地之前',
+      message: '要启动《诸神终应知晓》的卸载器吗？',
+      detail: '卸载前如需保留收藏、最近浏览和设置，请先在设置页导出本地数据。'
+    });
+    if (result.response !== 0) {
+      return { started: false, reason: 'cancelled' };
+    }
+    const child = spawn(uninstallerPath, [], {
+      detached: true,
+      stdio: 'ignore'
+    });
+    child.unref();
+    app.quit();
+    return { started: true };
   });
 };
 
