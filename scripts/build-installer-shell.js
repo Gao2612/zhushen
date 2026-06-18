@@ -15,7 +15,7 @@ const prepackagedDir = join(buildRootDir, 'prepackaged');
 const appTempDir = join(buildRootDir, 'app-temp');
 const appAsarPath = join(prepackagedDir, 'resources', 'app.asar');
 const electronExePath = join(prepackagedDir, 'zhushen-archive.exe');
-const shellExePath = join(prepackagedDir, 'zhushen-installer-shell.exe');
+const shellExePath = join(prepackagedDir, 'zhushen-installer.exe');
 const asarCommand = join(
   rootDir,
   'node_modules',
@@ -83,7 +83,7 @@ function copyAppFiles() {
   writeFileSync(
     join(appTempDir, 'package.json'),
     JSON.stringify({
-      name: 'zhushen-installer-shell',
+      name: 'zhushen-installer',
       version: '1.1.0',
       main: 'installer-shell/main.js'
     }),

@@ -51,7 +51,7 @@ const createWindow = () => {
     height: 700,
     minWidth: 940,
     minHeight: 600,
-    title: '诸神终应知晓 安装卸载器',
+    title: '诸神终应知晓',
     autoHideMenuBar: true,
     backgroundColor: '#07070b',
     webPreferences: {
@@ -80,7 +80,7 @@ ipcMain.handle('installer:install', async () => {
     await dialog.showMessageBox({
       type: 'error',
       title: '未找到安装包',
-      message: '安装卸载器外壳中没有包含实际安装包。'
+      message: '安装器中没有包含实际安装包。'
     });
     return false;
   }

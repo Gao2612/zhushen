@@ -1,8 +1,8 @@
 {
   "appId": "com.zhushen.archive.installer",
-  "productName": "诸神终应知晓 安装卸载器",
-  "executableName": "zhushen-installer-shell",
-  "artifactName": "zhushen-installer-shell-${version}-${os}-${arch}.${ext}",
+  "productName": "诸神终应知晓",
+  "executableName": "zhushen-installer",
+  "artifactName": "zhushen-installer-${version}-${os}-${arch}.${ext}",
   "directories": {
     "output": "releases/installer-shell"
   },
