@@ -144,6 +144,44 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   background: transparent;
   font-size: 16px;
 }
+.search-results {
+  display: grid;
+  gap: 10px;
+  max-height: 320px;
+  overflow: auto;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(8,8,12,.78);
+  box-shadow: 0 16px 44px rgba(0,0,0,.32);
+}
+.search-results[hidden] { display: none; }
+.search-result {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid rgba(212, 167, 84, .14);
+  border-radius: 16px;
+  background: rgba(255,255,255,.035);
+}
+.search-result strong { color: var(--gold-soft); }
+.search-result span {
+  color: var(--gold);
+  font-size: 12px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.search-result p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.search-empty {
+  margin: 0;
+  padding: 12px;
+  color: var(--muted);
+}
 .ghost-button, .wide-button {
   display: inline-flex;
   justify-content: center;

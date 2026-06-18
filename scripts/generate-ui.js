@@ -34,7 +34,7 @@ const characters = [
     ],
     videos: [
       { src: '官方-角色/视频/阿塔尔.mp4', label: '阿塔尔展示' },
-      { src: '官方-角色/视频/阿塔尔回睦.mp4', label: '阿塔尔回睦' },
+      { src: '官方-角色/视频/阿塔尔回睦.mp4', label: '阿塔尔回眸' },
       { src: '官方-角色/视频/阿塔尔技能特效.mp4', label: '技能特效' }
     ]
   },
@@ -211,7 +211,7 @@ const splashVideos = [
   ['none', '关闭启动视频'],
   ['atal', '阿塔尔'],
   ['atal_skill', '阿塔尔技能特效'],
-  ['atal_huimu', '阿塔尔回睦'],
+  ['atal_huimu', '阿塔尔回眸'],
   ['dehenu', '德赫奴'],
   ['dehenu_skill', '德赫奴技能']
 ];
@@ -461,6 +461,96 @@ function detectCharacter(file) {
   return '综合';
 }
 
+function buildSearchIndex() {
+  const entries = [];
+  const pushEntry = ({ section, title, desc, href, keywords }) => {
+    entries.push({
+      section,
+      title,
+      desc,
+      href,
+      text: [section, title, desc, keywords].filter(Boolean).join(' ')
+    });
+  };
+
+  pages.forEach((page) => {
+    pushEntry({
+      section: '页面',
+      title: page.label,
+      desc: `进入${page.label}页面`,
+      href: page.href,
+      keywords: page.label
+    });
+  });
+
+  officialPosts.forEach((post) => {
+    pushEntry({
+      section: '官方发布',
+      title: post.title,
+      desc: post.summary,
+      href: 'official.html',
+      keywords: [
+        post.date,
+        post.sourceName,
+        post.category,
+        post.content.join(' '),
+        post.points.join(' '),
+        post.media.map((item) => item.label).join(' ')
+      ].join(' ')
+    });
+  });
+
+  characters.forEach((character) => {
+    pushEntry({
+      section: '角色',
+      title: character.name,
+      desc: character.desc,
+      href: 'gfjs.html',
+      keywords: [
+        character.title,
+        character.tags.join(' '),
+        character.quote,
+        character.images.join(' '),
+        character.videos.map((video) => video.label).join(' ')
+      ].join(' ')
+    });
+  });
+
+  conceptCards.forEach((concept) => {
+    pushEntry({
+      section: '概念',
+      title: concept.title,
+      desc: concept.tag,
+      href: 'gfgn.html',
+      keywords: [concept.src, concept.tag].join(' ')
+    });
+  });
+
+  artists.forEach((artist) => {
+    artist.entries.forEach((entry) => {
+      pushEntry({
+        section: '二创',
+        title: entry.title,
+        desc: `${entry.artist} · ${entry.character} · ${entry.type}`,
+        href: 'wjec.html',
+        keywords: [entry.artist, entry.character, entry.type, entry.src].join(' ')
+      });
+    });
+  });
+
+  jokes.forEach((joke, index) => {
+    pushEntry({
+      section: '笑话',
+      title: joke.title,
+      desc: joke.desc,
+      href: 'qyxhhj.html',
+      keywords: `社区切片 ${index + 1} ${joke.src}`
+    });
+  });
+
+  return entries;
+}
+
 function htmlPage({ title, active, hero, body, extraClass = '' }) {
   return `<!DOCTYPE html>
 <html lang="zh-CN">
@@ -516,6 +606,7 @@ function heroBlock(hero) {
         <span>搜索</span>
         <input data-search="${hero.searchScope || 'global'}" type="search" placeholder="搜索角色、作者、资料">
       </label>
+      <div class="search-results" data-search-results hidden></div>
       <a class="ghost-button" href="settings.html">版权与设置</a>
     </div>
   </section>`;
@@ -899,9 +990,20 @@ function settingsPage() {
       <h2>桌面客户端</h2>
       <p>这些选项仅在 Windows 桌面客户端内生效；网页和安卓版本不会显示。</p>
       <div class="desktop-options">
+        <button class="wide-button" data-desktop-always-on-top>窗口置顶</button>
         <button class="wide-button" data-desktop-fullscreen>全屏显示</button>
         <button class="wide-button" data-desktop-startup>开机自启动</button>
       </div>
+      <div class="desktop-options">
+        <button class="wide-button" data-desktop-zoom-out>缩小</button>
+        <button class="wide-button" data-desktop-zoom-reset>恢复默认缩放</button>
+        <button class="wide-button" data-desktop-zoom-in>放大</button>
+      </div>
+      <div class="desktop-options">
+        <button class="wide-button" data-desktop-export>导出本地数据</button>
+        <button class="wide-button" data-desktop-import>导入本地数据</button>
+      </div>
+      <p class="settings-note">快捷键：F11 全屏，Ctrl+F 搜索，Ctrl+加号/减号缩放，Ctrl+0 恢复缩放，Alt+左/右前进后退。</p>
       <p class="settings-note" data-desktop-status>桌面功能：读取中</p>
     </article>
     <article class="settings-card">
@@ -1082,6 +1184,44 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   outline: 0;
   background: transparent;
   font-size: 16px;
+}
+.search-results {
+  display: grid;
+  gap: 10px;
+  max-height: 320px;
+  overflow: auto;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(8,8,12,.78);
+  box-shadow: 0 16px 44px rgba(0,0,0,.32);
+}
+.search-results[hidden] { display: none; }
+.search-result {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid rgba(212, 167, 84, .14);
+  border-radius: 16px;
+  background: rgba(255,255,255,.035);
+}
+.search-result strong { color: var(--gold-soft); }
+.search-result span {
+  color: var(--gold);
+  font-size: 12px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.search-result p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.search-empty {
+  margin: 0;
+  padding: 12px;
+  color: var(--muted);
 }
 .ghost-button, .wide-button {
   display: inline-flex;
@@ -1454,6 +1594,7 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
 
   var favoritesKey = 'zhushen:favorites:v1';
   var recentKey = 'zhushen:recent:v1';
+  var globalSearchIndex = ${JSON.stringify(buildSearchIndex())};
 
   function readList(key) {
     try {
@@ -1518,12 +1659,54 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
     document.querySelectorAll('[data-search]').forEach(function (input) {
       input.addEventListener('input', function () {
         var keyword = input.value.trim().toLowerCase();
+        var results = input.closest('.hero-actions')
+          ? input.closest('.hero-actions').querySelector('[data-search-results]')
+          : null;
+        var visibleCount = 0;
         document.querySelectorAll('[data-search-text]').forEach(function (node) {
           var text = node.dataset.searchText.toLowerCase();
-          node.classList.toggle('is-hidden', keyword && text.indexOf(keyword) < 0);
+          var matched = !keyword || text.indexOf(keyword) >= 0;
+          node.classList.toggle('is-hidden', !matched);
+          if (matched && keyword) {
+            visibleCount += 1;
+          }
         });
+        if (!results) {
+          return;
+        }
+        if (!keyword) {
+          results.hidden = true;
+          results.innerHTML = '';
+          return;
+        }
+        if (input.dataset.search === 'global') {
+          renderGlobalSearchResults(results, keyword);
+          return;
+        }
+        results.hidden = false;
+        results.innerHTML = visibleCount > 0
+          ? '<p class="search-empty">当前页面命中 ' + visibleCount + ' 条资料。</p>'
+          : '<p class="search-empty">当前页面没有找到匹配内容。</p>';
       });
     });
+  }
+
+  function renderGlobalSearchResults(results, keyword) {
+    var hits = globalSearchIndex.filter(function (item) {
+      return item.text.toLowerCase().indexOf(keyword) >= 0;
+    }).slice(0, 10);
+    results.hidden = false;
+    if (hits.length === 0) {
+      results.innerHTML = '<p class="search-empty">没有找到匹配内容。</p>';
+      return;
+    }
+    results.innerHTML = hits.map(function (item) {
+      return '<a class="search-result" href="' + item.href + '">'
+        + '<span>' + item.section + '</span>'
+        + '<strong>' + item.title + '</strong>'
+        + '<p>' + item.desc + '</p>'
+        + '</a>';
+    }).join('');
   }
 
   function installFilters() {

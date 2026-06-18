@@ -30,6 +30,7 @@
         <span>搜索</span>
         <input data-search="page" type="search" placeholder="搜索角色、作者、资料">
       </label>
+      <div class="search-results" data-search-results hidden></div>
       <a class="ghost-button" href="settings.html">版权与设置</a>
     </div>
   </section>
@@ -67,7 +68,7 @@
       <h2>启动视频</h2>
       <p>默认每次启动随机播放一个应用内视频；也可以固定为指定视频。系统启动页本身不能播放视频，视频会在应用启动层开始播放。</p>
       <div class="video-options" data-splash-video-options>
-        <button class="wide-button" data-splash-video-option="random">随机播放</button><button class="wide-button" data-splash-video-option="none">关闭启动视频</button><button class="wide-button" data-splash-video-option="atal">阿塔尔</button><button class="wide-button" data-splash-video-option="atal_skill">阿塔尔技能特效</button><button class="wide-button" data-splash-video-option="atal_huimu">阿塔尔回睦</button><button class="wide-button" data-splash-video-option="dehenu">德赫奴</button><button class="wide-button" data-splash-video-option="dehenu_skill">德赫奴技能</button>
+        <button class="wide-button" data-splash-video-option="random">随机播放</button><button class="wide-button" data-splash-video-option="none">关闭启动视频</button><button class="wide-button" data-splash-video-option="atal">阿塔尔</button><button class="wide-button" data-splash-video-option="atal_skill">阿塔尔技能特效</button><button class="wide-button" data-splash-video-option="atal_huimu">阿塔尔回眸</button><button class="wide-button" data-splash-video-option="dehenu">德赫奴</button><button class="wide-button" data-splash-video-option="dehenu_skill">德赫奴技能</button>
       </div>
       <p class="settings-note" data-splash-video-status>当前视频：读取中</p>
     </article>
@@ -90,9 +91,20 @@
       <h2>桌面客户端</h2>
       <p>这些选项仅在 Windows 桌面客户端内生效；网页和安卓版本不会显示。</p>
       <div class="desktop-options">
+        <button class="wide-button" data-desktop-always-on-top>窗口置顶</button>
         <button class="wide-button" data-desktop-fullscreen>全屏显示</button>
         <button class="wide-button" data-desktop-startup>开机自启动</button>
       </div>
+      <div class="desktop-options">
+        <button class="wide-button" data-desktop-zoom-out>缩小</button>
+        <button class="wide-button" data-desktop-zoom-reset>恢复默认缩放</button>
+        <button class="wide-button" data-desktop-zoom-in>放大</button>
+      </div>
+      <div class="desktop-options">
+        <button class="wide-button" data-desktop-export>导出本地数据</button>
+        <button class="wide-button" data-desktop-import>导入本地数据</button>
+      </div>
+      <p class="settings-note">快捷键：F11 全屏，Ctrl+F 搜索，Ctrl+加号/减号缩放，Ctrl+0 恢复缩放，Alt+左/右前进后退。</p>
       <p class="settings-note" data-desktop-status>桌面功能：读取中</p>
     </article>
     <article class="settings-card">

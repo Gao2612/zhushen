@@ -45,6 +45,7 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
+      "include": "desktop/installer.nsh",
       "shortcutName": "诸神终应知晓"
     },
     "linux": {

@@ -88,7 +88,7 @@ public final class MainActivity extends ComponentActivity {
     private static final String PREF_BACKGROUND_MUSIC_VOLUME =
         "background_music_volume";
     private static final String BACKGROUND_MUSIC_ASSET_PATH =
-        "audio/background_music.m4a";
+        "audio/background_music.oga";
     private static final int DEFAULT_BACKGROUND_MUSIC_VOLUME = 45;
     private static final String ORIENTATION_PORTRAIT = "portrait";
     private static final String ORIENTATION_LANDSCAPE = "landscape";
@@ -108,7 +108,7 @@ public final class MainActivity extends ComponentActivity {
         ),
         new SplashVideo(
             "atal_huimu",
-            "阿塔尔回睦",
+            "阿塔尔回眸",
             "官方-角色/视频/阿塔尔回睦.mp4"
         ),
         new SplashVideo(
