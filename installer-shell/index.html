@@ -105,6 +105,7 @@
       letter-spacing: .04em;
     }
     .state {
+      display: none;
       min-width: 74px;
       padding: 7px 10px;
       border-radius: 999px;
@@ -230,6 +231,16 @@
       line-height: 1.7;
       word-break: break-all;
     }
+    .space-info,
+    .update-info {
+      min-height: 20px;
+      color: rgba(247,234,212,.58);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .update-info.ready {
+      color: #f0d78c;
+    }
   </style>
 </head>
 <body>
@@ -294,9 +305,35 @@
     const openButton = document.getElementById('open');
     const uninstallButton = document.getElementById('uninstall');
     const chooseButton = document.getElementById('choose');
+    const pathBox = document.querySelector('.path-box');
+    const spaceNode = document.createElement('div');
+    const updateNode = document.createElement('div');
+    const checkUpdateButton = document.createElement('button');
+    const updateButton = document.createElement('button');
+    const repairButton = document.createElement('button');
+    const reinstallButton = document.createElement('button');
+
+    spaceNode.className = 'space-info';
+    updateNode.className = 'update-info';
+    checkUpdateButton.id = 'checkUpdate';
+    updateButton.id = 'update';
+    repairButton.id = 'repair';
+    reinstallButton.id = 'reinstall';
+    checkUpdateButton.textContent = '\u68c0\u67e5\u66f4\u65b0';
+    updateButton.textContent = '\u66f4\u65b0';
+    repairButton.textContent = '\u4fee\u590d';
+    reinstallButton.textContent = '\u91cd\u65b0\u5b89\u88c5';
+    updateButton.hidden = true;
+    pathBox.appendChild(spaceNode);
+    pathBox.appendChild(updateNode);
+    managePanel.insertBefore(reinstallButton, openButton);
+    managePanel.insertBefore(repairButton, reinstallButton);
+    managePanel.insertBefore(updateButton, repairButton);
+    managePanel.insertBefore(checkUpdateButton, updateButton);
 
     let installed = false;
     let busy = false;
+    let updateAvailable = false;
 
     const setStatus = (text) => { statusNode.textContent = text; };
     const setProgress = (percent) => {
@@ -309,15 +346,19 @@
       busy = value;
       installButton.disabled = value;
       chooseButton.disabled = value || installed;
-      manageButton.disabled = value || !installed;
+      manageButton.disabled = value;
       uninstallButton.disabled = value || !installed;
       openButton.disabled = value || !installed;
+      checkUpdateButton.disabled = value;
+      updateButton.disabled = value || !installed || !updateAvailable;
+      repairButton.disabled = value || !installed;
+      reinstallButton.disabled = value || !installed;
       if (value || !installed) {
         setManageOpen(false);
       }
     };
     const syncButtons = () => {
-      stateNode.textContent = installed ? '\u5df2\u5b89\u88c5' : '\u672a\u5b89\u88c5';
+      stateNode.textContent = '';
       installButton.textContent = installed ? '\u542f\u52a8' : '\u7acb\u5373\u5b89\u88c5';
       setBusy(false);
     };
@@ -326,6 +367,21 @@
       const status = await window.ZhushenInstaller.getStatus();
       installed = status.installed;
       pathNode.textContent = status.installDir;
+      if (status.space) {
+        spaceNode.textContent = '\u6240\u9700\u7a7a\u95f4 '
+          + status.space.requiredText + ' / \u53ef\u7528 '
+          + status.space.freeText;
+      }
+      if (status.healthProblems > 0) {
+        updateNode.textContent = '\u68c0\u6d4b\u5230 '
+          + status.healthProblems + ' \u4e2a\u6587\u4ef6\u9700\u8981\u4fee\u590d\u3002';
+        updateNode.classList.add('ready');
+      } else if (!updateAvailable) {
+        updateNode.textContent = status.buildId
+          ? '\u672c\u5730\u6784\u5efa\uff1a' + status.buildId
+          : '\u5c1a\u672a\u5b89\u88c5\u3002';
+        updateNode.classList.remove('ready');
+      }
       setProgress(installed ? 100 : 0);
       setStatus(installed
         ? '\u5ba2\u6237\u7aef\u5df2\u5c31\u7eea\uff0c\u53ef\u4ee5\u76f4\u63a5\u542f\u52a8\u3002\u76ee\u5f55\u4e0e\u5378\u8f7d\u64cd\u4f5c\u5df2\u653e\u5165\u53f3\u4fa7\u9f7f\u8f6e\u3002'
@@ -344,6 +400,7 @@
       const installDir = await window.ZhushenInstaller.chooseInstallDir();
       pathNode.textContent = installDir;
       setStatus('\u5b89\u88c5\u4f4d\u7f6e\u5df2\u66f4\u65b0\u3002');
+      await refresh();
     });
 
     installButton.addEventListener('click', async () => {
@@ -361,7 +418,7 @@
     });
 
     manageButton.addEventListener('click', () => {
-      if (!installed || busy) {
+      if (busy) {
         return;
       }
       setManageOpen(managePanel.hidden);
@@ -386,6 +443,54 @@
       setManageOpen(false);
       const opened = await window.ZhushenInstaller.openInstallDir();
       setStatus(opened ? '\u5df2\u6253\u5f00\u5b89\u88c5\u76ee\u5f55\u3002' : '\u5c1a\u672a\u627e\u5230\u5b89\u88c5\u76ee\u5f55\u3002');
+    });
+
+    checkUpdateButton.addEventListener('click', async () => {
+      setManageOpen(false);
+      setStatus('\u6b63\u5728\u68c0\u67e5\u66f4\u65b0...');
+      const result = await window.ZhushenInstaller.checkUpdate();
+      updateAvailable = !!(result && result.available);
+      updateButton.hidden = !updateAvailable;
+      if (result && result.error) {
+        updateNode.textContent = '\u66f4\u65b0\u68c0\u67e5\u5931\u8d25\uff1a' + result.error;
+      } else if (updateAvailable) {
+        updateNode.textContent = '\u53d1\u73b0\u65b0\u6784\u5efa\uff1a' + result.remote.buildId;
+        updateNode.classList.add('ready');
+      } else {
+        updateNode.textContent = '\u5df2\u662f\u6700\u65b0\u7248\u672c\u3002';
+        updateNode.classList.remove('ready');
+      }
+      setBusy(false);
+    });
+
+    updateButton.addEventListener('click', async () => {
+      setManageOpen(false);
+      setBusy(true);
+      setStatus('\u6b63\u5728\u66f4\u65b0...');
+      const result = await window.ZhushenInstaller.update();
+      updateAvailable = false;
+      updateButton.hidden = true;
+      setStatus(result ? '\u66f4\u65b0\u5b8c\u6210\u3002' : '\u66f4\u65b0\u672a\u5b8c\u6210\u3002');
+      await refresh();
+    });
+
+    repairButton.addEventListener('click', async () => {
+      setManageOpen(false);
+      setBusy(true);
+      setStatus('\u6b63\u5728\u4fee\u590d...');
+      const result = await window.ZhushenInstaller.repair();
+      setStatus(result ? '\u4fee\u590d\u5b8c\u6210\u3002' : '\u4fee\u590d\u672a\u5b8c\u6210\u3002');
+      await refresh();
+    });
+
+    reinstallButton.addEventListener('click', async () => {
+      setManageOpen(false);
+      setBusy(true);
+      setProgress(0);
+      setStatus('\u6b63\u5728\u91cd\u65b0\u5b89\u88c5...');
+      const ok = await window.ZhushenInstaller.reinstall();
+      installed = !!ok;
+      await refresh();
     });
 
     refresh();

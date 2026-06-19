@@ -103,3 +103,30 @@ C:\Windows\System32\drivers\etc\hosts.zhushen-backup-20260619112803
 
 - `https://github.com/` 可访问。
 - `git push origin main` 成功。
+## 2026-06-19 Launcher update and repair system
+
+- Added file-manifest based installer maintenance:
+  - `releases/update/zhushen-update-manifest.json`
+  - `releases/update/zhushen-app.asar`
+  - `releases/update/zhushen-archive.exe`
+- The installer now prepares an embedded manifest in `desktop-payload/resources/zhushen-update-manifest.json`.
+- The launcher can check the latest GitHub Release manifest:
+  - `https://github.com/Gao2612/zhushen/releases/latest/download/zhushen-update-manifest.json`
+- Update behavior:
+  - compares local `buildId` with the remote manifest;
+  - downloads only files that are missing, size-mismatched, or hash-mismatched and have a remote URL;
+  - currently exposes remote URLs for `resources/app.asar` and `zhushen-archive.exe`, covering the app payload and executable/icon resource;
+  - retries failed downloads up to 3 times;
+  - verifies downloaded files with SHA256 before marking the update complete.
+- Repair behavior:
+  - verifies the installed payload against the embedded manifest;
+  - restores missing or damaged files from the installer payload;
+  - recreates desktop and Start Menu shortcuts.
+- Install behavior:
+  - checks disk free space before installing;
+  - displays required/free space in the launcher UI;
+  - copies files with speed and ETA progress;
+  - verifies installed files after copy.
+- Launcher UI:
+  - keeps the main installed-state button as Launch;
+  - gear menu now includes Check update, Update, Repair, Reinstall, Directory, and Uninstall.

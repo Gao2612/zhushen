@@ -1,6 +1,17 @@
-const { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } = require('fs');
-const { join, resolve } = require('path');
+const {
+  cpSync,
+  existsSync,
+  chmodSync,
+  mkdirSync,
+  readdirSync,
+  rmSync,
+  statSync,
+  writeFileSync
+} = require('fs');
+const { createHash } = require('crypto');
+const { join, relative, resolve, sep } = require('path');
 const { spawnSync } = require('child_process');
+const packageJson = require('../package.json');
 
 const rootDir = resolve(__dirname, '..');
 const desktopUnpackedDir = join(rootDir, 'releases', 'desktop', 'win-unpacked');
@@ -9,8 +20,12 @@ const prepackagedDir = join(buildRootDir, 'prepackaged');
 const appTempDir = join(buildRootDir, 'app-temp');
 const appAsarPath = join(prepackagedDir, 'resources', 'app.asar');
 const desktopPayloadDir = join(prepackagedDir, 'resources', 'desktop-payload');
+const updateOutputDir = join(rootDir, 'releases', 'update-current');
 const electronExePath = join(prepackagedDir, 'zhushen-archive.exe');
 const shellExePath = join(prepackagedDir, 'zhushen-installer.exe');
+const updateManifestName = 'zhushen-update-manifest.json';
+const updateAsarName = 'zhushen-app.asar';
+const updateExeName = 'zhushen-archive.exe';
 const asarCommand = join(
   rootDir,
   'node_modules',
@@ -26,7 +41,26 @@ const builderCommand = join(
 
 function removePath(path) {
   if (existsSync(path)) {
-    rmSync(path, { recursive: true, force: true });
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      try {
+        chmodSync(path, 0o666);
+      } catch (error) {
+        // Directory chmod or missing file can be ignored before forced removal.
+      }
+      try {
+        rmSync(path, {
+          recursive: true,
+          force: true,
+          maxRetries: 5,
+          retryDelay: 250
+        });
+        return;
+      } catch (error) {
+        if (attempt === 4) {
+          throw error;
+        }
+      }
+    }
   }
 }
 
@@ -68,6 +102,97 @@ function copyDirectory(source, target) {
   if (result.status >= 8) {
     throw new Error('目录复制失败：' + source + ' -> ' + target);
   }
+}
+
+function hashFile(path) {
+  const hash = createHash('sha256');
+  hash.update(require('fs').readFileSync(path));
+  return hash.digest('hex');
+}
+
+function listFiles(dir) {
+  const files = [];
+  function walk(current) {
+    for (const entry of readdirSync(current, { withFileTypes: true })) {
+      const fullPath = join(current, entry.name);
+      if (entry.isDirectory()) {
+        walk(fullPath);
+      } else if (entry.isFile()) {
+        files.push(fullPath);
+      }
+    }
+  }
+  walk(dir);
+  return files;
+}
+
+function toPortablePath(path) {
+  return path.split(sep).join('/');
+}
+
+function createUpdateManifest(payloadDir) {
+  const buildId = [
+    packageJson.version,
+    new Date().toISOString().slice(0, 10).replace(/-/g, ''),
+    spawnSync('git', ['rev-parse', '--short', 'HEAD'], {
+      cwd: rootDir,
+      encoding: 'utf8',
+      shell: process.platform === 'win32'
+    }).stdout.trim() || 'local'
+  ].join('-');
+  const releaseBaseUrl = 'https://github.com/Gao2612/zhushen/releases/latest/download/';
+  const remoteAssetMap = {
+    'resources/app.asar': updateAsarName,
+    'zhushen-archive.exe': updateExeName
+  };
+  const files = listFiles(payloadDir)
+    .map((filePath) => {
+      const relativePath = toPortablePath(relative(payloadDir, filePath));
+      const stats = statSync(filePath);
+      const remoteAssetName = remoteAssetMap[relativePath] || '';
+      return {
+        path: relativePath,
+        size: stats.size,
+        sha256: hashFile(filePath),
+        url: remoteAssetName ? releaseBaseUrl + encodeURIComponent(remoteAssetName) : ''
+      };
+    })
+    .sort((a, b) => a.path.localeCompare(b.path));
+  return {
+    schemaVersion: 1,
+    product: 'zhushen-archive',
+    version: packageJson.version,
+    buildId,
+    generatedAt: new Date().toISOString(),
+    files
+  };
+}
+
+function writeUpdateAssets() {
+  const manifest = createUpdateManifest(desktopPayloadDir);
+  mkdirSync(join(desktopPayloadDir, 'resources'), { recursive: true });
+  writeFileSync(
+    join(desktopPayloadDir, 'resources', updateManifestName),
+    JSON.stringify(manifest, null, 2),
+    'utf8'
+  );
+  mkdirSync(updateOutputDir, { recursive: true });
+  for (const assetName of [updateManifestName, updateAsarName, updateExeName]) {
+    removePath(join(updateOutputDir, assetName));
+  }
+  writeFileSync(
+    join(updateOutputDir, updateManifestName),
+    JSON.stringify(manifest, null, 2),
+    'utf8'
+  );
+  cpSync(
+    join(desktopPayloadDir, 'resources', 'app.asar'),
+    join(updateOutputDir, updateAsarName)
+  );
+  cpSync(
+    join(desktopPayloadDir, 'zhushen-archive.exe'),
+    join(updateOutputDir, updateExeName)
+  );
 }
 
 function copyAppFiles() {
@@ -115,6 +240,7 @@ function preparePrepackagedApp() {
   removePath(desktopPayloadDir);
   mkdirSync(desktopPayloadDir, { recursive: true });
   copyDirectory(desktopUnpackedDir, desktopPayloadDir);
+  writeUpdateAssets();
   removePath(appAsarPath);
   if (existsSync(electronExePath)) {
     rmSync(electronExePath, { force: true });
