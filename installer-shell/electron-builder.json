@@ -9,6 +9,7 @@
   "files": [
     "installer-shell/**/*",
     "manual-build/assets/logo/**/*",
+    "manual-build/assets/zy/*.jpg",
     "manual-build/assets/official-posts/492288870839223557/pv.mp4",
     "package.json"
   ],
