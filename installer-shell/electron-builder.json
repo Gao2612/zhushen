@@ -19,7 +19,8 @@
   "asar": true,
   "compression": "maximum",
   "win": {
-    "icon": "manual-build/assets/logo/logo.png",
+    "icon": "manual-build/assets/logo/logo.ico",
+    "signExecutable": false,
     "target": [
       {
         "target": "portable",

@@ -31,8 +31,8 @@
     "asar": true,
     "compression": "maximum",
     "win": {
-      "icon": "manual-build/assets/logo/logo.png",
-      "signAndEditExecutable": false,
+      "icon": "manual-build/assets/logo/logo.ico",
+      "signExecutable": false,
       "target": [
         {
           "target": "dir",
