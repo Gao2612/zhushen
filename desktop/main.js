@@ -28,6 +28,7 @@ let musicState = {
   enabled: true,
   volume: 45
 };
+let lastMusicResult = null;
 
 const writeStartupLog = (message, detail) => {
   try {
@@ -174,17 +175,19 @@ const applyMusicState = async () => {
   }
   const serializedState = JSON.stringify(musicState);
   try {
-    return await window.webContents.executeJavaScript(
+    lastMusicResult = await window.webContents.executeJavaScript(
       `window.applyMusicState(${serializedState})`,
       true
     );
+    return lastMusicResult;
   } catch (error) {
-    return {
+    lastMusicResult = {
       enabled: musicState.enabled,
       playing: false,
       error: error && error.message ? error.message : String(error),
       volume: musicState.volume
     };
+    return lastMusicResult;
   }
 };
 
@@ -495,10 +498,16 @@ const registerDesktopIpc = () => {
   });
 
   ipcMain.handle('desktop:set-music-state', async (event, payload) => {
-    musicState = {
+    const nextState = {
       enabled: !!(payload && payload.enabled),
       volume: Math.max(0, Math.min(100, Number(payload && payload.volume) || 0))
     };
+    const unchanged = musicState.enabled === nextState.enabled
+      && musicState.volume === nextState.volume;
+    musicState = nextState;
+    if (unchanged && lastMusicResult) {
+      return lastMusicResult;
+    }
     return await applyMusicState();
   });
 

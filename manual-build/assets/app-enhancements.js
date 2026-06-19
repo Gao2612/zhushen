@@ -2,6 +2,7 @@
   'use strict';
 
   var HOME_PAGE = 'zy.html';
+  var BACKGROUND_MUSIC_TITLE = 'Mass No.19 in D Minor, K.626 Requiem: Introitus: Requiem Aeternam';
   var ENHANCEMENT_STYLE_ID = '_app_enhancement_style';
   var DISCLAIMER_ID = '_app_disclaimer';
 
@@ -259,6 +260,7 @@
     }
     var fallbackAudio = null;
     var fallbackTimeKey = 'zhushen_desktop_music_time';
+    var lastSyncedKey = '';
     syncMusic();
     document.querySelectorAll('[data-background-music-set]').forEach(function (button) {
       button.addEventListener('click', function () {
@@ -282,9 +284,15 @@
         localStorage.getItem('zhushen_background_music_volume') || '45'
       );
       var enabled = localStorage.getItem('zhushen_background_music_enabled') !== 'false';
+      var normalizedVolume = Math.max(0, Math.min(100, volume));
+      var nextKey = String(enabled) + ':' + normalizedVolume;
+      if (nextKey === lastSyncedKey) {
+        return;
+      }
+      lastSyncedKey = nextKey;
       window.ZhushenDesktop.setMusicState({
         enabled: enabled,
-        volume: Math.max(0, Math.min(100, volume))
+        volume: normalizedVolume
       }).then(function (state) {
         if (!state || state.enabled === false || !enabled) {
           pauseFallbackAudio();
@@ -304,6 +312,12 @@
           }
           node.textContent = '当前音乐：开启 · 等待首次交互后播放 · 音量 '
             + Math.max(0, Math.min(100, volume)) + '%';
+        });
+        document.querySelectorAll('[data-background-music-status]').forEach(function (node) {
+          node.title = BACKGROUND_MUSIC_TITLE;
+          if (node.textContent.indexOf(BACKGROUND_MUSIC_TITLE) < 0) {
+            node.textContent += ' \u00b7 ' + BACKGROUND_MUSIC_TITLE;
+          }
         });
       }).catch(function () {});
     }
@@ -331,7 +345,12 @@
 
     function playFallbackAudio(volume) {
       var audio = getFallbackAudio();
-      audio.volume = Math.max(0, Math.min(1, Number(volume || 0) / 100));
+      var nextVolume = Math.max(0, Math.min(1, Number(volume || 0) / 100));
+      var volumeUnchanged = Math.abs(audio.volume - nextVolume) < 0.001;
+      audio.volume = nextVolume;
+      if (!audio.paused && volumeUnchanged) {
+        return;
+      }
       var savedTime = Number(localStorage.getItem(fallbackTimeKey) || '0');
       if (savedTime > 0 && audio.currentTime < 1) {
         try {
