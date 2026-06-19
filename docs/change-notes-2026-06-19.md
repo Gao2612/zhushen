@@ -141,3 +141,15 @@ C:\Windows\System32\drivers\etc\hosts.zhushen-backup-20260619112803
 - The installed launcher infers the install root from its own `launcher/` directory and launches `game/zhushen-archive.exe`.
 - The installer still owns first install and embedded-payload repair; the lightweight launcher uses remote manifest update/repair behavior.
 - Build flow now creates `releases/launcher-shell/win-unpacked` before packaging the installer.
+
+## 2026-06-19 Frameless shell and quick links
+
+- Switched installer and daily launcher windows to frameless custom chrome.
+- Added in-app minimize and close controls for both shells.
+- Simplified bottom quick links:
+  - removed Feedback and Settings from the bottom row;
+  - kept TapTap and the GitHub update page;
+  - replaced the inline QQ number with a QQ group button.
+- The QQ group button now opens an in-app card with both group numbers:
+  - official player group: `130340208`;
+  - community group: `30340208`.
