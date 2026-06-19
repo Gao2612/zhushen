@@ -3,7 +3,6 @@ const {
   appendFileSync,
   existsSync,
   mkdirSync,
-  readdirSync,
   readFileSync,
   writeFileSync
 } = require('fs');
@@ -91,30 +90,45 @@ const getMusicHtml = () => {
 <audio id="music" src="${audioUrl}" loop preload="auto"></audio>
 <script>
 const music = document.getElementById('music');
+let lastState = { enabled: null, volume: null };
 music.muted = false;
 window.applyMusicState = (state) => {
   const volume = Math.max(0, Math.min(1, Number(state.volume || 0) / 100));
+  const normalizedVolume = Math.round(volume * 100);
+  const stateUnchanged = lastState.enabled === !!state.enabled
+    && lastState.volume === normalizedVolume;
   music.volume = volume;
   music.muted = false;
+  lastState = { enabled: !!state.enabled, volume: normalizedVolume };
   if (!state.enabled) {
-    music.pause();
+    if (!music.paused) {
+      music.pause();
+    }
     return Promise.resolve({
       enabled: false,
       playing: false,
       paused: music.paused,
-      volume: Math.round(volume * 100)
+      volume: normalizedVolume
+    });
+  }
+  if (stateUnchanged && !music.paused) {
+    return Promise.resolve({
+      enabled: true,
+      playing: true,
+      paused: false,
+      volume: normalizedVolume
     });
   }
   return music.play().then(() => ({
     enabled: true,
     playing: !music.paused,
     paused: music.paused,
-    volume: Math.round(volume * 100)
+    volume: normalizedVolume
   })).catch((error) => ({
     enabled: true,
     playing: false,
     paused: music.paused,
-    volume: Math.round(volume * 100),
+    volume: normalizedVolume,
     error: error && error.message ? error.message : String(error)
   }));
 };
@@ -181,37 +195,55 @@ const destroyMusicWindow = () => {
   musicWindow = null;
 };
 
-const getPossibleInstallDirs = () => {
-  const dirs = new Set();
-  dirs.add(dirname(process.execPath));
-  if (process.resourcesPath) {
-    dirs.add(dirname(process.resourcesPath));
-  }
-  return Array.from(dirs).filter((dir) => dir && existsSync(dir));
+const quotePowerShell = (value) => {
+  return `'${String(value).replace(/'/g, "''")}'`;
 };
 
-const findUninstaller = () => {
-  const candidateNames = [
-    'Uninstall 诸神终应知晓.exe',
-    '诸神终应知晓 Uninstaller.exe',
-    'uninstall.exe',
-    'uninst.exe'
-  ];
-  for (const dir of getPossibleInstallDirs()) {
-    for (const name of candidateNames) {
-      const candidate = join(dir, name);
-      if (existsSync(candidate)) {
-        return candidate;
-      }
+const getShortcutPaths = () => {
+  const startMenuRoot = process.env.APPDATA
+    ? join(process.env.APPDATA, 'Microsoft', 'Windows', 'Start Menu', 'Programs')
+    : '';
+  return [
+    join(app.getPath('desktop'), '诸神终应知晓.lnk'),
+    startMenuRoot ? join(startMenuRoot, '诸神终应知晓.lnk') : ''
+  ].filter(Boolean);
+};
+
+const createSelfUninstallScript = () => {
+  const installDir = dirname(process.execPath);
+  const scriptPath = join(
+    app.getPath('temp'),
+    `zhushen-self-uninstall-${Date.now()}.ps1`
+  );
+  const shortcutCommands = getShortcutPaths()
+    .map((path) => `Remove-Item -LiteralPath ${quotePowerShell(path)} -Force -ErrorAction SilentlyContinue`)
+    .join('\r\n');
+  const script = [
+    '$ErrorActionPreference = "SilentlyContinue"',
+    `$targetPid = ${process.pid}`,
+    'while (Get-Process -Id $targetPid -ErrorAction SilentlyContinue) {',
+    '  Start-Sleep -Milliseconds 300',
+    '}',
+    'Start-Sleep -Milliseconds 500',
+    shortcutCommands,
+    `Remove-Item -LiteralPath ${quotePowerShell(installDir)} -Recurse -Force -ErrorAction SilentlyContinue`,
+    `Remove-Item -LiteralPath ${quotePowerShell(scriptPath)} -Force -ErrorAction SilentlyContinue`
+  ].join('\r\n');
+  writeFileSync(scriptPath, script, 'utf8');
+  return scriptPath;
+};
+
+const runPowerShellScriptDetached = (scriptPath) => {
+  const child = spawn(
+    'powershell.exe',
+    ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', scriptPath],
+    {
+      detached: true,
+      stdio: 'ignore',
+      windowsHide: true
     }
-    const matched = readdirSync(dir).find((name) => {
-      return /\.exe$/i.test(name) && /(uninstall|uninst|卸载)/i.test(name);
-    });
-    if (matched) {
-      return join(dir, matched);
-    }
-  }
-  return '';
+  );
+  child.unref();
 };
 
 const createInternalWindow = (url, title) => {
@@ -472,33 +504,19 @@ const registerDesktopIpc = () => {
 
   ipcMain.handle('desktop:request-uninstall', async (event) => {
     const senderWindow = getSenderWindow(event);
-    const uninstallerPath = findUninstaller();
-    if (!uninstallerPath) {
-      await dialog.showMessageBox(senderWindow, {
-        type: 'info',
-        title: '未找到卸载器',
-        message: '当前可能是便携版或开发版，未找到可直接启动的卸载程序。',
-        detail: '如果你安装的是正式安装版，可以从 Windows 设置或开始菜单中卸载。'
-      });
-      return { started: false, reason: 'not_found' };
-    }
     const result = await dialog.showMessageBox(senderWindow, {
       type: 'question',
       buttons: ['开始卸载', '取消'],
       defaultId: 1,
       cancelId: 1,
       title: '离开汇流地之前',
-      message: '要启动《诸神终应知晓》的卸载器吗？',
-      detail: '卸载前如需保留收藏、最近浏览和设置，请先在设置页导出本地数据。'
+      message: '要卸载《诸神终应知晓》桌面客户端吗？',
+      detail: '卸载将移除安装目录和快捷方式，不再调用旧安装器。若需保留收藏、最近浏览和设置，请先在设置页导出本地数据。'
     });
     if (result.response !== 0) {
       return { started: false, reason: 'cancelled' };
     }
-    const child = spawn(uninstallerPath, [], {
-      detached: true,
-      stdio: 'ignore'
-    });
-    child.unref();
+    runPowerShellScriptDetached(createSelfUninstallScript());
     app.quit();
     return { started: true };
   });

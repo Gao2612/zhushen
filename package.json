@@ -8,11 +8,11 @@
     "build": "npm run verify && node scripts/build-android.js debug",
     "build:release": "npm run verify && node scripts/build-android.js release",
     "package:pc": "node scripts/package-pc.js",
-    "desktop:win": "npm run verify && electron-builder --win nsis --x64",
+    "desktop:win": "npm run verify && electron-builder --win dir --x64",
     "desktop:win:portable": "npm run verify && electron-builder --win portable --x64",
     "desktop:linux": "npm run verify && electron-builder --linux AppImage zip --x64",
     "desktop:mac": "npm run verify && electron-builder --mac dmg zip --x64",
-    "installer-shell:win": "npm run desktop:win && node scripts/build-installer-shell.js",
+    "installer-shell:win": "npm run verify && electron-builder --win dir --x64 && node scripts/build-installer-shell.js",
     "lint:android": "cd android && gradlew.bat :app:lintDebug --no-daemon"
   },
   "build": {
@@ -32,27 +32,15 @@
     "compression": "maximum",
     "win": {
       "icon": "manual-build/assets/logo/logo.png",
+      "signAndEditExecutable": false,
       "target": [
         {
-          "target": "nsis",
+          "target": "dir",
           "arch": [
             "x64"
           ]
         }
       ]
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowElevation": false,
-      "allowToChangeInstallationDirectory": false,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "perMachine": false,
-      "installerHeader": "build/installerHeader.bmp",
-      "installerSidebar": "build/installerSidebar.bmp",
-      "include": "desktop/installer.nsh",
-      "shortcutName": "诸神终应知晓",
-      "uninstallerSidebar": "build/uninstallerSidebar.bmp"
     },
     "linux": {
       "icon": "manual-build/assets/logo/logo.png",

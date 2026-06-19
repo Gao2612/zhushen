@@ -15,12 +15,7 @@
   "extraMetadata": {
     "main": "installer-shell/main.js"
   },
-  "extraResources": [
-    {
-      "from": "releases/desktop/zhushen-archive-1.1.0-win-x64.exe",
-      "to": "installer/zhushen-archive-1.1.0-win-x64.exe"
-    }
-  ],
+  "extraResources": [],
   "asar": true,
   "compression": "maximum",
   "win": {

@@ -534,7 +534,7 @@
         }
         window.ZhushenDesktop.requestUninstall().then(function (result) {
           if (!result || result.started) {
-            updateDesktopStatus('卸载器已启动');
+            updateDesktopStatus('卸载流程已启动');
             return;
           }
           updateDesktopStatus('未启动卸载器：' + (result.reason || '已取消'));

@@ -161,7 +161,7 @@ const artists = [
   ['阿钰钰钰', '玩家-二创图/阿钰钰钰/', ['阿钰钰钰拉夏1.gif', '阿钰钰钰拉夏2.gif', '阿钰钰钰夕岚1.png']],
   ['初月wy', '玩家-二创图/初月wy/', ['初月wy夕岚1.png', '初月wy夕岚2.png']],
   ['电子水泥沥灰', '玩家-二创图/电子水泥沥灰/', ['电子水泥沥灰夕岚1.jpeg']],
-  ['范斯', '玩家-二创图/范斯/', ['范斯拉夏1.jpeg', '范斯拉夏2.jpeg', '范斯拉夏3.png', '范斯拉夏4.jpeg', '范斯拉夏5.jpeg', '范斯拉夏6.jpeg', '范斯拉夏7.jpeg']],
+  ['范斯梅耶', '玩家-二创图/范斯梅耶/', ['范斯梅耶拉夏1.jpeg', '范斯梅耶拉夏2.jpeg', '范斯梅耶拉夏3.png', '范斯梅耶拉夏4.jpeg', '范斯梅耶拉夏5.jpeg', '范斯梅耶拉夏6.jpeg', '范斯梅耶拉夏7.jpeg']],
   ['共创（已获取画师同意）', '玩家-二创图/共创（已获取画师同意）/', ['共创（已获取画师同意）1.jpeg', '共创（已获取画师同意）2.jpeg', '共创（已获取画师同意）3.jpeg', '共创（已获取画师同意）4.jpeg', '共创（已获取画师同意）5.jpeg', '共创（已获取画师同意）6.jpeg', '共创（已获取画师同意）7.jpeg', '共创（已获取画师同意）8.jpeg', '共创（已获取画师同意）9.jpeg', '共创（已获取画师同意）11.jpeg', '共创（已获取画师同意）12.jpeg', '共创（已获取画师同意）13.jpeg']],
   ['精神病系教主', '玩家-二创图/精神病系教主/', ['精神病系教主拉夏1.jpeg', '精神病系教主拉夏2.jpeg', '精神病系教主拉夏3.jpeg']],
   ['莲生', '玩家-二创图/莲生/', ['莲生夕岚1.png', '莲生夕岚2.png']],
@@ -308,7 +308,7 @@ const officialPosts = [
   {
     id: '499956228982573909',
     title: '官方玩家群现已建立',
-    date: '2024/03/06',
+    date: '2024/01/25',
     sourceName: '诸神终应知晓',
     category: '社群',
     sourceUrl: 'https://www.taptap.cn/moment/499956228982573909?group_id=708622',
@@ -511,6 +511,24 @@ const officialPosts = [
     media: []
   }
 ];
+
+function dateValue(date) {
+  const parts = date.split('/').map((part) => Number(part));
+  const year = parts[0] || 1970;
+  const month = parts[1] || 1;
+  const day = parts[2] || 1;
+  return new Date(year, month - 1, day).getTime();
+}
+
+function officialPostsByDate() {
+  return officialPosts
+    .map((post, index) => ({ post, index }))
+    .sort((left, right) => {
+      const dateDiff = dateValue(left.post.date) - dateValue(right.post.date);
+      return dateDiff || left.index - right.index;
+    })
+    .map((entry) => entry.post);
+}
 
 function detectCharacter(file) {
   for (const name of ['阿塔尔', '德赫奴', '拉夏', '梅赛德斯', '夕岚']) {
@@ -802,7 +820,7 @@ function officialPostCard(post, index) {
       <ul>
         ${post.points.map((point) => `<li>${point}</li>`).join('')}
       </ul>
-      ${renderOfficialMedia(post)}
+${renderOfficialMedia(post)}
       <div class="official-actions">
         <span class="official-source">${post.sourceLabel || '来源：TapTap 官方动态，已整理为应用内档案'}</span>
         <button class="fav-button" data-favorite="official:${post.id}">收藏</button>
@@ -812,7 +830,8 @@ function officialPostCard(post, index) {
 }
 
 function officialPage() {
-  const categories = ['全部', ...Array.from(new Set(officialPosts.map((post) => post.category)))];
+  const posts = officialPostsByDate();
+  const categories = ['全部', ...Array.from(new Set(posts.map((post) => post.category)))];
   const body = `<section class="scroll-panel">
     <p class="eyebrow">Official Archive</p>
     <h2>官方动态卡片</h2>
@@ -822,7 +841,7 @@ function officialPage() {
     ${categories.map((name) => `<button data-filter="${name}">${name}</button>`).join('')}
   </section>
   <section class="official-timeline">
-    ${officialPosts.map((post, index) => officialPostCard(post, index)).join('')}
+    ${posts.map((post, index) => officialPostCard(post, index)).join('')}
   </section>`;
   return htmlPage({
     title: '官方发布 · 诸神终应知晓',

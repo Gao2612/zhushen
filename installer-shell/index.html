@@ -9,8 +9,8 @@
     html, body { margin: 0; height: 100%; overflow: hidden; }
     body {
       font-family: "Microsoft YaHei UI", "PingFang SC", sans-serif;
-      color: #f6eddc;
-      background: #07070b;
+      color: #f7ead4;
+      background: #06070b;
     }
     .bg {
       position: fixed;
@@ -18,122 +18,185 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      opacity: .5;
-      filter: saturate(.86) contrast(1.08);
+      opacity: .56;
+      filter: saturate(.88) contrast(1.08);
     }
     .shade {
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(circle at 18% 16%, rgba(240, 215, 140, .25), transparent 26%),
-        linear-gradient(90deg, rgba(7,7,11,.96), rgba(7,7,11,.72) 46%, rgba(7,7,11,.34)),
-        linear-gradient(0deg, rgba(7,7,11,.94), transparent 48%);
+        linear-gradient(90deg, rgba(4,5,8,.92), rgba(4,5,8,.62) 46%, rgba(4,5,8,.18)),
+        linear-gradient(0deg, rgba(4,5,8,.96), rgba(4,5,8,.42) 48%, rgba(4,5,8,.7));
     }
     main {
       position: relative;
       z-index: 2;
       display: grid;
-      grid-template-columns: minmax(360px, 560px) 1fr;
-      min-height: 100vh;
-      gap: 44px;
-      padding: 64px;
+      grid-template-columns: minmax(420px, 1fr) 420px;
+      height: 100vh;
+      padding: 52px;
+      gap: 40px;
     }
-    .brand {
-      align-self: center;
-      display: grid;
-      gap: 22px;
+    .hero {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      min-width: 0;
+      padding-bottom: 18px;
     }
     .eyebrow {
-      margin: 0;
-      color: #d4a754;
-      letter-spacing: .32em;
-      text-transform: uppercase;
+      margin: 0 0 14px;
+      color: #f0d78c;
       font-size: 13px;
+      letter-spacing: .28em;
+      text-transform: uppercase;
     }
     h1 {
       margin: 0;
       color: #fff7e8;
-      font-size: clamp(58px, 8vw, 112px);
-      line-height: 1;
+      font-size: clamp(60px, 8vw, 108px);
+      line-height: .96;
       letter-spacing: .04em;
-      text-shadow: 0 14px 48px rgba(0,0,0,.72);
+      text-shadow: 0 16px 48px rgba(0,0,0,.78);
     }
-    .desc {
-      max-width: 500px;
-      margin: 0;
-      color: rgba(246, 237, 220, .72);
-      line-height: 1.9;
+    .subtitle {
+      max-width: 560px;
+      margin: 20px 0 0;
+      color: rgba(247,234,212,.76);
       font-size: 15px;
+      line-height: 1.9;
+    }
+    .meta {
+      display: flex;
+      gap: 10px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+    .meta span {
+      padding: 8px 12px;
+      border: 1px solid rgba(240,215,140,.18);
+      border-radius: 999px;
+      color: rgba(247,234,212,.72);
+      background: rgba(6,7,11,.46);
+      backdrop-filter: blur(12px);
+      font-size: 12px;
     }
     .panel {
-      position: relative;
       align-self: end;
-      justify-self: end;
-      width: min(440px, 100%);
-      padding: 28px;
-      border: 1px solid rgba(212, 167, 84, .28);
-      border-radius: 30px;
-      background: rgba(10, 10, 16, .78);
-      box-shadow: 0 24px 90px rgba(0,0,0,.48);
-      backdrop-filter: blur(18px);
+      display: grid;
+      gap: 18px;
+      padding: 26px;
+      border: 1px solid rgba(240,215,140,.22);
+      border-radius: 22px;
+      background: rgba(9,10,15,.86);
+      box-shadow: 0 28px 92px rgba(0,0,0,.52);
+      backdrop-filter: blur(22px);
     }
-    .panel h2 { margin: 0 48px 10px 0; color: #f0d78c; }
-    .panel p {
-      margin: 0 0 20px;
-      color: rgba(246,237,220,.65);
-      line-height: 1.7;
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .panel h2 {
+      margin: 0;
+      color: #f0d78c;
+      font-size: 20px;
+      letter-spacing: .04em;
+    }
+    .state {
+      min-width: 74px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      text-align: center;
+      color: #101014;
+      background: #f0d78c;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .path-box {
+      display: grid;
+      gap: 8px;
+    }
+    .path-box label {
+      color: rgba(247,234,212,.58);
+      font-size: 12px;
+    }
+    .path-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+    .install-path {
+      min-width: 0;
+      padding: 13px 14px;
+      border: 1px solid rgba(240,215,140,.15);
+      border-radius: 12px;
+      color: rgba(247,234,212,.76);
+      background: rgba(255,255,255,.045);
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     button {
-      min-height: 54px;
-      border: 1px solid rgba(212, 167, 84, .28);
-      border-radius: 16px;
+      min-height: 44px;
+      border: 1px solid rgba(240,215,140,.26);
+      border-radius: 12px;
       color: #f0d78c;
-      background: rgba(212, 167, 84, .08);
+      background: rgba(240,215,140,.08);
       font: inherit;
       cursor: pointer;
     }
     button:hover {
-      border-color: rgba(240, 215, 140, .52);
-      background: rgba(212, 167, 84, .14);
+      border-color: rgba(240,215,140,.54);
+      background: rgba(240,215,140,.14);
     }
-    button.primary {
+    button:disabled {
+      opacity: .48;
+      cursor: default;
+    }
+    .primary {
+      min-height: 58px;
       width: 100%;
       color: #100b04;
+      border: 0;
       background: linear-gradient(135deg, #d4a754, #f0d78c);
-      font-weight: 800;
+      font-weight: 900;
+      letter-spacing: .08em;
+      box-shadow: 0 18px 48px rgba(212,167,84,.24);
     }
-    .gear {
-      position: absolute;
-      top: 22px;
-      right: 22px;
-      width: 42px;
-      min-height: 42px;
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .danger {
+      color: #f2aaa1;
+      border-color: rgba(166,60,50,.5);
+      background: rgba(166,60,50,.14);
+    }
+    .progress {
+      display: grid;
+      gap: 10px;
+    }
+    .track {
+      height: 8px;
+      overflow: hidden;
       border-radius: 999px;
-      font-size: 20px;
-      line-height: 1;
+      background: rgba(255,255,255,.12);
     }
-    .tools {
-      position: absolute;
-      top: 72px;
-      right: 22px;
-      display: none;
-      width: min(260px, calc(100% - 44px));
-      padding: 12px;
-      border: 1px solid rgba(212, 167, 84, .25);
-      border-radius: 18px;
-      background: rgba(7, 7, 11, .94);
-      box-shadow: 0 18px 56px rgba(0,0,0,.5);
-    }
-    .tools.open { display: grid; gap: 10px; }
-    .tools button { min-height: 46px; border-radius: 14px; }
-    .tools button.danger {
-      color: #f3b7ae;
-      border-color: rgba(139, 46, 40, .58);
-      background: rgba(139, 46, 40, .18);
+    .bar {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #9f7a22, #f0d78c);
+      transition: width .25s ease;
     }
     .status {
-      margin-top: 18px;
-      color: rgba(246,237,220,.58);
+      min-height: 42px;
+      color: rgba(247,234,212,.62);
       font-size: 13px;
       line-height: 1.7;
       word-break: break-all;
@@ -150,57 +213,122 @@
     playsinline></video>
   <div class="shade"></div>
   <main>
-    <section class="brand">
-      <p class="eyebrow">Abyss Knights Archive</p>
+    <section class="hero">
+      <p class="eyebrow">Archive Installer</p>
       <h1>诸神终应知晓</h1>
-      <p class="desc">
-        安装桌面客户端，进入玩家自制史记档案馆。
-        安装目录与卸载入口已收纳在右侧齿轮中。
+      <p class="subtitle">
+        玩家自制史记档案馆安装器。安装完成后可从桌面或开始菜单进入离线档案，
+        所有安装、启动与卸载操作均由本安装器直接管理。
       </p>
+      <div class="meta">
+        <span>离线资料馆</span>
+        <span>官方物料整理</span>
+        <span>桌面客户端</span>
+      </div>
     </section>
     <section class="panel">
-      <button class="gear" id="gear" aria-label="更多工具">⚙</button>
-      <div class="tools" id="tools">
-        <button id="open">打开安装目录</button>
-        <button class="danger" id="uninstall">卸载桌面客户端</button>
+      <div class="panel-head">
+        <h2>游戏安装</h2>
+        <div class="state" id="state">读取中</div>
       </div>
-      <h2>汇流地档案馆</h2>
-      <p>安装桌面客户端，或继续管理已经安装的本地档案馆。</p>
-      <button class="primary" id="install">安装桌面客户端</button>
-      <div class="status" id="status">正在读取状态...</div>
+      <div class="path-box">
+        <label>安装位置</label>
+        <div class="path-row">
+          <div class="install-path" id="installPath">正在读取...</div>
+          <button id="choose">更改</button>
+        </div>
+      </div>
+      <div class="progress">
+        <div class="track"><div class="bar" id="bar"></div></div>
+        <div class="status" id="status">正在读取状态...</div>
+      </div>
+      <button class="primary" id="install">安装</button>
+      <div class="actions">
+        <button id="launch">启动</button>
+        <button id="open">目录</button>
+        <button class="danger" id="uninstall">卸载</button>
+      </div>
     </section>
   </main>
   <script>
+    const stateNode = document.getElementById('state');
+    const pathNode = document.getElementById('installPath');
     const statusNode = document.getElementById('status');
-    const toolsNode = document.getElementById('tools');
+    const barNode = document.getElementById('bar');
+    const installButton = document.getElementById('install');
+    const launchButton = document.getElementById('launch');
+    const openButton = document.getElementById('open');
+    const uninstallButton = document.getElementById('uninstall');
+    const chooseButton = document.getElementById('choose');
+
+    let installed = false;
+    let busy = false;
+
     const setStatus = (text) => { statusNode.textContent = text; };
+    const setProgress = (percent) => {
+      barNode.style.width = Math.max(0, Math.min(100, Number(percent) || 0)) + '%';
+    };
+    const setBusy = (value) => {
+      busy = value;
+      installButton.disabled = value;
+      chooseButton.disabled = value || installed;
+      uninstallButton.disabled = value || !installed;
+      launchButton.disabled = value || !installed;
+      openButton.disabled = value || !installed;
+    };
+    const syncButtons = () => {
+      stateNode.textContent = installed ? '已安装' : '未安装';
+      installButton.textContent = installed ? '重新安装' : '立即安装';
+      setBusy(false);
+    };
 
     async function refresh() {
       const status = await window.ZhushenInstaller.getStatus();
-      setStatus(status.installed
-        ? '已安装：' + status.installDir
-        : '尚未安装桌面客户端。');
+      installed = status.installed;
+      pathNode.textContent = status.installDir;
+      setProgress(installed ? 100 : 0);
+      setStatus(installed
+        ? '客户端已就绪，可以直接启动或管理本地文件。'
+        : status.payloadExists
+          ? '准备就绪，点击立即安装。'
+          : '未找到内置客户端资源，请重新构建安装器。');
+      syncButtons();
     }
 
-    document.getElementById('gear').addEventListener('click', () => {
-      toolsNode.classList.toggle('open');
+    window.ZhushenInstaller.onProgress((payload) => {
+      setProgress(payload.percent);
+      setStatus(payload.message);
     });
 
-    document.getElementById('install').addEventListener('click', async () => {
-      const started = await window.ZhushenInstaller.install();
-      setStatus(started
-        ? '安装器已启动，请按安装器提示继续。'
-        : '未找到实际安装包。');
+    chooseButton.addEventListener('click', async () => {
+      const installDir = await window.ZhushenInstaller.chooseInstallDir();
+      pathNode.textContent = installDir;
+      setStatus('安装位置已更新。');
     });
 
-    document.getElementById('uninstall').addEventListener('click', async () => {
-      const started = await window.ZhushenInstaller.uninstall();
-      setStatus(started
-        ? '卸载器已启动，请按卸载器提示继续。'
-        : '未找到卸载器。');
+    installButton.addEventListener('click', async () => {
+      setBusy(true);
+      setProgress(0);
+      setStatus('正在开始安装...');
+      const ok = await window.ZhushenInstaller.install();
+      installed = ok;
+      await refresh();
     });
 
-    document.getElementById('open').addEventListener('click', async () => {
+    uninstallButton.addEventListener('click', async () => {
+      setBusy(true);
+      setStatus('正在卸载...');
+      const ok = await window.ZhushenInstaller.uninstall();
+      installed = !ok;
+      await refresh();
+    });
+
+    launchButton.addEventListener('click', async () => {
+      const ok = await window.ZhushenInstaller.launch();
+      setStatus(ok ? '客户端已启动。' : '未找到可启动的客户端。');
+    });
+
+    openButton.addEventListener('click', async () => {
       const opened = await window.ZhushenInstaller.openInstallDir();
       setStatus(opened ? '已打开安装目录。' : '尚未找到安装目录。');
     });

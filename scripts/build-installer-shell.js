@@ -4,16 +4,11 @@ const { spawnSync } = require('child_process');
 
 const rootDir = resolve(__dirname, '..');
 const desktopUnpackedDir = join(rootDir, 'releases', 'desktop', 'win-unpacked');
-const desktopInstallerPath = join(
-  rootDir,
-  'releases',
-  'desktop',
-  'zhushen-archive-1.1.0-win-x64.exe'
-);
 const buildRootDir = join(rootDir, 'releases', 'installer-shell-build');
 const prepackagedDir = join(buildRootDir, 'prepackaged');
 const appTempDir = join(buildRootDir, 'app-temp');
 const appAsarPath = join(prepackagedDir, 'resources', 'app.asar');
+const desktopPayloadDir = join(prepackagedDir, 'resources', 'desktop-payload');
 const electronExePath = join(prepackagedDir, 'zhushen-archive.exe');
 const shellExePath = join(prepackagedDir, 'zhushen-installer.exe');
 const asarCommand = join(
@@ -52,16 +47,33 @@ function run(command, args) {
   }
 }
 
-function copyAppFiles() {
-  cpSync(
-    join(rootDir, 'installer-shell'),
-    join(appTempDir, 'installer-shell'),
-    { recursive: true }
+function copyDirectory(source, target) {
+  mkdirSync(target, { recursive: true });
+  if (process.platform !== 'win32') {
+    cpSync(source, target, { recursive: true });
+    return;
+  }
+  const result = spawnSync(
+    'robocopy',
+    [source, target, '/MIR', '/NFL', '/NDL', '/NJH', '/NJS', '/NP'],
+    {
+      cwd: rootDir,
+      stdio: 'inherit',
+      shell: false
+    }
   );
-  mkdirSync(join(appTempDir, 'installer'), { recursive: true });
-  cpSync(
-    desktopInstallerPath,
-    join(appTempDir, 'installer', 'zhushen-archive-1.1.0-win-x64.exe')
+  if (result.error) {
+    throw result.error;
+  }
+  if (result.status >= 8) {
+    throw new Error('目录复制失败：' + source + ' -> ' + target);
+  }
+}
+
+function copyAppFiles() {
+  copyDirectory(
+    join(rootDir, 'installer-shell'),
+    join(appTempDir, 'installer-shell')
   );
   cpSync(
     join(
@@ -99,7 +111,10 @@ function copyAppFiles() {
 function preparePrepackagedApp() {
   removePath(prepackagedDir);
   removePath(appTempDir);
-  cpSync(desktopUnpackedDir, prepackagedDir, { recursive: true });
+  copyDirectory(desktopUnpackedDir, prepackagedDir);
+  removePath(desktopPayloadDir);
+  mkdirSync(desktopPayloadDir, { recursive: true });
+  copyDirectory(desktopUnpackedDir, desktopPayloadDir);
   removePath(appAsarPath);
   if (existsSync(electronExePath)) {
     rmSync(electronExePath, { force: true });
@@ -107,18 +122,6 @@ function preparePrepackagedApp() {
   cpSync(
     join(desktopUnpackedDir, 'zhushen-archive.exe'),
     shellExePath
-  );
-  mkdirSync(join(prepackagedDir, 'resources', 'installer'), {
-    recursive: true
-  });
-  cpSync(
-    desktopInstallerPath,
-    join(
-      prepackagedDir,
-      'resources',
-      'installer',
-      'zhushen-archive-1.1.0-win-x64.exe'
-    )
   );
   mkdirSync(
     join(
@@ -150,7 +153,6 @@ function buildPortableShell() {
 }
 
 assertFile(desktopUnpackedDir, '桌面端解包目录');
-assertFile(desktopInstallerPath, '桌面端安装包');
 assertFile(asarCommand, 'asar 命令');
 assertFile(builderCommand, 'electron-builder 命令');
 preparePrepackagedApp();

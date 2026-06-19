@@ -1,24 +1,61 @@
 const { app, BrowserWindow, dialog, ipcMain, shell } = require('electron');
 const {
   appendFileSync,
-  copyFileSync,
+  cpSync,
   existsSync,
   mkdirSync,
-  readdirSync,
-  statSync
+  readFileSync,
+  rmSync,
+  writeFileSync
 } = require('fs');
-const { join } = require('path');
+const { basename, dirname, join } = require('path');
 const { spawn } = require('child_process');
 
 const appRoot = __dirname;
-const installerFileName = 'zhushen-archive-1.1.0-win-x64.exe';
+const productName = '诸神终应知晓';
+const executableName = 'zhushen-archive.exe';
+const configFileName = 'installer-state.json';
+
+let mainWindow = null;
 
 const getLocalAppData = () => {
   return process.env.LOCALAPPDATA
     || join(app.getPath('home'), 'AppData', 'Local');
 };
 
-const writeInstallerLog = (eventName, fields) => {
+const getDefaultInstallDir = () => {
+  return join(getLocalAppData(), 'Programs', 'zhushen-archive');
+};
+
+const getConfigPath = () => {
+  return join(app.getPath('userData'), configFileName);
+};
+
+const readConfig = () => {
+  try {
+    return JSON.parse(readFileSync(getConfigPath(), 'utf8'));
+  } catch (error) {
+    return {};
+  }
+};
+
+const writeConfig = (config) => {
+  mkdirSync(app.getPath('userData'), { recursive: true });
+  writeFileSync(getConfigPath(), JSON.stringify(config, null, 2), 'utf8');
+};
+
+const getInstallDir = () => {
+  const config = readConfig();
+  return config.installDir || getDefaultInstallDir();
+};
+
+const setInstallDir = (installDir) => {
+  const config = readConfig();
+  config.installDir = installDir;
+  writeConfig(config);
+};
+
+const writeInstallerLog = (eventName, fields = {}) => {
   const logDir = join(app.getPath('userData'), 'logs');
   mkdirSync(logDir, { recursive: true });
   appendFileSync(
@@ -32,63 +69,95 @@ const writeInstallerLog = (eventName, fields) => {
   );
 };
 
-const getInstallerCandidates = () => {
-  const resourcesPath = process.resourcesPath || '';
-  const paths = [
-    join(resourcesPath, 'installer', installerFileName),
-    join(resourcesPath, 'app.asar.unpacked', 'installer', installerFileName),
-    join(appRoot, '..', 'installer', installerFileName),
-    join(appRoot, 'installer', installerFileName)
-  ];
-  return [...new Set(paths)];
+const sendProgress = (step, percent, message) => {
+  if (!mainWindow || mainWindow.isDestroyed()) {
+    return;
+  }
+  mainWindow.webContents.send('installer:progress', {
+    step,
+    percent,
+    message
+  });
 };
 
-const findBundledInstallerSource = () => {
-  return getInstallerCandidates().find((path) => {
-    return existsSync(path);
+const getPayloadCandidates = () => {
+  const resourcesPath = process.resourcesPath || '';
+  return [
+    join(resourcesPath, 'desktop-payload'),
+    join(resourcesPath, 'app.asar.unpacked', 'desktop-payload'),
+    join(appRoot, '..', 'desktop-payload'),
+    join(appRoot, '..', 'releases', 'desktop', 'win-unpacked')
+  ];
+};
+
+const findPayloadDir = () => {
+  return getPayloadCandidates().find((path) => {
+    return existsSync(join(path, executableName));
   }) || '';
 };
 
-const copyInstallerFromArchive = (sourcePath) => {
-  const targetDir = join(app.getPath('temp'), 'zhushen-installer-package');
-  const targetPath = join(targetDir, installerFileName);
-  mkdirSync(targetDir, { recursive: true });
-  const shouldCopy = !existsSync(targetPath)
-    || statSync(sourcePath).size !== statSync(targetPath).size;
-  if (shouldCopy) {
-    copyFileSync(sourcePath, targetPath);
-  }
-  return targetPath;
+const getAppExePath = () => {
+  return join(getInstallDir(), executableName);
 };
 
-const resolveRunnableInstaller = () => {
-  const sourcePath = findBundledInstallerSource();
-  if (!sourcePath) {
-    return '';
-  }
-  if (!sourcePath.includes('.asar')) {
-    return sourcePath;
-  }
-  return copyInstallerFromArchive(sourcePath);
+const getShortcutPaths = () => {
+  const startMenuRoot = process.env.APPDATA
+    ? join(process.env.APPDATA, 'Microsoft', 'Windows', 'Start Menu', 'Programs')
+    : '';
+  return [
+    join(app.getPath('desktop'), `${productName}.lnk`),
+    startMenuRoot ? join(startMenuRoot, `${productName}.lnk`) : ''
+  ].filter(Boolean);
 };
 
-const getInstallDir = () => {
-  return join(getLocalAppData(), 'Programs', 'zhushen-archive');
+const quotePowerShell = (value) => {
+  return `'${String(value).replace(/'/g, "''")}'`;
 };
 
-const findInstalledUninstaller = () => {
-  const installDir = getInstallDir();
-  if (!existsSync(installDir)) {
-    return '';
-  }
-  const names = readdirSync(installDir);
-  const matched = names.find((name) => {
-    return /^uninstall.*\.exe$/i.test(name) || /卸载.*\.exe$/i.test(name);
+const runPowerShell = (script) => {
+  const result = spawn(
+    'powershell.exe',
+    ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', script],
+    {
+      stdio: 'ignore',
+      windowsHide: true
+    }
+  );
+  return new Promise((resolve) => {
+    result.on('exit', (code) => resolve(code === 0));
+    result.on('error', () => resolve(false));
   });
-  return matched ? join(installDir, matched) : '';
 };
 
-const runDetached = (filePath, args) => {
+const createShortcut = async (shortcutPath, targetPath) => {
+  mkdirSync(dirname(shortcutPath), { recursive: true });
+  const workingDirectory = dirname(targetPath);
+  const script = [
+    '$ErrorActionPreference = "Stop"',
+    '$shell = New-Object -ComObject WScript.Shell',
+    `$shortcut = $shell.CreateShortcut(${quotePowerShell(shortcutPath)})`,
+    `$shortcut.TargetPath = ${quotePowerShell(targetPath)}`,
+    `$shortcut.WorkingDirectory = ${quotePowerShell(workingDirectory)}`,
+    `$shortcut.IconLocation = ${quotePowerShell(targetPath)}`,
+    '$shortcut.Save()'
+  ].join('; ');
+  return await runPowerShell(script);
+};
+
+const createShortcuts = async () => {
+  const targetPath = getAppExePath();
+  for (const shortcutPath of getShortcutPaths()) {
+    await createShortcut(shortcutPath, targetPath);
+  }
+};
+
+const removeShortcuts = () => {
+  for (const shortcutPath of getShortcutPaths()) {
+    rmSync(shortcutPath, { force: true });
+  }
+};
+
+const runDetached = (filePath, args = []) => {
   if (!existsSync(filePath)) {
     return false;
   }
@@ -101,13 +170,69 @@ const runDetached = (filePath, args) => {
   return true;
 };
 
+const removeInstallDir = () => {
+  const installDir = getInstallDir();
+  if (!existsSync(installDir)) {
+    return;
+  }
+  rmSync(installDir, { recursive: true, force: true });
+};
+
+const installPayload = async () => {
+  const payloadDir = findPayloadDir();
+  const installDir = getInstallDir();
+  writeInstallerLog('install_start', {
+    payloadDir,
+    installDir,
+    payloadCandidates: getPayloadCandidates()
+  });
+  if (!payloadDir) {
+    await dialog.showMessageBox(mainWindow, {
+      type: 'error',
+      title: '未找到安装资源',
+      message: '安装器中没有包含桌面客户端资源，请重新构建推荐安装器。'
+    });
+    return false;
+  }
+
+  sendProgress('prepare', 8, '正在准备安装目录');
+  mkdirSync(dirname(installDir), { recursive: true });
+  removeInstallDir();
+  mkdirSync(installDir, { recursive: true });
+
+  sendProgress('copy', 34, '正在写入桌面客户端文件');
+  cpSync(payloadDir, installDir, { recursive: true });
+
+  sendProgress('shortcut', 78, '正在创建桌面和开始菜单入口');
+  await createShortcuts();
+
+  sendProgress('complete', 100, '安装完成');
+  writeInstallerLog('install_complete', {
+    installDir,
+    executable: getAppExePath()
+  });
+  return true;
+};
+
+const uninstallPayload = async () => {
+  const installDir = getInstallDir();
+  writeInstallerLog('uninstall_start', { installDir });
+  sendProgress('uninstall', 25, '正在移除快捷方式');
+  removeShortcuts();
+  sendProgress('uninstall', 68, '正在删除本地客户端文件');
+  removeInstallDir();
+  sendProgress('complete', 100, '卸载完成');
+  writeInstallerLog('uninstall_complete', { installDir });
+  return true;
+};
+
 const createWindow = () => {
-  const window = new BrowserWindow({
-    width: 1120,
-    height: 700,
-    minWidth: 940,
-    minHeight: 600,
-    title: '诸神终应知晓',
+  mainWindow = new BrowserWindow({
+    width: 1180,
+    height: 720,
+    minWidth: 980,
+    minHeight: 620,
+    title: productName,
     autoHideMenuBar: true,
     backgroundColor: '#07070b',
     webPreferences: {
@@ -116,60 +241,91 @@ const createWindow = () => {
       preload: join(appRoot, 'preload.js')
     }
   });
-  window.loadFile(join(appRoot, 'index.html'));
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
+  mainWindow.loadFile(join(appRoot, 'index.html'));
 };
 
 ipcMain.handle('installer:status', () => {
   const installDir = getInstallDir();
-  const appExe = join(installDir, 'zhushen-archive.exe');
-  const installerSource = findBundledInstallerSource();
+  const payloadDir = findPayloadDir();
+  const appExe = getAppExePath();
   writeInstallerLog('status', {
     resourcesPath: process.resourcesPath || '',
     appRoot,
-    installerSource,
-    installerCandidates: getInstallerCandidates()
+    payloadDir,
+    payloadCandidates: getPayloadCandidates()
   });
   return {
-    installerExists: Boolean(installerSource),
+    payloadExists: Boolean(payloadDir),
     installed: existsSync(appExe),
     installDir,
-    installerPath: installerSource,
-    uninstallerPath: findInstalledUninstaller()
+    appExe,
+    version: app.getVersion()
   };
 });
 
-ipcMain.handle('installer:install', async () => {
-  const runnableInstaller = resolveRunnableInstaller();
-  writeInstallerLog('install', {
-    resourcesPath: process.resourcesPath || '',
-    appRoot,
-    runnableInstaller,
-    installerCandidates: getInstallerCandidates()
+ipcMain.handle('installer:choose-install-dir', async () => {
+  const result = await dialog.showOpenDialog(mainWindow, {
+    title: '选择安装位置',
+    defaultPath: dirname(getInstallDir()),
+    properties: ['openDirectory', 'createDirectory']
   });
-  if (!runnableInstaller) {
-    await dialog.showMessageBox({
-      type: 'error',
-      title: '未找到安装包',
-      message: '安装器中没有包含实际安装包，请重新下载推荐安装器。'
+  if (result.canceled || result.filePaths.length === 0) {
+    return getInstallDir();
+  }
+  const selectedDir = join(result.filePaths[0], basename(getDefaultInstallDir()));
+  setInstallDir(selectedDir);
+  return selectedDir;
+});
+
+ipcMain.handle('installer:install', async () => {
+  try {
+    return await installPayload();
+  } catch (error) {
+    writeInstallerLog('install_failed', {
+      message: error.message,
+      stack: error.stack
     });
+    await dialog.showMessageBox(mainWindow, {
+      type: 'error',
+      title: '安装失败',
+      message: error.message || String(error)
+    });
+    sendProgress('failed', 0, '安装失败');
     return false;
   }
-  runDetached(runnableInstaller, []);
-  return true;
 });
 
 ipcMain.handle('installer:uninstall', async () => {
-  const uninstaller = findInstalledUninstaller();
-  if (!uninstaller) {
-    await dialog.showMessageBox({
-      type: 'info',
-      title: '未找到卸载器',
-      message: '当前电脑尚未安装桌面客户端，或安装目录中没有卸载程序。'
+  try {
+    if (!existsSync(getInstallDir())) {
+      await dialog.showMessageBox(mainWindow, {
+        type: 'info',
+        title: '尚未安装',
+        message: '当前电脑尚未安装桌面客户端。'
+      });
+      return false;
+    }
+    return await uninstallPayload();
+  } catch (error) {
+    writeInstallerLog('uninstall_failed', {
+      message: error.message,
+      stack: error.stack
     });
+    await dialog.showMessageBox(mainWindow, {
+      type: 'error',
+      title: '卸载失败',
+      message: error.message || String(error)
+    });
+    sendProgress('failed', 0, '卸载失败');
     return false;
   }
-  runDetached(uninstaller, []);
-  return true;
+});
+
+ipcMain.handle('installer:launch', () => {
+  return runDetached(getAppExePath());
 });
 
 ipcMain.handle('installer:open-install-dir', async () => {
