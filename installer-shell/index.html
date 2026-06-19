@@ -18,31 +18,40 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      opacity: .56;
-      filter: saturate(.88) contrast(1.08);
+      opacity: .74;
+      filter: saturate(1.05) contrast(1.12);
+    }
+    .poster {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: .72;
+      filter: saturate(1.05) contrast(1.08);
     }
     .shade {
       position: fixed;
       inset: 0;
       background:
-        linear-gradient(90deg, rgba(4,5,8,.92), rgba(4,5,8,.62) 46%, rgba(4,5,8,.18)),
-        linear-gradient(0deg, rgba(4,5,8,.96), rgba(4,5,8,.42) 48%, rgba(4,5,8,.7));
+        linear-gradient(90deg, rgba(4,5,8,.9), rgba(4,5,8,.46) 42%, rgba(4,5,8,.12) 70%, rgba(4,5,8,.86)),
+        linear-gradient(0deg, rgba(4,5,8,.98), rgba(4,5,8,.34) 46%, rgba(4,5,8,.56));
     }
     main {
       position: relative;
       z-index: 2;
       display: grid;
-      grid-template-columns: minmax(420px, 1fr) 420px;
+      grid-template-columns: minmax(440px, 1fr) 392px;
       height: 100vh;
-      padding: 52px;
-      gap: 40px;
+      padding: 44px 56px 78px 64px;
+      gap: 32px;
     }
     .hero {
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
       min-width: 0;
-      padding-bottom: 18px;
+      padding-bottom: 6px;
     }
     .eyebrow {
       margin: 0 0 14px;
@@ -60,11 +69,11 @@
       text-shadow: 0 16px 48px rgba(0,0,0,.78);
     }
     .subtitle {
-      max-width: 560px;
+      max-width: 520px;
       margin: 20px 0 0;
       color: rgba(247,234,212,.76);
-      font-size: 15px;
-      line-height: 1.9;
+      font-size: 14px;
+      line-height: 1.85;
     }
     .meta {
       display: none;
@@ -82,13 +91,13 @@
       font-size: 12px;
     }
     .panel {
-      align-self: end;
+      align-self: center;
       display: grid;
-      gap: 18px;
-      padding: 26px;
+      gap: 14px;
+      padding: 22px;
       border: 1px solid rgba(240,215,140,.22);
-      border-radius: 22px;
-      background: rgba(9,10,15,.86);
+      border-radius: 10px;
+      background: rgba(9,10,15,.78);
       box-shadow: 0 28px 92px rgba(0,0,0,.52);
       backdrop-filter: blur(22px);
     }
@@ -101,7 +110,7 @@
     .panel h2 {
       margin: 0;
       color: #f0d78c;
-      font-size: 20px;
+      font-size: 18px;
       letter-spacing: .04em;
     }
     .state {
@@ -178,9 +187,9 @@
       position: relative;
     }
     .gear {
-      width: 58px;
+      width: 56px;
       min-height: 58px;
-      border-radius: 50%;
+      border-radius: 8px;
       font-size: 24px;
       line-height: 1;
     }
@@ -225,7 +234,7 @@
       transition: width .25s ease;
     }
     .status {
-      min-height: 42px;
+      min-height: 34px;
       color: rgba(247,234,212,.62);
       font-size: 13px;
       line-height: 1.7;
@@ -241,9 +250,77 @@
     .update-info.ready {
       color: #f0d78c;
     }
+    .notice-board {
+      display: grid;
+      gap: 10px;
+      padding-top: 4px;
+    }
+    .notice-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    .notice-tabs button {
+      min-height: 34px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+    .notice-tabs button.active {
+      color: #100b04;
+      background: #f0d78c;
+    }
+    .notice-card {
+      min-height: 82px;
+      padding: 12px;
+      border: 1px solid rgba(240,215,140,.15);
+      border-radius: 8px;
+      background: rgba(255,255,255,.045);
+    }
+    .notice-card h3 {
+      margin: 0 0 6px;
+      color: #fff7e8;
+      font-size: 13px;
+    }
+    .notice-card p {
+      margin: 0;
+      color: rgba(247,234,212,.62);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    .quick-links {
+      position: fixed;
+      left: 48px;
+      right: 48px;
+      bottom: 20px;
+      z-index: 3;
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      color: rgba(247,234,212,.58);
+      font-size: 12px;
+    }
+    .quick-links a,
+    .quick-links button {
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      color: inherit;
+      background: transparent;
+      text-decoration: none;
+    }
+    .quick-links a:hover,
+    .quick-links button:hover {
+      color: #f0d78c;
+      background: transparent;
+    }
   </style>
 </head>
 <body>
+  <img
+    class="poster"
+    src="../manual-build/assets/official-posts/492288870839223557/cover.jpg"
+    alt="">
   <video
     class="bg"
     src="../manual-build/assets/official-posts/492288870839223557/pv.mp4"
@@ -282,6 +359,7 @@
         <div class="track"><div class="bar" id="bar"></div></div>
         <div class="status" id="status">正在读取状态...</div>
       </div>
+      <div class="notice-board" id="noticeBoard"></div>
       <div class="primary-row">
         <button class="primary" id="install">安装</button>
         <div class="settings-menu">
@@ -294,6 +372,7 @@
       </div>
     </section>
   </main>
+  <nav class="quick-links" id="quickLinks"></nav>
   <script>
     const stateNode = document.getElementById('state');
     const pathNode = document.getElementById('installPath');
@@ -305,6 +384,8 @@
     const openButton = document.getElementById('open');
     const uninstallButton = document.getElementById('uninstall');
     const chooseButton = document.getElementById('choose');
+    const noticeBoard = document.getElementById('noticeBoard');
+    const quickLinks = document.getElementById('quickLinks');
     const pathBox = document.querySelector('.path-box');
     const spaceNode = document.createElement('div');
     const updateNode = document.createElement('div');
@@ -330,6 +411,70 @@
     managePanel.insertBefore(repairButton, reinstallButton);
     managePanel.insertBefore(updateButton, repairButton);
     managePanel.insertBefore(checkUpdateButton, updateButton);
+
+    const notices = [
+      {
+        tab: '\u6700\u65b0',
+        title: '\u542f\u52a8\u5668\u66f4\u65b0\u7cfb\u7edf\u5df2\u5c31\u7eea',
+        body: '\u652f\u6301\u68c0\u67e5\u66f4\u65b0\u3001\u6587\u4ef6\u7ea7\u4fee\u590d\u3001SHA256 \u6821\u9a8c\u548c\u78c1\u76d8\u7a7a\u95f4\u68c0\u6d4b\u3002'
+      },
+      {
+        tab: '\u7248\u672c',
+        title: 'v1.1.0 build 20260619',
+        body: '\u672c\u7248\u672c\u4f18\u5316\u5b89\u88c5\u3001\u4fee\u590d\u3001\u91cd\u88c5\u548c\u66f4\u65b0\u6d41\u7a0b\uff0c\u4e3b\u6309\u94ae\u805a\u7126\u542f\u52a8\u4f53\u9a8c\u3002'
+      },
+      {
+        tab: '\u7ef4\u62a4',
+        title: '\u79bb\u7ebf\u6863\u6848\u7ef4\u62a4\u63d0\u793a',
+        body: '\u5982\u679c\u6587\u4ef6\u7f3a\u5931\u6216\u542f\u52a8\u5f02\u5e38\uff0c\u8bf7\u4ece\u9f7f\u8f6e\u83dc\u5355\u6267\u884c\u4fee\u590d\u3002'
+      }
+    ];
+
+    function renderNotice(activeIndex = 0) {
+      noticeBoard.innerHTML = '';
+      const tabs = document.createElement('div');
+      const card = document.createElement('div');
+      const active = notices[activeIndex];
+      tabs.className = 'notice-tabs';
+      card.className = 'notice-card';
+      notices.forEach((notice, index) => {
+        const button = document.createElement('button');
+        button.textContent = notice.tab;
+        button.classList.toggle('active', index === activeIndex);
+        button.addEventListener('click', () => renderNotice(index));
+        tabs.appendChild(button);
+      });
+      card.innerHTML = '<h3></h3><p></p>';
+      card.querySelector('h3').textContent = active.title;
+      card.querySelector('p').textContent = active.body;
+      noticeBoard.appendChild(tabs);
+      noticeBoard.appendChild(card);
+    }
+
+    function addQuickLink(label, url) {
+      const link = document.createElement('button');
+      link.textContent = label;
+      link.addEventListener('click', () => {
+        window.ZhushenInstaller.openExternal(url);
+      });
+      quickLinks.appendChild(link);
+    }
+
+    function renderQuickLinks() {
+      quickLinks.innerHTML = '';
+      addQuickLink('TapTap', 'https://www.taptap.cn/app/513986');
+      addQuickLink('\u53cd\u9988', 'https://docs.qq.com/sheet/DVXVaQWZOcUFyRlNr?tab=BB08J2');
+      addQuickLink('\u66f4\u65b0\u9875', 'https://github.com/Gao2612/zhushen/releases/latest');
+      const group = document.createElement('span');
+      group.textContent = 'QQ\u7fa4 30340208';
+      quickLinks.appendChild(group);
+      const settings = document.createElement('button');
+      settings.textContent = '\u8bbe\u7f6e';
+      settings.addEventListener('click', () => {
+        setManageOpen(true);
+      });
+      quickLinks.appendChild(settings);
+    }
 
     let installed = false;
     let busy = false;
@@ -493,6 +638,8 @@
       await refresh();
     });
 
+    renderNotice();
+    renderQuickLinks();
     refresh();
   </script>
 </body>

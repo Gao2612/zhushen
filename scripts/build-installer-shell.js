@@ -219,6 +219,24 @@ function copyAppFiles() {
     )
   );
   cpSync(
+    join(
+      rootDir,
+      'manual-build',
+      'assets',
+      'official-posts',
+      '492288870839223557',
+      'cover.jpg'
+    ),
+    join(
+      appTempDir,
+      'manual-build',
+      'assets',
+      'official-posts',
+      '492288870839223557',
+      'cover.jpg'
+    )
+  );
+  cpSync(
     join(rootDir, 'manual-build', 'assets', 'logo', 'logo.png'),
     join(appTempDir, 'manual-build', 'assets', 'logo', 'logo.png')
   );

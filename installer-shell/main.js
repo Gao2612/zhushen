@@ -875,6 +875,19 @@ ipcMain.handle('installer:open-install-dir', async () => {
   return true;
 });
 
+ipcMain.handle('installer:open-external', async (event, url) => {
+  const allowed = [
+    'https://www.taptap.cn/app/513986',
+    'https://docs.qq.com/sheet/DVXVaQWZOcUFyRlNr?tab=BB08J2',
+    'https://github.com/Gao2612/zhushen/releases/latest'
+  ];
+  if (!allowed.includes(url)) {
+    return false;
+  }
+  await shell.openExternal(url);
+  return true;
+});
+
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
