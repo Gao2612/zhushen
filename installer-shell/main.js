@@ -776,6 +776,7 @@ const createWindow = () => {
     minWidth: 980,
     minHeight: 620,
     title: productName,
+    frame: false,
     autoHideMenuBar: true,
     backgroundColor: '#07070b',
     webPreferences: {
@@ -958,6 +959,18 @@ ipcMain.handle('installer:open-external', async (event, url) => {
   }
   await shell.openExternal(url);
   return true;
+});
+
+ipcMain.handle('window:minimize', () => {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.minimize();
+  }
+});
+
+ipcMain.handle('window:close', () => {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.close();
+  }
 });
 
 app.whenReady().then(createWindow);

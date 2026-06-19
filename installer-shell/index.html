@@ -37,6 +37,37 @@
         linear-gradient(90deg, rgba(4,5,8,.9), rgba(4,5,8,.46) 42%, rgba(4,5,8,.12) 70%, rgba(4,5,8,.86)),
         linear-gradient(0deg, rgba(4,5,8,.98), rgba(4,5,8,.34) 46%, rgba(4,5,8,.56));
     }
+    .drag-region {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 96px;
+      height: 42px;
+      z-index: 10;
+      -webkit-app-region: drag;
+    }
+    .window-controls {
+      position: fixed;
+      top: 14px;
+      right: 18px;
+      z-index: 12;
+      display: flex;
+      gap: 10px;
+      -webkit-app-region: no-drag;
+    }
+    .window-controls button {
+      width: 28px;
+      min-height: 28px;
+      border: 1px solid rgba(247,234,212,.2);
+      border-radius: 50%;
+      color: rgba(247,234,212,.68);
+      background: rgba(6,7,11,.36);
+      line-height: 1;
+    }
+    .window-controls button:hover {
+      color: #100b04;
+      background: #f0d78c;
+    }
     main {
       position: relative;
       z-index: 2;
@@ -317,6 +348,11 @@
   </style>
 </head>
 <body>
+  <div class="drag-region"></div>
+  <div class="window-controls">
+    <button id="windowMinimize" title="Minimize">-</button>
+    <button id="windowClose" title="Close">×</button>
+  </div>
   <img
     class="poster"
     src="../manual-build/assets/official-posts/492288870839223557/cover.jpg"
@@ -384,6 +420,8 @@
     const openButton = document.getElementById('open');
     const uninstallButton = document.getElementById('uninstall');
     const chooseButton = document.getElementById('choose');
+    const windowMinimizeButton = document.getElementById('windowMinimize');
+    const windowCloseButton = document.getElementById('windowClose');
     const noticeBoard = document.getElementById('noticeBoard');
     const quickLinks = document.getElementById('quickLinks');
     const pathBox = document.querySelector('.path-box');
@@ -411,6 +449,13 @@
     managePanel.insertBefore(repairButton, reinstallButton);
     managePanel.insertBefore(updateButton, repairButton);
     managePanel.insertBefore(checkUpdateButton, updateButton);
+
+    windowMinimizeButton.addEventListener('click', () => {
+      window.ZhushenInstaller.windowMinimize();
+    });
+    windowCloseButton.addEventListener('click', () => {
+      window.ZhushenInstaller.windowClose();
+    });
 
     const notices = [
       {

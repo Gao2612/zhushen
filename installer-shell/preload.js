@@ -14,5 +14,7 @@ contextBridge.exposeInMainWorld('ZhushenInstaller', {
   reinstall: () => ipcRenderer.invoke('installer:reinstall'),
   repair: () => ipcRenderer.invoke('installer:repair'),
   update: () => ipcRenderer.invoke('installer:update'),
-  uninstall: () => ipcRenderer.invoke('installer:uninstall')
+  uninstall: () => ipcRenderer.invoke('installer:uninstall'),
+  windowClose: () => ipcRenderer.invoke('window:close'),
+  windowMinimize: () => ipcRenderer.invoke('window:minimize')
 });
