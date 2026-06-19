@@ -238,6 +238,18 @@ function copyAppFiles() {
       'cover.jpg'
     )
   );
+  mkdirSync(join(appTempDir, 'manual-build', 'assets'), { recursive: true });
+  const coverSourceDir = join(rootDir, 'manual-build', 'assets', 'zy');
+  const coverTargetDir = join(appTempDir, 'manual-build', 'assets', 'zy');
+  mkdirSync(coverTargetDir, { recursive: true });
+  for (const coverName of [
+    '群友笑话合集.jpg',
+    '玩家二创.jpg',
+    '诸神终应知晓概念图.jpg',
+    '诸神终应知晓角色设定.jpg'
+  ]) {
+    cpSync(join(coverSourceDir, coverName), join(coverTargetDir, coverName));
+  }
   cpSync(
     join(rootDir, 'manual-build', 'assets', 'logo', 'logo.png'),
     join(appTempDir, 'manual-build', 'assets', 'logo', 'logo.png')
