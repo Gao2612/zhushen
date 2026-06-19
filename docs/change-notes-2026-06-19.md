@@ -130,3 +130,14 @@ C:\Windows\System32\drivers\etc\hosts.zhushen-backup-20260619112803
 - Launcher UI:
   - keeps the main installed-state button as Launch;
   - gear menu now includes Check update, Update, Repair, Reinstall, Directory, and Uninstall.
+## 2026-06-19 Installer / launcher split
+
+- Split the daily launcher from the first-run installer.
+- Added `launcher-shell/` as a lightweight Electron launcher shell.
+- Installer now deploys:
+  - `game/` for the desktop archive client;
+  - `launcher/` for `zhushen-launcher.exe`.
+- Desktop and Start Menu shortcuts now target the installed launcher instead of the large installer package.
+- The installed launcher infers the install root from its own `launcher/` directory and launches `game/zhushen-archive.exe`.
+- The installer still owns first install and embedded-payload repair; the lightweight launcher uses remote manifest update/repair behavior.
+- Build flow now creates `releases/launcher-shell/win-unpacked` before packaging the installer.

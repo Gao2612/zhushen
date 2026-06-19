@@ -23,5 +23,6 @@ releases/pc/zhushen-pc-client-v*/
 releases/desktop/
 releases/installer-shell/
 releases/installer-shell-build/
+releases/launcher-shell/
 releases/update/
 releases/update-current/

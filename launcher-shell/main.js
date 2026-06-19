@@ -22,7 +22,6 @@ const { spawn } = require('child_process');
 const appRoot = __dirname;
 const productName = '诸神终应知晓';
 const executableName = 'zhushen-archive.exe';
-const launcherExecutableName = 'zhushen-launcher.exe';
 const configFileName = 'installer-state.json';
 const updateManifestName = 'zhushen-update-manifest.json';
 const updateManifestUrl = 'https://github.com/Gao2612/zhushen/releases/latest/download/zhushen-update-manifest.json';
@@ -35,6 +34,12 @@ const getLocalAppData = () => {
 };
 
 const getDefaultInstallDir = () => {
+  if (app.isPackaged) {
+    const exeDir = dirname(process.execPath);
+    if (basename(exeDir).toLowerCase() === 'launcher') {
+      return dirname(exeDir);
+    }
+  }
   return join(getLocalAppData(), 'Programs', 'zhushen-archive');
 };
 
@@ -62,10 +67,6 @@ const getInstallDir = () => {
 
 const getGameDir = () => {
   return join(getInstallDir(), 'game');
-};
-
-const getLauncherDir = () => {
-  return join(getInstallDir(), 'launcher');
 };
 
 const setInstallDir = (installDir) => {
@@ -195,22 +196,6 @@ const findPayloadDir = () => {
   }) || '';
 };
 
-const getLauncherPayloadCandidates = () => {
-  const resourcesPath = process.resourcesPath || '';
-  return [
-    join(resourcesPath, 'launcher-payload'),
-    join(resourcesPath, 'app.asar.unpacked', 'launcher-payload'),
-    join(appRoot, '..', 'launcher-payload'),
-    join(appRoot, '..', 'releases', 'launcher-shell', 'win-unpacked')
-  ];
-};
-
-const findLauncherPayloadDir = () => {
-  return getLauncherPayloadCandidates().find((path) => {
-    return existsSync(join(path, launcherExecutableName));
-  }) || '';
-};
-
 const readJsonFile = (path) => {
   try {
     return JSON.parse(readFileSync(path, 'utf8'));
@@ -241,16 +226,15 @@ const readInstalledManifest = () => {
 
 const getPayloadRequiredBytes = () => {
   const manifest = readEmbeddedManifest();
-  const launcherPayloadDir = findLauncherPayloadDir();
   if (manifest && Array.isArray(manifest.files)) {
-    return manifest.files.reduce((total, file) => total + (Number(file.size) || 0), 0)
-      + getDirectorySize(launcherPayloadDir);
+    return manifest.files.reduce((total, file) => total + (Number(file.size) || 0), 0);
   }
-  return getDirectorySize(findPayloadDir()) + getDirectorySize(launcherPayloadDir);
+  return getDirectorySize(findPayloadDir());
 };
 
 const getSpaceInfo = async () => {
   const installDir = getInstallDir();
+  const gameDir = getGameDir();
   const requiredBytes = getPayloadRequiredBytes();
   const freeBytes = await getDriveFreeBytes(installDir);
   return {
@@ -296,7 +280,7 @@ const copyFileEnsured = (sourcePath, targetPath) => {
 
 const copyPayloadFiles = (mode, overwriteAll = true) => {
   const payloadDir = findPayloadDir();
-  const installDir = getGameDir();
+  const installDir = getInstallDir();
   const files = listFiles(payloadDir);
   const totalBytes = files.reduce((total, filePath) => total + statSync(filePath).size, 0);
   let copiedBytes = 0;
@@ -316,32 +300,6 @@ const copyPayloadFiles = (mode, overwriteAll = true) => {
       mode,
       Math.round((copiedBytes / Math.max(1, totalBytes)) * 100),
       `\u5199\u5165 ${index + 1}/${files.length} · ${formatBytes(speed)}/s · ETA ${formatEta(eta)}`
-    );
-  });
-};
-
-const copyLauncherPayloadFiles = (mode, overwriteAll = true) => {
-  const payloadDir = findLauncherPayloadDir();
-  const installDir = getLauncherDir();
-  const files = listFiles(payloadDir);
-  const totalBytes = files.reduce((total, filePath) => total + statSync(filePath).size, 0);
-  let copiedBytes = 0;
-  const startedAt = Date.now();
-  files.forEach((sourcePath, index) => {
-    const relativePath = toPortablePath(relative(payloadDir, sourcePath));
-    const targetPath = getLocalFilePath(installDir, relativePath);
-    const size = statSync(sourcePath).size;
-    if (overwriteAll || !existsSync(targetPath)) {
-      copyFileEnsured(sourcePath, targetPath);
-    }
-    copiedBytes += size;
-    const elapsed = Math.max(0.5, (Date.now() - startedAt) / 1000);
-    const speed = copiedBytes / elapsed;
-    const eta = (totalBytes - copiedBytes) / Math.max(1, speed);
-    sendProgress(
-      mode,
-      Math.round((copiedBytes / Math.max(1, totalBytes)) * 100),
-      `\u5199\u5165\u542f\u52a8\u5668 ${index + 1}/${files.length} \u00b7 ${formatBytes(speed)}/s \u00b7 ETA ${formatEta(eta)}`
     );
   });
 };
@@ -503,10 +461,6 @@ const getAppExePath = () => {
   return join(getGameDir(), executableName);
 };
 
-const getLauncherExePath = () => {
-  return join(getLauncherDir(), launcherExecutableName);
-};
-
 const getShortcutPaths = () => {
   const startMenuRoot = process.env.APPDATA
     ? join(process.env.APPDATA, 'Microsoft', 'Windows', 'Start Menu', 'Programs')
@@ -552,9 +506,7 @@ const createShortcut = async (shortcutPath, targetPath) => {
 };
 
 const createShortcuts = async () => {
-  const targetPath = existsSync(getLauncherExePath())
-    ? getLauncherExePath()
-    : getAppExePath();
+  const targetPath = getAppExePath();
   for (const shortcutPath of getShortcutPaths()) {
     await createShortcut(shortcutPath, targetPath);
   }
@@ -589,7 +541,6 @@ const removeInstallDir = () => {
 
 const installPayload = async () => {
   const payloadDir = findPayloadDir();
-  const launcherPayloadDir = findLauncherPayloadDir();
   const installDir = getInstallDir();
   const manifest = readEmbeddedManifest();
   writeInstallerLog('install_start', {
@@ -607,14 +558,6 @@ const installPayload = async () => {
   }
 
   sendProgress('prepare', 8, '正在准备安装目录');
-  if (!launcherPayloadDir) {
-    await dialog.showMessageBox(mainWindow, {
-      type: 'error',
-      title: '\u672a\u627e\u5230\u542f\u52a8\u5668\u8d44\u6e90',
-      message: '\u5b89\u88c5\u5668\u4e2d\u6ca1\u6709\u5305\u542b\u8f7b\u91cf\u542f\u52a8\u5668\uff0c\u8bf7\u91cd\u65b0\u6784\u5efa\u3002'
-    });
-    return false;
-  }
   const spaceInfo = await getSpaceInfo();
   if (!spaceInfo.enough) {
     await dialog.showMessageBox(mainWindow, {
@@ -631,8 +574,6 @@ const installPayload = async () => {
 
   sendProgress('copy', 34, '正在写入桌面客户端文件');
   copyPayloadFiles('copy', true);
-  sendProgress('launcher', 72, '\u6b63\u5728\u5199\u5165\u8f7b\u91cf\u542f\u52a8\u5668');
-  copyLauncherPayloadFiles('launcher', true);
   if (manifest) {
     const problems = verifyInstalledFiles(manifest, 82, 12);
     if (problems.length > 0) {
@@ -655,7 +596,7 @@ const repairPayload = async () => {
   const payloadDir = findPayloadDir();
   const manifest = readEmbeddedManifest();
   if (!payloadDir || !manifest) {
-    throw new Error('embedded repair payload is missing');
+    return await updateFromRemote();
   }
   const installDir = getGameDir();
   mkdirSync(installDir, { recursive: true });
@@ -792,10 +733,8 @@ const createWindow = () => {
 
 ipcMain.handle('installer:status', async () => {
   const installDir = getInstallDir();
-  const gameDir = getGameDir();
   const payloadDir = findPayloadDir();
   const appExe = getAppExePath();
-  const launcherExe = getLauncherExePath();
   const embeddedManifest = readEmbeddedManifest();
   const installedManifest = readInstalledManifest();
   const space = await getSpaceInfo();
@@ -810,7 +749,7 @@ ipcMain.handle('installer:status', async () => {
   });
   return {
     payloadExists: Boolean(payloadDir),
-    installed: existsSync(appExe) && existsSync(launcherExe),
+    installed: existsSync(appExe),
     installDir,
     appExe,
     version: app.getVersion(),
@@ -872,7 +811,7 @@ ipcMain.handle('installer:repair', async () => {
 });
 
 ipcMain.handle('installer:reinstall', async () => {
-  return await installPayload();
+  return await updateFromRemote();
 });
 
 ipcMain.handle('installer:check-update', async () => {
@@ -935,7 +874,7 @@ ipcMain.handle('installer:uninstall', async () => {
 });
 
 ipcMain.handle('installer:launch', () => {
-  return runDetached(getLauncherExePath());
+  return runDetached(getAppExePath());
 });
 
 ipcMain.handle('installer:open-install-dir', async () => {

@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>诸神终应知晓</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; overflow: hidden; }
+    body {
+      font-family: "Microsoft YaHei UI", "PingFang SC", sans-serif;
+      color: #f7ead4;
+      background: #06070b;
+    }
+    .bg {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: .74;
+      filter: saturate(1.05) contrast(1.12);
+    }
+    .poster {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: .72;
+      filter: saturate(1.05) contrast(1.08);
+    }
+    .shade {
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(4,5,8,.9), rgba(4,5,8,.46) 42%, rgba(4,5,8,.12) 70%, rgba(4,5,8,.86)),
+        linear-gradient(0deg, rgba(4,5,8,.98), rgba(4,5,8,.34) 46%, rgba(4,5,8,.56));
+    }
+    main {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: minmax(440px, 1fr) 392px;
+      height: 100vh;
+      padding: 44px 56px 78px 64px;
+      gap: 32px;
+    }
+    .hero {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      min-width: 0;
+      padding-bottom: 6px;
+    }
+    .eyebrow {
+      margin: 0 0 14px;
+      color: #f0d78c;
+      font-size: 13px;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0;
+      color: #fff7e8;
+      font-size: clamp(60px, 8vw, 108px);
+      line-height: .96;
+      letter-spacing: .04em;
+      text-shadow: 0 16px 48px rgba(0,0,0,.78);
+    }
+    .subtitle {
+      max-width: 520px;
+      margin: 20px 0 0;
+      color: rgba(247,234,212,.76);
+      font-size: 14px;
+      line-height: 1.85;
+    }
+    .meta {
+      display: none;
+      gap: 10px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+    .meta span {
+      padding: 8px 12px;
+      border: 1px solid rgba(240,215,140,.18);
+      border-radius: 999px;
+      color: rgba(247,234,212,.72);
+      background: rgba(6,7,11,.46);
+      backdrop-filter: blur(12px);
+      font-size: 12px;
+    }
+    .panel {
+      align-self: center;
+      display: grid;
+      gap: 14px;
+      padding: 22px;
+      border: 1px solid rgba(240,215,140,.22);
+      border-radius: 10px;
+      background: rgba(9,10,15,.78);
+      box-shadow: 0 28px 92px rgba(0,0,0,.52);
+      backdrop-filter: blur(22px);
+    }
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .panel h2 {
+      margin: 0;
+      color: #f0d78c;
+      font-size: 18px;
+      letter-spacing: .04em;
+    }
+    .state {
+      display: none;
+      min-width: 74px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      text-align: center;
+      color: #101014;
+      background: #f0d78c;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .path-box {
+      display: grid;
+      gap: 8px;
+    }
+    .path-box label {
+      color: rgba(247,234,212,.58);
+      font-size: 12px;
+    }
+    .path-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+    .install-path {
+      min-width: 0;
+      padding: 13px 14px;
+      border: 1px solid rgba(240,215,140,.15);
+      border-radius: 12px;
+      color: rgba(247,234,212,.76);
+      background: rgba(255,255,255,.045);
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    button {
+      min-height: 44px;
+      border: 1px solid rgba(240,215,140,.26);
+      border-radius: 12px;
+      color: #f0d78c;
+      background: rgba(240,215,140,.08);
+      font: inherit;
+      cursor: pointer;
+    }
+    button:hover {
+      border-color: rgba(240,215,140,.54);
+      background: rgba(240,215,140,.14);
+    }
+    button:disabled {
+      opacity: .48;
+      cursor: default;
+    }
+    .primary {
+      min-height: 58px;
+      width: 100%;
+      color: #100b04;
+      border: 0;
+      background: linear-gradient(135deg, #d4a754, #f0d78c);
+      font-weight: 900;
+      letter-spacing: .08em;
+      box-shadow: 0 18px 48px rgba(212,167,84,.24);
+    }
+    .primary-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+    .settings-menu {
+      position: relative;
+    }
+    .gear {
+      width: 56px;
+      min-height: 58px;
+      border-radius: 8px;
+      font-size: 24px;
+      line-height: 1;
+    }
+    .manage-panel {
+      position: absolute;
+      right: 0;
+      bottom: calc(100% + 10px);
+      z-index: 4;
+      display: grid;
+      min-width: 150px;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid rgba(240,215,140,.22);
+      border-radius: 14px;
+      background: rgba(9,10,15,.96);
+      box-shadow: 0 18px 48px rgba(0,0,0,.42);
+      backdrop-filter: blur(18px);
+    }
+    .manage-panel[hidden] {
+      display: none;
+    }
+    .danger {
+      color: #f2aaa1;
+      border-color: rgba(166,60,50,.5);
+      background: rgba(166,60,50,.14);
+    }
+    .progress {
+      display: grid;
+      gap: 10px;
+    }
+    .track {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255,255,255,.12);
+    }
+    .bar {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #9f7a22, #f0d78c);
+      transition: width .25s ease;
+    }
+    .status {
+      min-height: 34px;
+      color: rgba(247,234,212,.62);
+      font-size: 13px;
+      line-height: 1.7;
+      word-break: break-all;
+    }
+    .space-info,
+    .update-info {
+      min-height: 20px;
+      color: rgba(247,234,212,.58);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .update-info.ready {
+      color: #f0d78c;
+    }
+    .notice-board {
+      display: grid;
+      gap: 10px;
+      padding-top: 4px;
+    }
+    .notice-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+    .notice-tabs button {
+      min-height: 34px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+    .notice-tabs button.active {
+      color: #100b04;
+      background: #f0d78c;
+    }
+    .notice-card {
+      min-height: 82px;
+      padding: 12px;
+      border: 1px solid rgba(240,215,140,.15);
+      border-radius: 8px;
+      background: rgba(255,255,255,.045);
+    }
+    .notice-card h3 {
+      margin: 0 0 6px;
+      color: #fff7e8;
+      font-size: 13px;
+    }
+    .notice-card p {
+      margin: 0;
+      color: rgba(247,234,212,.62);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    .quick-links {
+      position: fixed;
+      left: 48px;
+      right: 48px;
+      bottom: 20px;
+      z-index: 3;
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      color: rgba(247,234,212,.58);
+      font-size: 12px;
+    }
+    .quick-links a,
+    .quick-links button {
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      color: inherit;
+      background: transparent;
+      text-decoration: none;
+    }
+    .quick-links a:hover,
+    .quick-links button:hover {
+      color: #f0d78c;
+      background: transparent;
+    }
+  </style>
+</head>
+<body>
+  <img
+    class="poster"
+    src="../manual-build/assets/official-posts/492288870839223557/cover.jpg"
+    alt="">
+  <video
+    class="bg"
+    src="../manual-build/assets/official-posts/492288870839223557/pv.mp4"
+    autoplay
+    muted
+    loop
+    playsinline></video>
+  <div class="shade"></div>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">Archive Installer</p>
+      <h1>诸神终应知晓</h1>
+      <p class="subtitle">
+        玩家自制史记档案馆安装器。安装完成后可从桌面或开始菜单进入离线档案，
+        所有安装、启动与卸载操作均由本安装器直接管理。
+      </p>
+      <div class="meta">
+        <span>离线资料馆</span>
+        <span>官方物料整理</span>
+        <span>桌面客户端</span>
+      </div>
+    </section>
+    <section class="panel">
+      <div class="panel-head">
+        <h2>游戏安装</h2>
+        <div class="state" id="state">读取中</div>
+      </div>
+      <div class="path-box">
+        <label>安装位置</label>
+        <div class="path-row">
+          <div class="install-path" id="installPath">正在读取...</div>
+          <button id="choose">更改</button>
+        </div>
+      </div>
+      <div class="progress">
+        <div class="track"><div class="bar" id="bar"></div></div>
+        <div class="status" id="status">正在读取状态...</div>
+      </div>
+      <div class="notice-board" id="noticeBoard"></div>
+      <div class="primary-row">
+        <button class="primary" id="install">安装</button>
+        <div class="settings-menu">
+          <button class="gear" id="manage" title="&#31649;&#29702;" aria-label="&#31649;&#29702;">&#9881;</button>
+          <div class="manage-panel" id="managePanel" hidden>
+            <button id="open">&#30446;&#24405;</button>
+            <button class="danger" id="uninstall">&#21368;&#36733;</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <nav class="quick-links" id="quickLinks"></nav>
+  <script>
+    const stateNode = document.getElementById('state');
+    const pathNode = document.getElementById('installPath');
+    const statusNode = document.getElementById('status');
+    const barNode = document.getElementById('bar');
+    const installButton = document.getElementById('install');
+    const manageButton = document.getElementById('manage');
+    const managePanel = document.getElementById('managePanel');
+    const openButton = document.getElementById('open');
+    const uninstallButton = document.getElementById('uninstall');
+    const chooseButton = document.getElementById('choose');
+    const noticeBoard = document.getElementById('noticeBoard');
+    const quickLinks = document.getElementById('quickLinks');
+    const pathBox = document.querySelector('.path-box');
+    const spaceNode = document.createElement('div');
+    const updateNode = document.createElement('div');
+    const checkUpdateButton = document.createElement('button');
+    const updateButton = document.createElement('button');
+    const repairButton = document.createElement('button');
+    const reinstallButton = document.createElement('button');
+
+    spaceNode.className = 'space-info';
+    updateNode.className = 'update-info';
+    checkUpdateButton.id = 'checkUpdate';
+    updateButton.id = 'update';
+    repairButton.id = 'repair';
+    reinstallButton.id = 'reinstall';
+    checkUpdateButton.textContent = '\u68c0\u67e5\u66f4\u65b0';
+    updateButton.textContent = '\u66f4\u65b0';
+    repairButton.textContent = '\u4fee\u590d';
+    reinstallButton.textContent = '\u91cd\u65b0\u5b89\u88c5';
+    updateButton.hidden = true;
+    pathBox.appendChild(spaceNode);
+    pathBox.appendChild(updateNode);
+    managePanel.insertBefore(reinstallButton, openButton);
+    managePanel.insertBefore(repairButton, reinstallButton);
+    managePanel.insertBefore(updateButton, repairButton);
+    managePanel.insertBefore(checkUpdateButton, updateButton);
+
+    const notices = [
+      {
+        tab: '\u6700\u65b0',
+        title: '\u542f\u52a8\u5668\u66f4\u65b0\u7cfb\u7edf\u5df2\u5c31\u7eea',
+        body: '\u652f\u6301\u68c0\u67e5\u66f4\u65b0\u3001\u6587\u4ef6\u7ea7\u4fee\u590d\u3001SHA256 \u6821\u9a8c\u548c\u78c1\u76d8\u7a7a\u95f4\u68c0\u6d4b\u3002'
+      },
+      {
+        tab: '\u7248\u672c',
+        title: 'v1.1.0 build 20260619',
+        body: '\u672c\u7248\u672c\u4f18\u5316\u5b89\u88c5\u3001\u4fee\u590d\u3001\u91cd\u88c5\u548c\u66f4\u65b0\u6d41\u7a0b\uff0c\u4e3b\u6309\u94ae\u805a\u7126\u542f\u52a8\u4f53\u9a8c\u3002'
+      },
+      {
+        tab: '\u7ef4\u62a4',
+        title: '\u79bb\u7ebf\u6863\u6848\u7ef4\u62a4\u63d0\u793a',
+        body: '\u5982\u679c\u6587\u4ef6\u7f3a\u5931\u6216\u542f\u52a8\u5f02\u5e38\uff0c\u8bf7\u4ece\u9f7f\u8f6e\u83dc\u5355\u6267\u884c\u4fee\u590d\u3002'
+      }
+    ];
+
+    function renderNotice(activeIndex = 0) {
+      noticeBoard.innerHTML = '';
+      const tabs = document.createElement('div');
+      const card = document.createElement('div');
+      const active = notices[activeIndex];
+      tabs.className = 'notice-tabs';
+      card.className = 'notice-card';
+      notices.forEach((notice, index) => {
+        const button = document.createElement('button');
+        button.textContent = notice.tab;
+        button.classList.toggle('active', index === activeIndex);
+        button.addEventListener('click', () => renderNotice(index));
+        tabs.appendChild(button);
+      });
+      card.innerHTML = '<h3></h3><p></p>';
+      card.querySelector('h3').textContent = active.title;
+      card.querySelector('p').textContent = active.body;
+      noticeBoard.appendChild(tabs);
+      noticeBoard.appendChild(card);
+    }
+
+    function addQuickLink(label, url) {
+      const link = document.createElement('button');
+      link.textContent = label;
+      link.addEventListener('click', () => {
+        window.ZhushenInstaller.openExternal(url);
+      });
+      quickLinks.appendChild(link);
+    }
+
+    function renderQuickLinks() {
+      quickLinks.innerHTML = '';
+      addQuickLink('TapTap', 'https://www.taptap.cn/app/513986');
+      addQuickLink('\u53cd\u9988', 'https://docs.qq.com/sheet/DVXVaQWZOcUFyRlNr?tab=BB08J2');
+      addQuickLink('\u66f4\u65b0\u9875', 'https://github.com/Gao2612/zhushen/releases/latest');
+      const group = document.createElement('span');
+      group.textContent = 'QQ\u7fa4 30340208';
+      quickLinks.appendChild(group);
+      const settings = document.createElement('button');
+      settings.textContent = '\u8bbe\u7f6e';
+      settings.addEventListener('click', () => {
+        setManageOpen(true);
+      });
+      quickLinks.appendChild(settings);
+    }
+
+    let installed = false;
+    let busy = false;
+    let updateAvailable = false;
+
+    const setStatus = (text) => { statusNode.textContent = text; };
+    const setProgress = (percent) => {
+      barNode.style.width = Math.max(0, Math.min(100, Number(percent) || 0)) + '%';
+    };
+    const setManageOpen = (open) => {
+      managePanel.hidden = !open;
+    };
+    const setBusy = (value) => {
+      busy = value;
+      installButton.disabled = value;
+      chooseButton.disabled = value || installed;
+      manageButton.disabled = value;
+      uninstallButton.disabled = value || !installed;
+      openButton.disabled = value || !installed;
+      checkUpdateButton.disabled = value;
+      updateButton.disabled = value || !installed || !updateAvailable;
+      repairButton.disabled = value || !installed;
+      reinstallButton.disabled = value || !installed;
+      if (value || !installed) {
+        setManageOpen(false);
+      }
+    };
+    const syncButtons = () => {
+      stateNode.textContent = '';
+      installButton.textContent = installed ? '\u542f\u52a8' : '\u7acb\u5373\u5b89\u88c5';
+      setBusy(false);
+    };
+
+    async function refresh() {
+      const status = await window.ZhushenInstaller.getStatus();
+      installed = status.installed;
+      pathNode.textContent = status.installDir;
+      if (status.space) {
+        spaceNode.textContent = '\u6240\u9700\u7a7a\u95f4 '
+          + status.space.requiredText + ' / \u53ef\u7528 '
+          + status.space.freeText;
+      }
+      if (status.healthProblems > 0) {
+        updateNode.textContent = '\u68c0\u6d4b\u5230 '
+          + status.healthProblems + ' \u4e2a\u6587\u4ef6\u9700\u8981\u4fee\u590d\u3002';
+        updateNode.classList.add('ready');
+      } else if (!updateAvailable) {
+        updateNode.textContent = status.buildId
+          ? '\u672c\u5730\u6784\u5efa\uff1a' + status.buildId
+          : '\u5c1a\u672a\u5b89\u88c5\u3002';
+        updateNode.classList.remove('ready');
+      }
+      setProgress(installed ? 100 : 0);
+      setStatus(installed
+        ? '\u5ba2\u6237\u7aef\u5df2\u5c31\u7eea\uff0c\u53ef\u4ee5\u76f4\u63a5\u542f\u52a8\u3002\u76ee\u5f55\u4e0e\u5378\u8f7d\u64cd\u4f5c\u5df2\u653e\u5165\u53f3\u4fa7\u9f7f\u8f6e\u3002'
+        : status.payloadExists
+          ? '\u51c6\u5907\u5c31\u7eea\uff0c\u70b9\u51fb\u7acb\u5373\u5b89\u88c5\u3002'
+          : '\u672a\u627e\u5230\u5185\u7f6e\u5ba2\u6237\u7aef\u8d44\u6e90\uff0c\u8bf7\u91cd\u65b0\u6784\u5efa\u5b89\u88c5\u5668\u3002');
+      syncButtons();
+    }
+
+    window.ZhushenInstaller.onProgress((payload) => {
+      setProgress(payload.percent);
+      setStatus(payload.message);
+    });
+
+    chooseButton.addEventListener('click', async () => {
+      const installDir = await window.ZhushenInstaller.chooseInstallDir();
+      pathNode.textContent = installDir;
+      setStatus('\u5b89\u88c5\u4f4d\u7f6e\u5df2\u66f4\u65b0\u3002');
+      await refresh();
+    });
+
+    installButton.addEventListener('click', async () => {
+      if (installed) {
+        const ok = await window.ZhushenInstaller.launch();
+        setStatus(ok ? '\u5ba2\u6237\u7aef\u5df2\u542f\u52a8\u3002' : '\u672a\u627e\u5230\u53ef\u542f\u52a8\u7684\u5ba2\u6237\u7aef\u3002');
+        return;
+      }
+      setBusy(true);
+      setProgress(0);
+      setStatus('\u6b63\u5728\u5f00\u59cb\u5b89\u88c5...');
+      const ok = await window.ZhushenInstaller.install();
+      installed = ok;
+      await refresh();
+    });
+
+    manageButton.addEventListener('click', () => {
+      if (busy) {
+        return;
+      }
+      setManageOpen(managePanel.hidden);
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!event.target.closest('.settings-menu')) {
+        setManageOpen(false);
+      }
+    });
+
+    uninstallButton.addEventListener('click', async () => {
+      setManageOpen(false);
+      setBusy(true);
+      setStatus('\u6b63\u5728\u5378\u8f7d...');
+      const ok = await window.ZhushenInstaller.uninstall();
+      installed = !ok;
+      await refresh();
+    });
+
+    openButton.addEventListener('click', async () => {
+      setManageOpen(false);
+      const opened = await window.ZhushenInstaller.openInstallDir();
+      setStatus(opened ? '\u5df2\u6253\u5f00\u5b89\u88c5\u76ee\u5f55\u3002' : '\u5c1a\u672a\u627e\u5230\u5b89\u88c5\u76ee\u5f55\u3002');
+    });
+
+    checkUpdateButton.addEventListener('click', async () => {
+      setManageOpen(false);
+      setStatus('\u6b63\u5728\u68c0\u67e5\u66f4\u65b0...');
+      const result = await window.ZhushenInstaller.checkUpdate();
+      updateAvailable = !!(result && result.available);
+      updateButton.hidden = !updateAvailable;
+      if (result && result.error) {
+        updateNode.textContent = '\u66f4\u65b0\u68c0\u67e5\u5931\u8d25\uff1a' + result.error;
+      } else if (updateAvailable) {
+        updateNode.textContent = '\u53d1\u73b0\u65b0\u6784\u5efa\uff1a' + result.remote.buildId;
+        updateNode.classList.add('ready');
+      } else {
+        updateNode.textContent = '\u5df2\u662f\u6700\u65b0\u7248\u672c\u3002';
+        updateNode.classList.remove('ready');
+      }
+      setBusy(false);
+    });
+
+    updateButton.addEventListener('click', async () => {
+      setManageOpen(false);
+      setBusy(true);
+      setStatus('\u6b63\u5728\u66f4\u65b0...');
+      const result = await window.ZhushenInstaller.update();
+      updateAvailable = false;
+      updateButton.hidden = true;
+      setStatus(result ? '\u66f4\u65b0\u5b8c\u6210\u3002' : '\u66f4\u65b0\u672a\u5b8c\u6210\u3002');
+      await refresh();
+    });
+
+    repairButton.addEventListener('click', async () => {
+      setManageOpen(false);
+      setBusy(true);
+      setStatus('\u6b63\u5728\u4fee\u590d...');
+      const result = await window.ZhushenInstaller.repair();
+      setStatus(result ? '\u4fee\u590d\u5b8c\u6210\u3002' : '\u4fee\u590d\u672a\u5b8c\u6210\u3002');
+      await refresh();
+    });
+
+    reinstallButton.addEventListener('click', async () => {
+      setManageOpen(false);
+      setBusy(true);
+      setProgress(0);
+      setStatus('\u6b63\u5728\u91cd\u65b0\u5b89\u88c5...');
+      const ok = await window.ZhushenInstaller.reinstall();
+      installed = !!ok;
+      await refresh();
+    });
+
+    renderNotice();
+    renderQuickLinks();
+    refresh();
+  </script>
+</body>
+</html>

@@ -15,11 +15,13 @@ const packageJson = require('../package.json');
 
 const rootDir = resolve(__dirname, '..');
 const desktopUnpackedDir = join(rootDir, 'releases', 'desktop', 'win-unpacked');
+const launcherUnpackedDir = join(rootDir, 'releases', 'launcher-shell', 'win-unpacked');
 const buildRootDir = join(rootDir, 'releases', 'installer-shell-build');
 const prepackagedDir = join(buildRootDir, 'prepackaged');
 const appTempDir = join(buildRootDir, 'app-temp');
 const appAsarPath = join(prepackagedDir, 'resources', 'app.asar');
 const desktopPayloadDir = join(prepackagedDir, 'resources', 'desktop-payload');
+const launcherPayloadDir = join(prepackagedDir, 'resources', 'launcher-payload');
 const updateOutputDir = join(rootDir, 'releases', 'update-current');
 const electronExePath = join(prepackagedDir, 'zhushen-archive.exe');
 const shellExePath = join(prepackagedDir, 'zhushen-installer.exe');
@@ -258,6 +260,9 @@ function preparePrepackagedApp() {
   removePath(desktopPayloadDir);
   mkdirSync(desktopPayloadDir, { recursive: true });
   copyDirectory(desktopUnpackedDir, desktopPayloadDir);
+  removePath(launcherPayloadDir);
+  mkdirSync(launcherPayloadDir, { recursive: true });
+  copyDirectory(launcherUnpackedDir, launcherPayloadDir);
   writeUpdateAssets();
   removePath(appAsarPath);
   if (existsSync(electronExePath)) {
@@ -299,5 +304,6 @@ function buildPortableShell() {
 assertFile(desktopUnpackedDir, '桌面端解包目录');
 assertFile(asarCommand, 'asar 命令');
 assertFile(builderCommand, 'electron-builder 命令');
+assertFile(launcherUnpackedDir, 'launcher unpacked directory');
 preparePrepackagedApp();
 buildPortableShell();

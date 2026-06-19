@@ -1,0 +1,33 @@
+{
+  "appId": "com.zhushen.archive.launcher",
+  "productName": "诸神终应知晓启动器",
+  "executableName": "zhushen-launcher",
+  "artifactName": "zhushen-launcher-${version}-${os}-${arch}.${ext}",
+  "directories": {
+    "output": "releases/launcher-shell"
+  },
+  "files": [
+    "launcher-shell/**/*",
+    "manual-build/assets/logo/**/*",
+    "manual-build/assets/official-posts/492288870839223557/pv.mp4",
+    "manual-build/assets/official-posts/492288870839223557/cover.jpg",
+    "package.json"
+  ],
+  "extraMetadata": {
+    "main": "launcher-shell/main.js"
+  },
+  "asar": true,
+  "compression": "maximum",
+  "win": {
+    "icon": "manual-build/assets/logo/logo.ico",
+    "signExecutable": false,
+    "target": [
+      {
+        "target": "dir",
+        "arch": [
+          "x64"
+        ]
+      }
+    ]
+  }
+}

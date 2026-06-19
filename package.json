@@ -12,7 +12,7 @@
     "desktop:win:portable": "npm run verify && electron-builder --win portable --x64",
     "desktop:linux": "npm run verify && electron-builder --linux AppImage zip --x64",
     "desktop:mac": "npm run verify && electron-builder --mac dmg zip --x64",
-    "installer-shell:win": "npm run verify && electron-builder --win dir --x64 && node scripts/build-installer-shell.js",
+    "installer-shell:win": "npm run verify && electron-builder --win dir --x64 && electron-builder --config launcher-shell/electron-builder.json --win dir --x64 && node scripts/build-installer-shell.js",
     "lint:android": "cd android && gradlew.bat :app:lintDebug --no-daemon"
   },
   "build": {
