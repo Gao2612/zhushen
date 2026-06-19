@@ -150,6 +150,9 @@ C:\Windows\System32\drivers\etc\hosts.zhushen-backup-20260619112803
   - removed Feedback and Settings from the bottom row;
   - kept TapTap and the GitHub update page;
   - replaced the inline QQ number with a QQ group button.
-- The QQ group button now opens an in-app card with both group numbers:
-  - official player group: `130340208`;
-  - community group: `30340208`.
+- Moved the notice tabs and notice card from the install panel to the left brand area.
+- Added a PV cover image above the notice tabs to make the launcher feel closer to a game launcher.
+- Shifted the install panel slightly downward so the right side focuses on path, progress, primary action, and management.
+- The QQ group button now opens an in-app card with both official group numbers:
+  - official group 1: `913044248`;
+  - official group 2: `130340208`.
