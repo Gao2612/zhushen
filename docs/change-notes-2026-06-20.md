@@ -58,6 +58,8 @@
 - 新增黑色透明字标 `manual-build/assets/logo/title-wordmark-ink.png`，用于浅色页面和文档。
 - 保留原始字标图 `manual-build/assets/logo/title-wordmark-source.png`，方便后续重新调整透明阈值。
 - 新增可重复执行的提取脚本 `scripts/extract-wordmark.ps1`，并让安装器构建脚本同步打包透明字标。
+- 将左侧书法字标宽度限制为 `600px`、高度限制为 `132px`，避免遮挡底部入口。
+- 将右侧安装面板上移，确保主按钮和齿轮在窗口内完整展示。
 
 ## 验证
 
