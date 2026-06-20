@@ -63,6 +63,8 @@
 - 根据实机截图继续将字标收缩为 `520px × 108px`，并预留 `38px` 底部安全区，避免遮挡 QQ 群入口。
 - 修复 Electron 便携安装器复制嵌入 `app.asar` 时被虚拟归档系统拦截的问题：对 `.asar` 的复制、读取与校验改用 `original-fs`。
 - 新增 `npm run test:asar-copy` 回归测试，使用 Electron 实际复制 `app.asar` 并校验源文件与目标文件 SHA256 一致。
+- 修复启动器首次打开后仍显示“立即安装”：安装版启动器现在优先根据自身 `launcher` 目录定位父级安装目录，并自动纠正旧配置。
+- 修复选择现有 `zhushen-archive` 文件夹时重复拼接成 `zhushen-archive\zhushen-archive` 的问题。
 
 ## 验证
 

@@ -142,6 +142,13 @@ const getInstallDir = () => {
   return config.installDir || getDefaultInstallDir();
 };
 
+const getSelectedInstallDir = (selectedPath) => {
+  const directoryName = basename(getDefaultInstallDir());
+  return basename(selectedPath).toLowerCase() === directoryName.toLowerCase()
+    ? selectedPath
+    : join(selectedPath, directoryName);
+};
+
 const getGameDir = () => {
   return join(getInstallDir(), 'game');
 };
@@ -933,7 +940,7 @@ ipcMain.handle('installer:choose-install-dir', async () => {
   if (result.canceled || result.filePaths.length === 0) {
     return getInstallDir();
   }
-  const selectedDir = join(result.filePaths[0], basename(getDefaultInstallDir()));
+  const selectedDir = getSelectedInstallDir(result.filePaths[0]);
   setInstallDir(selectedDir);
   return selectedDir;
 });

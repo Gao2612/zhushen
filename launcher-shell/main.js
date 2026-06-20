@@ -36,13 +36,21 @@ const getLocalAppData = () => {
 };
 
 const getDefaultInstallDir = () => {
-  if (app.isPackaged) {
-    const exeDir = dirname(process.execPath);
-    if (basename(exeDir).toLowerCase() === 'launcher') {
-      return dirname(exeDir);
-    }
-  }
   return join(getLocalAppData(), 'Programs', 'zhushen-archive');
+};
+
+const getPackagedInstallDir = () => {
+  if (!app.isPackaged) {
+    return '';
+  }
+  const exeDir = dirname(process.execPath);
+  if (basename(exeDir).toLowerCase() !== 'launcher') {
+    return '';
+  }
+  const installDir = dirname(exeDir);
+  return existsSync(join(installDir, 'game', executableName))
+    ? installDir
+    : '';
 };
 
 const getConfigPath = () => {
@@ -144,7 +152,24 @@ const writeProfile = (profile) => {
 
 const getInstallDir = () => {
   const config = readConfig();
+  const packagedInstallDir = getPackagedInstallDir();
+  if (packagedInstallDir) {
+    if (config.installDir !== packagedInstallDir) {
+      writeConfig({
+        ...config,
+        installDir: packagedInstallDir
+      });
+    }
+    return packagedInstallDir;
+  }
   return config.installDir || getDefaultInstallDir();
+};
+
+const getSelectedInstallDir = (selectedPath) => {
+  const directoryName = basename(getDefaultInstallDir());
+  return basename(selectedPath).toLowerCase() === directoryName.toLowerCase()
+    ? selectedPath
+    : join(selectedPath, directoryName);
 };
 
 const getGameDir = () => {
@@ -872,7 +897,7 @@ ipcMain.handle('installer:choose-install-dir', async () => {
   if (result.canceled || result.filePaths.length === 0) {
     return getInstallDir();
   }
-  const selectedDir = join(result.filePaths[0], basename(getDefaultInstallDir()));
+  const selectedDir = getSelectedInstallDir(result.filePaths[0]);
   setInstallDir(selectedDir);
   return selectedDir;
 });
