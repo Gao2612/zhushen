@@ -79,6 +79,7 @@
 - 已迁移当前电脑原有 `%APPDATA%\zhushen-game` 与 `%APPDATA%\zhushen-installer` 数据到 G 盘，并清理旧 C 盘运行目录。
 - 已在 `G:\zhushen-archive` 实机验证：启动器正确识别客户端、诊断日志生成成功，客户端到达 `ready-to-show` 且日志写入 G 盘。
 - 修复此前失败安装留下的客户端半成品：完整同步 Electron 运行库，包括缺失的 `icudtl.dat`。
+- 安装器和启动器创建的桌面/开始菜单快捷方式统一指向轻量启动器，日常使用不再绕过更新、修复和诊断流程。
 
 ## 验证
 

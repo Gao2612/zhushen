@@ -661,7 +661,7 @@ const createShortcut = async (shortcutPath, targetPath) => {
 };
 
 const createShortcuts = async () => {
-  const targetPath = getAppExePath();
+  const targetPath = app.isPackaged ? process.execPath : getAppExePath();
   for (const shortcutPath of getShortcutPaths()) {
     await createShortcut(shortcutPath, targetPath);
   }
