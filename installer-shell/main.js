@@ -17,7 +17,7 @@ const {
 const originalFs = require('original-fs');
 const { createHash, randomUUID } = require('crypto');
 const https = require('https');
-const { basename, dirname, join, relative, sep } = require('path');
+const { basename, dirname, join, parse, relative, sep } = require('path');
 const { spawn } = require('child_process');
 
 const appRoot = __dirname;
@@ -31,12 +31,48 @@ const updateManifestUrl = 'https://github.com/Gao2612/zhushen/releases/latest/do
 
 let mainWindow = null;
 
+const getPortableExecutableDir = () => {
+  return process.env.PORTABLE_EXECUTABLE_DIR
+    || (process.env.PORTABLE_EXECUTABLE_FILE
+      ? dirname(process.env.PORTABLE_EXECUTABLE_FILE)
+      : '');
+};
+
+const configureRuntimeStorage = () => {
+  const portableDir = getPortableExecutableDir();
+  if (!app.isPackaged || !portableDir) {
+    return;
+  }
+  const dataRoot = join(portableDir, 'zhushen-installer-data');
+  const paths = {
+    userData: dataRoot,
+    sessionData: join(dataRoot, 'session'),
+    logs: join(dataRoot, 'logs'),
+    crashDumps: join(dataRoot, 'crash-dumps')
+  };
+  for (const path of Object.values(paths)) {
+    mkdirSync(path, { recursive: true });
+  }
+  for (const [name, path] of Object.entries(paths)) {
+    app.setPath(name, path);
+  }
+};
+
+configureRuntimeStorage();
+
 const getLocalAppData = () => {
   return process.env.LOCALAPPDATA
     || join(app.getPath('home'), 'AppData', 'Local');
 };
 
 const getDefaultInstallDir = () => {
+  const portableDir = getPortableExecutableDir();
+  if (portableDir) {
+    const portableDrive = parse(portableDir).root;
+    if (portableDrive && portableDrive.toLowerCase() !== 'c:\\') {
+      return join(portableDrive, 'zhushen-archive');
+    }
+  }
   return join(getLocalAppData(), 'Programs', 'zhushen-archive');
 };
 
@@ -164,7 +200,7 @@ const setInstallDir = (installDir) => {
 };
 
 const writeInstallerLog = (eventName, fields = {}) => {
-  const logDir = join(app.getPath('userData'), 'logs');
+  const logDir = join(getInstallDir(), 'data', 'installer', 'logs');
   mkdirSync(logDir, { recursive: true });
   appendFileSync(
     join(logDir, 'installer.log'),
@@ -1055,6 +1091,17 @@ ipcMain.handle('installer:open-install-dir', async () => {
   }
   await shell.openPath(installDir);
   return true;
+});
+
+ipcMain.handle('installer:open-logs', async () => {
+  const logDir = join(getInstallDir(), 'data', 'installer', 'logs');
+  ensureDirectory(logDir);
+  const error = await shell.openPath(logDir);
+  return {
+    ok: !error,
+    path: logDir,
+    error: error || ''
+  };
 });
 
 ipcMain.handle('installer:open-external', async (event, url) => {

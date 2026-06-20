@@ -30,6 +30,28 @@ let musicState = {
 };
 let lastMusicResult = null;
 
+const configureRuntimeStorage = () => {
+  if (!app.isPackaged) {
+    return;
+  }
+  const installDir = dirname(dirname(process.execPath));
+  const dataRoot = join(installDir, 'data', 'client');
+  const paths = {
+    userData: dataRoot,
+    sessionData: join(dataRoot, 'session'),
+    logs: join(dataRoot, 'logs'),
+    crashDumps: join(dataRoot, 'crash-dumps')
+  };
+  for (const path of Object.values(paths)) {
+    mkdirSync(path, { recursive: true });
+  }
+  for (const [name, path] of Object.entries(paths)) {
+    app.setPath(name, path);
+  }
+};
+
+configureRuntimeStorage();
+
 const writeStartupLog = (message, detail) => {
   try {
     const logDir = join(app.getPath('userData'), 'logs');

@@ -66,6 +66,20 @@
 - 修复启动器首次打开后仍显示“立即安装”：安装版启动器现在优先根据自身 `launcher` 目录定位父级安装目录，并自动纠正旧配置。
 - 修复选择现有 `zhushen-archive` 文件夹时重复拼接成 `zhushen-archive\zhushen-archive` 的问题。
 
+## G 盘运行数据与启动诊断
+
+- 安装器配置、会话、日志和崩溃信息改为保存在便携安装器所在磁盘的 `zhushen-installer-data`。
+- 安装版启动器运行数据改为保存到 `<安装目录>\data\launcher`。
+- 桌面客户端运行数据改为保存到 `<安装目录>\data\client`。
+- 安装日志统一保存到 `<安装目录>\data\installer\logs`，避免继续写入 C 盘 `%APPDATA%`。
+- 修复启动器状态接口遗漏 `gameDir` 导致已安装状态读取失败的问题。
+- 客户端启动失败时区分：文件不存在、路径损坏、权限不足、安全软件拦截或文件损坏。
+- 齿轮菜单新增“日志”，可一键打开日志目录。
+- 启动器自动汇总最近安装、启动器和客户端日志到 `<安装目录>\data\diagnostics\latest-diagnostics.log`。
+- 已迁移当前电脑原有 `%APPDATA%\zhushen-game` 与 `%APPDATA%\zhushen-installer` 数据到 G 盘，并清理旧 C 盘运行目录。
+- 已在 `G:\zhushen-archive` 实机验证：启动器正确识别客户端、诊断日志生成成功，客户端到达 `ready-to-show` 且日志写入 G 盘。
+- 修复此前失败安装留下的客户端半成品：完整同步 Electron 运行库，包括缺失的 `icudtl.dat`。
+
 ## 验证
 
 已通过：

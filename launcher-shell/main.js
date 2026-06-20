@@ -30,6 +30,38 @@ const updateManifestUrl = 'https://github.com/Gao2612/zhushen/releases/latest/do
 
 let mainWindow = null;
 
+const getPackagedRootDir = () => {
+  if (!app.isPackaged) {
+    return '';
+  }
+  const exeDir = dirname(process.execPath);
+  return basename(exeDir).toLowerCase() === 'launcher'
+    ? dirname(exeDir)
+    : '';
+};
+
+const configureRuntimeStorage = () => {
+  const installDir = getPackagedRootDir();
+  if (!installDir) {
+    return;
+  }
+  const dataRoot = join(installDir, 'data', 'launcher');
+  const paths = {
+    userData: dataRoot,
+    sessionData: join(dataRoot, 'session'),
+    logs: join(dataRoot, 'logs'),
+    crashDumps: join(dataRoot, 'crash-dumps')
+  };
+  for (const path of Object.values(paths)) {
+    mkdirSync(path, { recursive: true });
+  }
+  for (const [name, path] of Object.entries(paths)) {
+    app.setPath(name, path);
+  }
+};
+
+configureRuntimeStorage();
+
 const getLocalAppData = () => {
   return process.env.LOCALAPPDATA
     || join(app.getPath('home'), 'AppData', 'Local');
@@ -40,14 +72,10 @@ const getDefaultInstallDir = () => {
 };
 
 const getPackagedInstallDir = () => {
-  if (!app.isPackaged) {
+  const installDir = getPackagedRootDir();
+  if (!installDir) {
     return '';
   }
-  const exeDir = dirname(process.execPath);
-  if (basename(exeDir).toLowerCase() !== 'launcher') {
-    return '';
-  }
-  const installDir = dirname(exeDir);
   return existsSync(join(installDir, 'game', executableName))
     ? installDir
     : '';
@@ -186,7 +214,7 @@ const writeInstallerLog = (eventName, fields = {}) => {
   const logDir = join(app.getPath('userData'), 'logs');
   mkdirSync(logDir, { recursive: true });
   appendFileSync(
-    join(logDir, 'installer.log'),
+    join(logDir, 'launcher.log'),
     JSON.stringify({
       time: new Date().toISOString(),
       event: eventName,
@@ -645,17 +673,149 @@ const removeShortcuts = () => {
   }
 };
 
-const runDetached = (filePath, args = []) => {
-  if (!existsSync(filePath)) {
-    return false;
+const getDiagnosticsDir = () => {
+  return join(getInstallDir(), 'data', 'diagnostics');
+};
+
+const getRecentLogFiles = () => {
+  const installDir = getInstallDir();
+  const appData = process.env.APPDATA || '';
+  return [
+    join(installDir, 'data', 'installer', 'logs', 'installer.log'),
+    join(installDir, 'data', 'launcher', 'logs', 'launcher.log'),
+    join(installDir, 'data', 'client', 'logs', 'desktop-startup.log'),
+    appData ? join(appData, 'zhushen-installer', 'logs', 'installer.log') : '',
+    appData ? join(appData, 'zhushen-game', 'logs', 'desktop-startup.log') : ''
+  ].filter(Boolean);
+};
+
+const readLogTail = (path, lineLimit = 120) => {
+  if (!existsSync(path)) {
+    return '';
   }
-  const child = spawn(filePath, args, {
-    detached: true,
-    stdio: 'ignore',
-    windowsHide: false
+  try {
+    return readFileSync(path, 'utf8')
+      .split(/\r?\n/)
+      .filter(Boolean)
+      .slice(-lineLimit)
+      .join('\n');
+  } catch (error) {
+    return `[读取失败] ${error.message || String(error)}`;
+  }
+};
+
+const collectRecentLogs = (context = {}) => {
+  const diagnosticsDir = getDiagnosticsDir();
+  ensureDirectory(diagnosticsDir);
+  const reportPath = join(diagnosticsDir, 'latest-diagnostics.log');
+  const sections = [
+    JSON.stringify({
+      collectedAt: new Date().toISOString(),
+      installDir: getInstallDir(),
+      appExe: getAppExePath(),
+      appExeExists: existsSync(getAppExePath()),
+      launcherExe: process.execPath,
+      ...context
+    }, null, 2)
+  ];
+  for (const logPath of getRecentLogFiles()) {
+    const content = readLogTail(logPath);
+    if (content) {
+      sections.push(`===== ${logPath} =====\n${content}`);
+    }
+  }
+  writeFileSync(reportPath, sections.join('\n\n') + '\n', 'utf8');
+  return reportPath;
+};
+
+const classifyLaunchError = (error, filePath) => {
+  const code = String(error && error.code || '').toUpperCase();
+  if (!existsSync(dirname(filePath))) {
+    return {
+      code: 'PATH_DAMAGED',
+      title: '安装路径损坏',
+      message: `客户端目录不存在：${dirname(filePath)}`
+    };
+  }
+  if (!existsSync(filePath) || code === 'ENOENT') {
+    return {
+      code: 'FILE_NOT_FOUND',
+      title: '客户端文件不存在',
+      message: `未找到启动文件：${filePath}`
+    };
+  }
+  if (code === 'EACCES' || code === 'EPERM') {
+    return {
+      code: 'PERMISSION_DENIED',
+      title: '权限不足',
+      message: 'Windows 拒绝启动客户端，请检查目录权限或尝试以管理员身份运行启动器。'
+    };
+  }
+  return {
+    code: 'SECURITY_OR_CORRUPTION',
+    title: '启动被拦截或文件损坏',
+    message: '客户端未能正常启动，可能被安全软件拦截，或启动文件已经损坏。请先查看日志并尝试“修复”。'
+  };
+};
+
+const launchExecutable = (filePath, args = []) => {
+  if (!existsSync(dirname(filePath))) {
+    return Promise.resolve({
+      ok: false,
+      ...classifyLaunchError({ code: 'ENOENT' }, filePath)
+    });
+  }
+  if (!existsSync(filePath)) {
+    return Promise.resolve({
+      ok: false,
+      ...classifyLaunchError({ code: 'ENOENT' }, filePath)
+    });
+  }
+  return new Promise((resolve) => {
+    let settled = false;
+    let child = null;
+    const finish = (result) => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      resolve(result);
+    };
+    try {
+      child = spawn(filePath, args, {
+        detached: true,
+        stdio: 'ignore',
+        windowsHide: false
+      });
+    } catch (error) {
+      finish({ ok: false, ...classifyLaunchError(error, filePath) });
+      return;
+    }
+    child.once('error', (error) => {
+      finish({ ok: false, ...classifyLaunchError(error, filePath) });
+    });
+    child.once('exit', (code) => {
+      if (!settled && Number(code) !== 0) {
+        finish({
+          ok: false,
+          code: 'SECURITY_OR_CORRUPTION',
+          title: '启动被拦截或文件损坏',
+          message: `客户端启动后立即异常退出（代码 ${code}），可能被安全软件拦截或文件损坏。`
+        });
+      }
+    });
+    child.once('spawn', () => {
+      setTimeout(() => {
+        child.unref();
+        finish({
+          ok: true,
+          code: 'STARTED',
+          title: '启动成功',
+          message: '客户端已启动。'
+        });
+      }, 1200);
+    });
   });
-  child.unref();
-  return true;
 };
 
 const removeInstallDir = () => {
@@ -861,6 +1021,7 @@ const createWindow = () => {
 
 ipcMain.handle('installer:status', async () => {
   const installDir = getInstallDir();
+  const gameDir = getGameDir();
   const payloadDir = findPayloadDir();
   const appExe = getAppExePath();
   const embeddedManifest = readEmbeddedManifest();
@@ -875,6 +1036,7 @@ ipcMain.handle('installer:status', async () => {
     payloadDir,
     payloadCandidates: getPayloadCandidates()
   });
+  collectRecentLogs({ event: 'status' });
   return {
     payloadExists: Boolean(payloadDir),
     installed: existsSync(appExe),
@@ -1001,8 +1163,33 @@ ipcMain.handle('installer:uninstall', async () => {
   }
 });
 
-ipcMain.handle('installer:launch', () => {
-  return runDetached(getAppExePath());
+ipcMain.handle('installer:launch', async () => {
+  const appExe = getAppExePath();
+  writeInstallerLog('launch_start', { appExe });
+  const result = await launchExecutable(appExe);
+  writeInstallerLog(result.ok ? 'launch_success' : 'launch_failed', result);
+  const reportPath = collectRecentLogs({
+    event: result.ok ? 'launch_success' : 'launch_failed',
+    result
+  });
+  if (!result.ok) {
+    const dialogResult = await dialog.showMessageBox(mainWindow, {
+      type: 'error',
+      title: result.title,
+      message: result.message,
+      detail: `诊断日志：${reportPath}`,
+      buttons: ['打开日志目录', '关闭'],
+      defaultId: 0,
+      cancelId: 1
+    });
+    if (dialogResult.response === 0) {
+      await shell.openPath(dirname(reportPath));
+    }
+  }
+  return {
+    ...result,
+    reportPath
+  };
 });
 
 ipcMain.handle('installer:open-install-dir', async () => {
@@ -1012,6 +1199,16 @@ ipcMain.handle('installer:open-install-dir', async () => {
   }
   await shell.openPath(installDir);
   return true;
+});
+
+ipcMain.handle('installer:open-logs', async () => {
+  const reportPath = collectRecentLogs({ event: 'open_logs' });
+  const error = await shell.openPath(dirname(reportPath));
+  return {
+    ok: !error,
+    path: dirname(reportPath),
+    error: error || ''
+  };
 });
 
 ipcMain.handle('installer:open-external', async (event, url) => {

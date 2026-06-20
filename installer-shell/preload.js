@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld('ZhushenInstaller', {
     ipcRenderer.on('installer:progress', (event, payload) => callback(payload));
   },
   openInstallDir: () => ipcRenderer.invoke('installer:open-install-dir'),
+  openLogs: () => ipcRenderer.invoke('installer:open-logs'),
   openExternal: (url) => ipcRenderer.invoke('installer:open-external', url),
   profileExport: () => ipcRenderer.invoke('profile:export'),
   profileGet: () => ipcRenderer.invoke('profile:get'),
