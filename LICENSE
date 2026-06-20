@@ -19,3 +19,45 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+## ⚠️ 重要说明（Important Notice）
+
+本 LICENSE 仅适用于本项目的**代码部分**（HTML/CSS/JavaScript 等源代码）。
+
+本项目中的以下内容**不适用**本 LICENSE，版权归原作者所有：
+
+- 游戏《诸神终应知晓》相关素材（包括但不限于：剧情文字、角色设定、游戏图片、游戏音频等）
+  - 著作权归属：上海魔王圆桌科技有限公司
+  
+- 二次创作内容（同人图、同人文章等）
+  - 著作权归属：各位原创创作者本人
+
+本 LICENSE 不授予任何使用上述内容的权限。上述内容仅作个人非商用纪念用途，不允许商业盈利或未经授权的二次分发。
+
+若版权方需要下架相关内容，请联系：your-email@example.com
+
+---
+
+## ⚠️ Important Notice
+
+This LICENSE applies **ONLY** to the **code portions** of this project 
+(HTML/CSS/JavaScript and other source code).
+
+The following content in this project is **NOT covered** by this LICENSE 
+and the copyright belongs to the original authors:
+
+- Game "Zhuxian Zhong Ying Zhidao" related materials (including but not 
+  limited to: story text, character settings, game images, game audio, etc.)
+  - Copyright: Shanghai MoWang YuanZhuo Technology Co., Ltd.
+  
+- Derivative works (fan art, fan fiction, etc.)
+  - Copyright: Original creators
+
+This LICENSE does NOT grant permission to use the above content. 
+The above content is for personal non-commercial commemorative purposes ONLY, 
+and does NOT allow commercial use or unauthorized redistribution.
+
+If the copyright owner requests removal of related content, 
+please contact: your-email@example.com
