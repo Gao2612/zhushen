@@ -10,7 +10,8 @@ const pages = [
   { href: 'gfjs.html', label: '角色' },
   { href: 'gfgn.html', label: '概念' },
   { href: 'wjec.html', label: '二创' },
-  { href: 'qyxhhj.html', label: '笑话' }
+  { href: 'qyxhhj.html', label: '笑话' },
+  { href: 'profile.html', label: '档案' }
 ];
 
 const characters = [
@@ -702,7 +703,7 @@ function card({ title, desc, src, href, meta, kind, favoriteId }) {
   const favorite = favoriteId ? `<button class="fav-button" data-favorite="${favoriteId}" aria-label="收藏${title}">收藏</button>` : '';
   return `<article class="archive-card" data-search-text="${escapeAttr([title, desc, meta, kind].join(' '))}" data-kind="${kind || ''}">
     <a ${openAttr}>
-      <img src="${src}" alt="${title}" loading="lazy" decoding="async">
+      <img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" data-src="${src}" alt="${title}" loading="lazy" decoding="async">
       <span class="card-kind">${kind || '档案'}</span>
     </a>
     <div class="card-body">
@@ -745,6 +746,7 @@ function homePage() {
       <p class="eyebrow">My Archive</p>
       <h2>我的档案</h2>
       <p>收藏、最近浏览与免责声明偏好仅保存在当前设备。你可以把常看的角色、概念图和二创作品留在这里，方便回溯。</p>
+      <a class="wide-button" href="profile.html">编辑个人档案</a>
     </div>
     <div class="mini-list" data-favorite-list></div>
   </section>`;
@@ -779,8 +781,8 @@ function renderOfficialMedia(post) {
   const videos = post.media
     .filter((item) => item.type === 'video')
     .map((item) => `<article class="official-video">
-      <video controls preload="auto" playsinline webkit-playsinline poster="${item.poster}">
-        <source src="${item.src}" type="video/mp4">
+      <video controls preload="none" playsinline webkit-playsinline poster="${item.poster}" data-lazy-video>
+        <source data-src="${item.src}" type="video/mp4">
       </video>
       <a class="native-video-button" href="${nativeVideoHref(item.src, `${post.title} · ${item.label}`)}">应用内播放</a>
       <p>${item.label}</p>
@@ -789,7 +791,7 @@ function renderOfficialMedia(post) {
   const gallery = post.media
     .filter((item) => item.type !== 'video')
     .map((item) => `<a class="official-media-card" href="${item.src}" data-lightbox-src="${item.src}" data-favorite-id="official-media:${item.src}">
-      <img src="${item.src}" alt="${item.label}" loading="lazy" decoding="async">
+      <img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" data-src="${item.src}" alt="${item.label}" loading="lazy" decoding="async">
       <span>${item.label}</span>
     </a>`)
     .join('');
@@ -897,8 +899,8 @@ function characterDetail(item) {
     favoriteId: `image:${src}`
   })).join('');
   const videos = item.videos.map((video) => `<article class="video-card" data-search-text="${escapeAttr(item.name + ' ' + video.label)}">
-    <video controls preload="auto" playsinline webkit-playsinline>
-      <source src="${video.src}" type="video/mp4">
+    <video controls preload="none" playsinline webkit-playsinline data-lazy-video>
+      <source data-src="${video.src}" type="video/mp4">
     </video>
     <a class="native-video-button" href="${nativeVideoHref(video.src, `${item.name} · ${video.label}`)}">应用内播放</a>
     <p>${video.label}</p>
@@ -1011,13 +1013,62 @@ function jokesPage() {
   });
 }
 
+function profilePage() {
+  const body = `<section class="profile-workspace" data-profile-page>
+    <aside class="profile-identity">
+      <button class="profile-avatar-button" type="button" data-profile-avatar-button title="更换头像">
+        <img data-profile-avatar-image alt="用户头像" hidden>
+        <span data-profile-avatar-fallback>旅</span>
+      </button>
+      <input data-profile-avatar-input type="file" accept="image/png,image/jpeg,image/webp" hidden>
+      <strong data-profile-display-name>未命名旅人</strong>
+      <span class="profile-number" data-profile-id>ID 读取中</span>
+      <p data-profile-display-bio>把喜欢的资料、设定和回忆收进自己的空间。</p>
+    </aside>
+    <div class="profile-editor">
+      <div class="profile-section-head">
+        <div><p class="eyebrow">Local Profile</p><h2>个人档案</h2></div>
+        <span class="profile-save-state" data-profile-status>保存在当前设备</span>
+      </div>
+      <label class="profile-field"><span>昵称</span><input data-profile-nickname maxlength="24" placeholder="未命名旅人"></label>
+      <label class="profile-field"><span>个人备注</span><textarea data-profile-bio maxlength="120" rows="4" placeholder="写下一句属于你的档案说明"></textarea></label>
+      <div class="profile-preferences">
+        <label><input data-profile-music type="checkbox"> 保持背景音乐</label>
+        <label><input data-profile-motion type="checkbox"> 减少动态效果</label>
+        <label><input data-profile-remember type="checkbox"> 记住浏览记录</label>
+      </div>
+      <div class="profile-actions">
+        <button class="wide-button profile-primary" type="button" data-profile-save>保存档案</button>
+        <button class="wide-button" type="button" data-profile-export>导出 JSON</button>
+        <button class="wide-button" type="button" data-profile-import>导入 JSON</button>
+        <input data-profile-import-input type="file" accept="application/json" hidden>
+      </div>
+      <div class="profile-cloud-row">
+        <div><strong>云备份</strong><p>未来接入账号同步时会沿用当前档案结构。</p></div>
+        <button type="button" disabled>敬请期待</button>
+      </div>
+    </div>
+  </section>`;
+  return htmlPage({
+    title: '个人档案 · 诸神终应知晓',
+    active: '档案',
+    hero: {
+      eyebrow: 'My Archive',
+      title: '属于你的汇流地档案',
+      desc: '昵称、头像、偏好和浏览资料只保存在当前设备，可随时导入或导出。',
+      searchScope: 'page'
+    },
+    body
+  });
+}
+
 function settingsPage() {
   const body = `<section class="settings-grid">
     <article class="settings-card">
       <p class="eyebrow">About</p>
       <h2>关于本应用</h2>
       <dl>
-        <dt>版本</dt><dd>玩家自制史记 v1.1.0</dd>
+        <dt>版本</dt><dd>玩家自制史记 v1.1.1</dd>
         <dt>内容来源</dt><dd>官方公开物料、玩家社群整理与玩家二创授权内容</dd>
         <dt>本地数据</dt><dd>收藏、最近浏览和免责声明偏好仅保存在当前设备</dd>
         <dt>联系作者</dt><dd>china19210703@163.com</dd>
@@ -1134,6 +1185,7 @@ writeFileSync(join(assetsRoot, 'gfjs.html'), charactersPage());
 writeFileSync(join(assetsRoot, 'gfgn.html'), conceptsPage());
 writeFileSync(join(assetsRoot, 'wjec.html'), fanArtPage());
 writeFileSync(join(assetsRoot, 'qyxhhj.html'), jokesPage());
+writeFileSync(join(assetsRoot, 'profile.html'), profilePage());
 writeFileSync(join(assetsRoot, 'settings.html'), settingsPage());
 
 writeFileSync(join(assetsRoot, 'lib', 'app-theme.css'), `:root {
@@ -1170,22 +1222,11 @@ body {
   overflow-x: hidden;
   min-height: 100vh;
   font-family: "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
-  background:
-    radial-gradient(circle at 18% 0%, rgba(212, 167, 84, .18), transparent 30%),
-    radial-gradient(circle at 85% 18%, rgba(112, 48, 42, .18), transparent 28%),
-    linear-gradient(180deg, #08080c 0%, #121118 48%, #09090d 100%);
-  letter-spacing: .01em;
+  background: linear-gradient(180deg, #0d0d10 0%, #171416 52%, #09090d 100%);
+  letter-spacing: 0;
 }
 body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
-  background-size: 38px 38px;
-  mask-image: radial-gradient(circle at center, black, transparent 78%);
+  content: none;
 }
 a { color: inherit; text-decoration: none; }
 img { display: block; max-width: 100%; }
@@ -1361,6 +1402,7 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
 .archive-card { position: relative; }
 .archive-card > a { position: relative; display: block; overflow: hidden; }
 .archive-card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; transition: transform .35s ease; }
+.archive-card img[data-src], .official-media-card img[data-src] { background: #17171c; }
 .archive-card:hover img { transform: scale(1.045); }
 .card-kind {
   position: absolute;
@@ -1581,6 +1623,66 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
 .scroll-panel { padding: 26px; margin-top: 28px; }
 .settings-grid { display: grid; grid-template-columns: 1fr; gap: 18px; margin-top: 24px; }
 .settings-card { padding: 24px; }
+.profile-workspace {
+  display: grid;
+  grid-template-columns: minmax(230px, .72fr) minmax(0, 1.5fr);
+  gap: 18px;
+  margin-top: 24px;
+}
+.profile-identity, .profile-editor {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(16, 16, 21, .9);
+}
+.profile-identity {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 32px 24px;
+  text-align: center;
+}
+.profile-avatar-button {
+  width: 116px;
+  height: 116px;
+  overflow: hidden;
+  border: 1px solid rgba(240, 215, 140, .4);
+  border-radius: 50%;
+  color: #17110a;
+  background: var(--gold-soft);
+  font-size: 42px;
+  cursor: pointer;
+}
+.profile-avatar-button img { width: 100%; height: 100%; object-fit: cover; }
+.profile-identity strong { margin-top: 18px; color: var(--gold-soft); font-size: 22px; }
+.profile-number { margin-top: 7px; color: var(--gold); font: 13px Consolas, monospace; }
+.profile-identity p { margin: 18px 0 0; color: var(--muted); line-height: 1.7; }
+.profile-editor { padding: 28px; }
+.profile-section-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.profile-section-head h2 { margin-bottom: 8px; }
+.profile-save-state { color: var(--muted); font-size: 12px; }
+.profile-field { display: grid; gap: 8px; margin-top: 16px; color: var(--gold); font-size: 13px; }
+.profile-field input, .profile-field textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 12px 14px;
+  outline: none;
+  color: var(--text);
+  background: rgba(255,255,255,.035);
+  resize: vertical;
+}
+.profile-field input:focus, .profile-field textarea:focus { border-color: rgba(240,215,140,.58); }
+.profile-preferences { display: grid; gap: 10px; margin-top: 18px; color: var(--muted); }
+.profile-preferences input { accent-color: var(--gold); }
+.profile-actions { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 10px; margin-top: 22px; }
+.profile-actions .wide-button { margin-top: 0; }
+.profile-primary { color: #15110a; background: var(--gold-soft); font-weight: 700; }
+.profile-cloud-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
+.profile-cloud-row p { margin: 5px 0 0; color: var(--muted); font-size: 13px; }
+.profile-cloud-row button { min-height: 40px; border: 1px solid var(--line); border-radius: 6px; padding: 0 14px; color: var(--muted); background: transparent; }
+.performance-page-hidden { display: none!important; }
+.load-more-row { display: flex; justify-content: center; margin: 22px 0; }
+.load-more-row button { min-width: 180px; min-height: 44px; border: 1px solid var(--line); border-radius: 6px; color: var(--gold-soft); background: rgba(212,167,84,.08); }
 .settings-card dl { display: grid; grid-template-columns: 120px 1fr; gap: 12px; color: var(--muted); }
 .settings-card dt { color: var(--gold); }
 .settings-note { margin: 14px 0 0; font-size: 13px; }
@@ -1709,6 +1811,8 @@ html.lightbox-open, html.lightbox-open body { overflow: hidden; }
   .nav-menu { display: none; position: absolute; top: 66px; right: 14px; flex-direction: column; min-width: 180px; padding: 12px; border: 1px solid var(--line); border-radius: 18px; background: rgba(10,10,15,.96); }
   .nav-menu.show { display: flex; }
   .hero-panel, .split-panel { grid-template-columns: 1fr; }
+  .profile-workspace { grid-template-columns: 1fr; }
+  .profile-actions { grid-template-columns: 1fr; }
   .stats-grid, .feature-grid, .character-grid { grid-template-columns: 1fr 1fr; }
   .settings-card dl { grid-template-columns: 1fr; }
   .desktop-combo { grid-template-columns: 1fr; }

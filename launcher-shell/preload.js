@@ -18,6 +18,10 @@ contextBridge.exposeInMainWorld('ZhushenInstaller', {
   profileSave: (profile) => ipcRenderer.invoke('profile:save', profile),
   reinstall: () => ipcRenderer.invoke('installer:reinstall'),
   repair: () => ipcRenderer.invoke('installer:repair'),
+  setCloseAfterLaunch: (enabled) => ipcRenderer.invoke(
+    'launcher:set-close-after-launch',
+    enabled
+  ),
   update: () => ipcRenderer.invoke('installer:update'),
   uninstall: () => ipcRenderer.invoke('installer:uninstall'),
   windowClose: () => ipcRenderer.invoke('window:close'),

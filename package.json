@@ -1,6 +1,6 @@
 {
   "name": "zhushen-game",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "诸神终应知晓玩家自制史记 Android 与桌面应用",
   "main": "desktop/main.js",
   "scripts": {
@@ -30,6 +30,10 @@
       "package.json"
     ],
     "asar": true,
+    "asarUnpack": [
+      "manual-build/assets/audio/**/*",
+      "manual-build/assets/logo/**/*"
+    ],
     "compression": "maximum",
     "win": {
       "icon": "manual-build/assets/logo/logo.ico",

@@ -267,7 +267,7 @@ function copyAppFiles() {
     join(appTempDir, 'package.json'),
     JSON.stringify({
       name: 'zhushen-installer',
-      version: '1.1.0',
+      version: packageJson.version,
       main: 'installer-shell/main.js'
     }),
     'utf8'

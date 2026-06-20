@@ -9,7 +9,7 @@ const {
 const { join, resolve } = require('path');
 
 const root = resolve(__dirname, '..');
-const version = '1.1.0';
+const version = '1.1.1';
 const releaseRoot = join(root, 'releases');
 const pcRoot = join(releaseRoot, 'pc');
 const packageRoot = join(pcRoot, `zhushen-pc-client-v${version}`);

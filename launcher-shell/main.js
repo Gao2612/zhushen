@@ -999,10 +999,10 @@ const uninstallPayload = async () => {
 
 const createWindow = () => {
   mainWindow = new BrowserWindow({
-    width: 1180,
-    height: 720,
-    minWidth: 980,
-    minHeight: 620,
+    width: 1000,
+    height: 650,
+    minWidth: 900,
+    minHeight: 560,
     title: productName,
     frame: false,
     autoHideMenuBar: true,
@@ -1026,8 +1026,9 @@ ipcMain.handle('installer:status', async () => {
   const appExe = getAppExePath();
   const embeddedManifest = readEmbeddedManifest();
   const installedManifest = readInstalledManifest();
-  const space = await getSpaceInfo();
-  const healthProblems = installedManifest && existsSync(appExe)
+  const installed = existsSync(appExe);
+  const space = installed ? null : await getSpaceInfo();
+  const healthProblems = installedManifest && installed
     ? getFileProblems(gameDir, installedManifest, false).length
     : 0;
   writeInstallerLog('status', {
@@ -1039,15 +1040,23 @@ ipcMain.handle('installer:status', async () => {
   collectRecentLogs({ event: 'status' });
   return {
     payloadExists: Boolean(payloadDir),
-    installed: existsSync(appExe),
+    installed,
     installDir,
     appExe,
     version: app.getVersion(),
     buildId: installedManifest ? installedManifest.buildId : '',
     embeddedBuildId: embeddedManifest ? embeddedManifest.buildId : '',
     healthProblems,
+    closeAfterLaunch: readConfig().closeAfterLaunch !== false,
     space
   };
+});
+
+ipcMain.handle('launcher:set-close-after-launch', (event, enabled) => {
+  const config = readConfig();
+  config.closeAfterLaunch = !!enabled;
+  writeConfig(config);
+  return config.closeAfterLaunch;
 });
 
 ipcMain.handle('installer:choose-install-dir', async () => {
@@ -1185,6 +1194,12 @@ ipcMain.handle('installer:launch', async () => {
     if (dialogResult.response === 0) {
       await shell.openPath(dirname(reportPath));
     }
+  } else if (readConfig().closeAfterLaunch !== false) {
+    setTimeout(() => {
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.close();
+      }
+    }, 700);
   }
   return {
     ...result,

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>Background Music</title>
+</head>
+<body>
+  <audio id="music" src="../manual-build/assets/audio/background_music.oga" loop preload="auto"></audio>
+  <script>
+    const music = document.getElementById('music');
+    let lastState = { enabled: null, volume: null };
+    music.muted = false;
+    window.applyMusicState = (state) => {
+      const volume = Math.max(0, Math.min(1, Number(state.volume || 0) / 100));
+      const normalizedVolume = Math.round(volume * 100);
+      const stateUnchanged = lastState.enabled === !!state.enabled
+        && lastState.volume === normalizedVolume;
+      music.volume = volume;
+      music.muted = false;
+      lastState = { enabled: !!state.enabled, volume: normalizedVolume };
+      if (!state.enabled) {
+        if (!music.paused) {
+          music.pause();
+        }
+        return Promise.resolve({
+          enabled: false,
+          playing: false,
+          paused: music.paused,
+          volume: normalizedVolume
+        });
+      }
+      if (stateUnchanged && !music.paused) {
+        return Promise.resolve({
+          enabled: true,
+          playing: true,
+          paused: false,
+          volume: normalizedVolume
+        });
+      }
+      return music.play().then(() => ({
+        enabled: true,
+        playing: !music.paused,
+        paused: false,
+        volume: normalizedVolume
+      })).catch((error) => ({
+        enabled: true,
+        playing: false,
+        paused: music.paused,
+        volume: normalizedVolume,
+        error: error && error.message ? error.message : String(error)
+      }));
+    };
+  </script>
+</body>
+</html>

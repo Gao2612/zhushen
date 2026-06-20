@@ -724,7 +724,7 @@
       },
       {
         tab: '\u7248\u672c',
-        title: 'v1.1.0',
+        title: 'v1.1.1',
         body: '\u672c\u7248\u672c\u4f18\u5316\u5b89\u88c5\u3001\u4fee\u590d\u3001\u91cd\u88c5\u548c\u66f4\u65b0\u6d41\u7a0b\uff0c\u4e3b\u6309\u94ae\u805a\u7126\u542f\u52a8\u4f53\u9a8c\u3002'
       },
       {
@@ -808,13 +808,6 @@
       qqCard.innerHTML = '';
       addQuickLink('TapTap', 'https://www.taptap.cn/app/513986');
       addQuickLink('\u66f4\u65b0\u9875', 'https://github.com/Gao2612/zhushen/releases/latest');
-      const profileButton = document.createElement('button');
-      profileButton.textContent = '\u6863\u6848';
-      profileButton.addEventListener('click', (event) => {
-        event.stopPropagation();
-        openProfile();
-      });
-      quickLinks.appendChild(profileButton);
       const qqButton = document.createElement('button');
       const qqTitle = document.createElement('strong');
       const qqPrimary = document.createElement('span');

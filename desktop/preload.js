@@ -23,6 +23,9 @@ contextBridge.exposeInMainWorld('ZhushenDesktop', {
   ),
   setMusicState: (state) => ipcRenderer.invoke('desktop:set-music-state', state),
   toggleFullscreen: () => ipcRenderer.invoke('desktop:toggle-fullscreen'),
+  windowClose: () => ipcRenderer.invoke('desktop:window-close'),
+  windowMinimize: () => ipcRenderer.invoke('desktop:window-minimize'),
+  windowToggleMaximize: () => ipcRenderer.invoke('desktop:window-toggle-maximize'),
   zoomIn: () => ipcRenderer.invoke('desktop:zoom-in'),
   zoomOut: () => ipcRenderer.invoke('desktop:zoom-out')
 });

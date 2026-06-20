@@ -8,10 +8,18 @@ const {
 } = require('fs');
 const { spawn } = require('child_process');
 const { dirname, join } = require('path');
-const { pathToFileURL } = require('url');
 
 const assetRoot = join(__dirname, '..', 'manual-build', 'assets');
-const appIcon = join(assetRoot, 'logo', 'logo.png');
+const appIcon = app.isPackaged
+  ? join(
+      process.resourcesPath,
+      'app.asar.unpacked',
+      'manual-build',
+      'assets',
+      'logo',
+      'logo.ico'
+    )
+  : join(assetRoot, 'logo', 'logo.ico');
 const zoomStep = 0.1;
 const minZoomFactor = 0.6;
 const maxZoomFactor = 1.8;
@@ -101,65 +109,6 @@ const setZoomFactor = (window, factor) => {
   return normalizedFactor;
 };
 
-const getMusicHtml = () => {
-  const audioUrl = pathToFileURL(
-    join(assetRoot, 'audio', 'background_music.oga')
-  ).toString();
-  return `
-<!doctype html>
-<html>
-<head><meta charset="utf-8"></head>
-<body>
-<audio id="music" src="${audioUrl}" loop preload="auto"></audio>
-<script>
-const music = document.getElementById('music');
-let lastState = { enabled: null, volume: null };
-music.muted = false;
-window.applyMusicState = (state) => {
-  const volume = Math.max(0, Math.min(1, Number(state.volume || 0) / 100));
-  const normalizedVolume = Math.round(volume * 100);
-  const stateUnchanged = lastState.enabled === !!state.enabled
-    && lastState.volume === normalizedVolume;
-  music.volume = volume;
-  music.muted = false;
-  lastState = { enabled: !!state.enabled, volume: normalizedVolume };
-  if (!state.enabled) {
-    if (!music.paused) {
-      music.pause();
-    }
-    return Promise.resolve({
-      enabled: false,
-      playing: false,
-      paused: music.paused,
-      volume: normalizedVolume
-    });
-  }
-  if (stateUnchanged && !music.paused) {
-    return Promise.resolve({
-      enabled: true,
-      playing: true,
-      paused: false,
-      volume: normalizedVolume
-    });
-  }
-  return music.play().then(() => ({
-    enabled: true,
-    playing: !music.paused,
-    paused: music.paused,
-    volume: normalizedVolume
-  })).catch((error) => ({
-    enabled: true,
-    playing: false,
-    paused: music.paused,
-    volume: normalizedVolume,
-    error: error && error.message ? error.message : String(error)
-  }));
-};
-</script>
-</body>
-</html>`;
-};
-
 const ensureMusicWindow = () => {
   if (musicWindow && !musicWindow.isDestroyed()) {
     return musicWindow;
@@ -174,6 +123,7 @@ const ensureMusicWindow = () => {
       backgroundThrottling: false,
       contextIsolation: false,
       nodeIntegration: false,
+      partition: 'persist:zhushen-music',
       sandbox: false,
       webSecurity: true
     }
@@ -184,9 +134,7 @@ const ensureMusicWindow = () => {
   musicWindow.webContents.on('did-finish-load', () => {
     applyMusicState();
   });
-  musicWindow.loadURL(
-    'data:text/html;charset=utf-8,' + encodeURIComponent(getMusicHtml())
-  );
+  musicWindow.loadFile(join(__dirname, 'music.html'));
   return musicWindow;
 };
 
@@ -418,6 +366,35 @@ const registerDesktopIpc = () => {
     return senderWindow.isFullScreen();
   });
 
+  ipcMain.handle('desktop:window-minimize', (event) => {
+    const senderWindow = getSenderWindow(event);
+    if (senderWindow) {
+      senderWindow.minimize();
+    }
+    return true;
+  });
+
+  ipcMain.handle('desktop:window-toggle-maximize', (event) => {
+    const senderWindow = getSenderWindow(event);
+    if (!senderWindow) {
+      return false;
+    }
+    if (senderWindow.isMaximized()) {
+      senderWindow.unmaximize();
+    } else {
+      senderWindow.maximize();
+    }
+    return senderWindow.isMaximized();
+  });
+
+  ipcMain.handle('desktop:window-close', (event) => {
+    const senderWindow = getSenderWindow(event);
+    if (senderWindow) {
+      senderWindow.close();
+    }
+    return true;
+  });
+
   ipcMain.handle('desktop:get-startup-enabled', () => {
     return app.getLoginItemSettings().openAtLogin;
   });
@@ -567,6 +544,7 @@ const createMainWindow = () => {
     backgroundColor: '#08080d',
     title: '诸神终应知晓',
     icon: appIcon,
+    frame: false,
     autoHideMenuBar: true,
     show: false,
     webPreferences: {
@@ -574,6 +552,7 @@ const createMainWindow = () => {
       nodeIntegration: false,
       preload: join(__dirname, 'preload.js'),
       sandbox: true,
+      webviewTag: true,
       webSecurity: true
     }
   });
@@ -635,6 +614,9 @@ const createMainWindow = () => {
 
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
+app.commandLine.appendSwitch('disable-renderer-backgrounding');
+app.commandLine.appendSwitch('disable-background-timer-throttling');
+app.commandLine.appendSwitch('disable-backgrounding-occluded-windows');
 
 const gotSingleInstanceLock = app.requestSingleInstanceLock();
 if (!gotSingleInstanceLock) {
@@ -655,8 +637,8 @@ if (!gotSingleInstanceLock) {
     try {
       writeStartupLog('app_ready');
       registerDesktopIpc();
-      createMainWindow();
       ensureMusicWindow();
+      createMainWindow();
     } catch (error) {
       writeStartupLog('app_ready_failed', getErrorDetail(error));
       dialog.showErrorBox(

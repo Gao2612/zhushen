@@ -31,8 +31,9 @@
       'padding-bottom:calc(72px + env(safe-area-inset-bottom));',
       'padding-left:env(safe-area-inset-left);',
       'padding-right:env(safe-area-inset-right);}',
-      'body.desktop-client{padding-bottom:0!important;}',
+      'body.desktop-client{padding-top:44px!important;padding-bottom:0!important;}',
       'body.desktop-client.has-desktop-dock{padding-bottom:82px!important;}',
+      'body.desktop-client .archive-nav{top:44px;}',
       'img,video{content-visibility:auto;contain-intrinsic-size:auto 300px;}',
       '.navbar{transform:translateZ(0);}',
       'button,a,[onclick]{touch-action:manipulation;}',
@@ -93,7 +94,33 @@
       'color:rgba(238,228,210,.66);text-align:center;text-decoration:none;',
       'font-size:13px;letter-spacing:.08em;}',
       '.desktop-dock a.active,.desktop-dock a:hover{color:#100b04;',
-      'background:#f0d78c;}'
+      'background:#f0d78c;}',
+      '.desktop-titlebar{position:fixed;top:0;left:0;right:0;z-index:100001;',
+      'height:44px;display:flex;align-items:center;border-bottom:1px solid rgba(212,167,84,.16);',
+      'background:#09090d;color:rgba(238,228,210,.7);-webkit-app-region:drag;}',
+      '.desktop-titlebar-brand{display:flex;align-items:center;gap:9px;min-width:0;padding-left:14px;font-size:13px;}',
+      '.desktop-titlebar-brand img{width:22px;height:22px;border-radius:5px;}',
+      '.desktop-titlebar-actions{display:flex;height:100%;margin-left:auto;-webkit-app-region:no-drag;}',
+      '.desktop-titlebar-actions button{width:48px;height:100%;border:0;border-radius:0;color:rgba(238,228,210,.72);background:transparent;font-size:17px;}',
+      '.desktop-titlebar-actions button:hover{background:rgba(255,255,255,.08);}',
+      '.desktop-titlebar-actions button:last-child:hover{background:#a83232;color:#fff;}',
+      '.desktop-browser{position:fixed;inset:44px 0 0;z-index:99990;display:grid;',
+      'grid-template-rows:48px 1fr;background:#09090d;}',
+      '.desktop-browser[hidden]{display:none;}',
+      '.desktop-browser-bar{display:flex;align-items:center;gap:8px;padding:7px 12px;',
+      'border-bottom:1px solid rgba(212,167,84,.18);background:#101014;}',
+      '.desktop-browser-bar button{width:34px;height:34px;border:1px solid rgba(212,167,84,.2);',
+      'border-radius:6px;color:#f0d78c;background:transparent;}',
+      '.desktop-browser-bar button:hover{background:rgba(212,167,84,.1);}',
+      '.desktop-browser-title{flex:1;overflow:hidden;color:rgba(238,228,210,.68);',
+      'font-size:13px;white-space:nowrap;text-overflow:ellipsis;}',
+      '.desktop-browser webview{width:100%;height:100%;background:#fff;}',
+      'img[data-src]{filter:saturate(.92);transition:opacity .28s ease,transform .35s ease;}',
+      'img.lazy-ready{opacity:1;}',
+      '.performance-page-hidden{display:none!important;}',
+      '.load-more-row{display:flex;justify-content:center;margin:22px 0;}',
+      '.load-more-row button{min-width:180px;min-height:44px;border:1px solid rgba(212,167,84,.22);',
+      'border-radius:6px;color:#f0d78c;background:rgba(212,167,84,.08);}'
     ].join('');
     document.head.appendChild(style);
   }
@@ -103,6 +130,58 @@
     for (var index = 0; index < images.length; index += 1) {
       images[index].setAttribute('loading', index < 4 ? 'eager' : 'lazy');
       images[index].setAttribute('decoding', 'async');
+    }
+  }
+
+  function installLazyMedia() {
+    var lazyImages = Array.prototype.slice.call(
+      document.querySelectorAll('img[data-src]')
+    );
+    var lazyVideos = Array.prototype.slice.call(
+      document.querySelectorAll('video[data-lazy-video]')
+    );
+    if (!('IntersectionObserver' in window)) {
+      lazyImages.forEach(loadImage);
+      lazyVideos.forEach(loadVideo);
+      return;
+    }
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) {
+          return;
+        }
+        if (entry.target.tagName === 'VIDEO') {
+          loadVideo(entry.target);
+        } else {
+          loadImage(entry.target);
+        }
+        observer.unobserve(entry.target);
+      });
+    }, {rootMargin: '420px 0px'});
+    lazyImages.forEach(function (image) { observer.observe(image); });
+    lazyVideos.forEach(function (video) { observer.observe(video); });
+
+    function loadImage(image) {
+      if (!image.dataset.src) {
+        return;
+      }
+      image.src = image.dataset.src;
+      image.removeAttribute('data-src');
+      image.addEventListener('load', function () {
+        image.classList.add('lazy-ready');
+      }, {once: true});
+    }
+
+    function loadVideo(video) {
+      var changed = false;
+      video.querySelectorAll('source[data-src]').forEach(function (source) {
+        source.src = source.dataset.src;
+        source.removeAttribute('data-src');
+        changed = true;
+      });
+      if (changed) {
+        video.load();
+      }
     }
   }
 
@@ -236,6 +315,7 @@
       ['概念', 'gfgn.html'],
       ['二创', 'wjec.html'],
       ['笑话', 'qyxhhj.html'],
+      ['档案', 'profile.html'],
       ['设置', 'settings.html']
     ];
     var current = location.pathname.split('/').pop() || HOME_PAGE;
@@ -253,13 +333,99 @@
     document.body.classList.add('has-desktop-dock');
   }
 
+  function installDesktopTitlebar() {
+    if (!isDesktopClient() || document.querySelector('.desktop-titlebar')) {
+      return;
+    }
+    var bar = createElement('div', 'desktop-titlebar');
+    var brand = createElement('div', 'desktop-titlebar-brand');
+    var logo = document.createElement('img');
+    var title = createElement('span', '', '诸神终应知晓 · 玩家自制史记');
+    var actions = createElement('div', 'desktop-titlebar-actions');
+    var minimize = createElement('button', '', '−');
+    var maximize = createElement('button', '', '□');
+    var close = createElement('button', '', '×');
+    logo.src = 'logo/logo.png';
+    logo.alt = '';
+    minimize.title = '最小化';
+    maximize.title = '最大化';
+    close.title = '关闭';
+    minimize.addEventListener('click', function () {
+      window.ZhushenDesktop.windowMinimize();
+    });
+    maximize.addEventListener('click', function () {
+      window.ZhushenDesktop.windowToggleMaximize();
+    });
+    close.addEventListener('click', function () {
+      window.ZhushenDesktop.windowClose();
+    });
+    brand.appendChild(logo);
+    brand.appendChild(title);
+    actions.appendChild(minimize);
+    actions.appendChild(maximize);
+    actions.appendChild(close);
+    bar.appendChild(brand);
+    bar.appendChild(actions);
+    document.body.appendChild(bar);
+  }
+
+  function showDesktopInternalBrowser(href, label) {
+    var browser = document.querySelector('.desktop-browser');
+    if (!browser) {
+      browser = createElement('section', 'desktop-browser');
+      var toolbar = createElement('div', 'desktop-browser-bar');
+      var back = createElement('button', '', '‹');
+      var forward = createElement('button', '', '›');
+      var reload = createElement('button', '', '↻');
+      var title = createElement('span', 'desktop-browser-title', label || href);
+      var external = createElement('button', '', '↗');
+      var close = createElement('button', '', '×');
+      var view = document.createElement('webview');
+      back.title = '返回';
+      forward.title = '前进';
+      reload.title = '刷新';
+      external.title = '在浏览器打开';
+      close.title = '关闭';
+      view.setAttribute('partition', 'persist:zhushen-internal-browser');
+      back.addEventListener('click', function () {
+        if (view.canGoBack()) { view.goBack(); }
+      });
+      forward.addEventListener('click', function () {
+        if (view.canGoForward()) { view.goForward(); }
+      });
+      reload.addEventListener('click', function () { view.reload(); });
+      external.addEventListener('click', function () {
+        window.open(view.getURL() || view.src, '_blank');
+      });
+      close.addEventListener('click', function () {
+        browser.hidden = true;
+        view.src = 'about:blank';
+      });
+      view.addEventListener('page-title-updated', function (event) {
+        title.textContent = event.title || label || href;
+      });
+      toolbar.appendChild(back);
+      toolbar.appendChild(forward);
+      toolbar.appendChild(reload);
+      toolbar.appendChild(title);
+      toolbar.appendChild(external);
+      toolbar.appendChild(close);
+      browser.appendChild(toolbar);
+      browser.appendChild(view);
+      document.body.appendChild(browser);
+      browser._view = view;
+      browser._title = title;
+    }
+    browser.hidden = false;
+    browser._title.textContent = label || href;
+    browser._view.src = href;
+  }
+
   function installDesktopMusic() {
     if (!isDesktopClient()
       || typeof window.ZhushenDesktop.setMusicState !== 'function') {
       return;
     }
-    var fallbackAudio = null;
-    var fallbackTimeKey = 'zhushen_desktop_music_time';
     var lastSyncedKey = '';
     syncMusic();
     document.querySelectorAll('[data-background-music-set]').forEach(function (button) {
@@ -294,13 +460,6 @@
         enabled: enabled,
         volume: normalizedVolume
       }).then(function (state) {
-        if (!state || state.enabled === false || !enabled) {
-          pauseFallbackAudio();
-        } else if (state.playing) {
-          pauseFallbackAudio();
-        } else {
-          playFallbackAudio(volume);
-        }
         document.querySelectorAll('[data-background-music-status]').forEach(function (node) {
           if (!state || state.enabled === false) {
             return;
@@ -322,51 +481,6 @@
       }).catch(function () {});
     }
 
-    function getFallbackAudio() {
-      if (fallbackAudio) {
-        return fallbackAudio;
-      }
-      fallbackAudio = document.createElement('audio');
-      fallbackAudio.src = 'audio/background_music.oga';
-      fallbackAudio.loop = true;
-      fallbackAudio.preload = 'auto';
-      fallbackAudio.dataset.desktopFallbackMusic = 'true';
-      fallbackAudio.addEventListener('timeupdate', function () {
-        if (Number.isFinite(fallbackAudio.currentTime)) {
-          localStorage.setItem(
-            fallbackTimeKey,
-            String(Math.floor(fallbackAudio.currentTime))
-          );
-        }
-      });
-      document.body.appendChild(fallbackAudio);
-      return fallbackAudio;
-    }
-
-    function playFallbackAudio(volume) {
-      var audio = getFallbackAudio();
-      var nextVolume = Math.max(0, Math.min(1, Number(volume || 0) / 100));
-      var volumeUnchanged = Math.abs(audio.volume - nextVolume) < 0.001;
-      audio.volume = nextVolume;
-      if (!audio.paused && volumeUnchanged) {
-        return;
-      }
-      var savedTime = Number(localStorage.getItem(fallbackTimeKey) || '0');
-      if (savedTime > 0 && audio.currentTime < 1) {
-        try {
-          audio.currentTime = savedTime;
-        } catch (error) {
-          localStorage.removeItem(fallbackTimeKey);
-        }
-      }
-      audio.play().catch(function () {});
-    }
-
-    function pauseFallbackAudio() {
-      if (fallbackAudio) {
-        fallbackAudio.pause();
-      }
-    }
   }
 
   function hideDuplicateNavigation() {
@@ -432,7 +546,7 @@
     if (isDesktopClient() && isDesktopInternalUrl(href)) {
       link.addEventListener('click', function (event) {
         event.preventDefault();
-        window.ZhushenDesktop.openInternal(href, label);
+        showDesktopInternalBrowser(href, label);
       });
     }
     item.appendChild(link);
@@ -751,17 +865,218 @@
     document.body.appendChild(modal.backdrop);
   }
 
+  function installIncrementalLists() {
+    installList('.official-timeline', '.official-post', 4, 3);
+    installList('main.app-shell', '.artist-block', 6, 4);
+
+    function installList(containerSelector, itemSelector, initialCount, step) {
+      var container = document.querySelector(containerSelector);
+      if (!container) {
+        return;
+      }
+      var items = Array.prototype.slice.call(
+        container.querySelectorAll(itemSelector)
+      );
+      if (items.length <= initialCount) {
+        return;
+      }
+      var visibleCount = initialCount;
+      var row = createElement('div', 'load-more-row');
+      var button = createElement('button', '', '加载更多');
+      row.appendChild(button);
+      container.parentElement.insertBefore(row, container.nextSibling);
+      button.addEventListener('click', function () {
+        visibleCount = Math.min(items.length, visibleCount + step);
+        sync();
+      });
+      sync();
+
+      function sync() {
+        items.forEach(function (item, index) {
+          item.classList.toggle('performance-page-hidden', index >= visibleCount);
+        });
+        button.textContent = visibleCount >= items.length
+          ? '已显示全部'
+          : '加载更多（' + visibleCount + ' / ' + items.length + '）';
+        button.disabled = visibleCount >= items.length;
+      }
+    }
+  }
+
+  function installProfilePage() {
+    var page = document.querySelector('[data-profile-page]');
+    if (!page) {
+      return;
+    }
+    var key = 'zhushen:profile:v1';
+    var avatarButton = page.querySelector('[data-profile-avatar-button]');
+    var avatarInput = page.querySelector('[data-profile-avatar-input]');
+    var avatarImage = page.querySelector('[data-profile-avatar-image]');
+    var avatarFallback = page.querySelector('[data-profile-avatar-fallback]');
+    var nicknameInput = page.querySelector('[data-profile-nickname]');
+    var bioInput = page.querySelector('[data-profile-bio]');
+    var musicInput = page.querySelector('[data-profile-music]');
+    var motionInput = page.querySelector('[data-profile-motion]');
+    var rememberInput = page.querySelector('[data-profile-remember]');
+    var importInput = page.querySelector('[data-profile-import-input]');
+    var status = page.querySelector('[data-profile-status]');
+    var profile = readProfile();
+    render();
+
+    avatarButton.addEventListener('click', function () { avatarInput.click(); });
+    avatarInput.addEventListener('change', function () {
+      var file = avatarInput.files && avatarInput.files[0];
+      if (!file) {
+        return;
+      }
+      if (file.size > 2 * 1024 * 1024) {
+        setStatus('头像不能超过 2 MB');
+        return;
+      }
+      var reader = new FileReader();
+      reader.onload = function () {
+        profile.avatarDataUrl = String(reader.result || '');
+        saveFromForm();
+      };
+      reader.readAsDataURL(file);
+    });
+    page.querySelector('[data-profile-save]').addEventListener('click', saveFromForm);
+    page.querySelector('[data-profile-export]').addEventListener('click', exportProfile);
+    page.querySelector('[data-profile-import]').addEventListener('click', function () {
+      if (isDesktopClient() && typeof window.ZhushenDesktop.importData === 'function') {
+        window.ZhushenDesktop.importData().then(function (data) {
+          if (data) { applyImportedProfile(data.profile || data); }
+        });
+        return;
+      }
+      importInput.click();
+    });
+    importInput.addEventListener('change', function () {
+      var file = importInput.files && importInput.files[0];
+      if (!file) {
+        return;
+      }
+      var reader = new FileReader();
+      reader.onload = function () {
+        try {
+          var data = JSON.parse(String(reader.result || '{}'));
+          applyImportedProfile(data.profile || data);
+        } catch (error) {
+          setStatus('导入失败：JSON 格式不正确');
+        }
+      };
+      reader.readAsText(file, 'utf-8');
+    });
+
+    function createNumericId() {
+      var random = Math.floor(Math.random() * 900000000) + 100000000;
+      return String(random);
+    }
+
+    function readProfile() {
+      try {
+        return normalize(JSON.parse(localStorage.getItem(key) || '{}'));
+      } catch (error) {
+        return normalize({});
+      }
+    }
+
+    function normalize(value) {
+      value = value && typeof value === 'object' ? value : {};
+      return {
+        schemaVersion: 1,
+        id: /^\d{9}$/.test(String(value.id || '')) ? String(value.id) : createNumericId(),
+        nickname: String(value.nickname || '未命名旅人').slice(0, 24),
+        bio: String(value.bio || '把喜欢的资料、设定和回忆收进自己的空间。').slice(0, 120),
+        avatarDataUrl: /^data:image\/(png|jpeg|webp);base64,/.test(String(value.avatarDataUrl || ''))
+          ? String(value.avatarDataUrl)
+          : '',
+        preferences: {
+          music: !value.preferences || value.preferences.music !== false,
+          reducedMotion: !!(value.preferences && value.preferences.reducedMotion),
+          rememberLastPage: !value.preferences || value.preferences.rememberLastPage !== false
+        },
+        createdAt: value.createdAt || new Date().toISOString(),
+        updatedAt: value.updatedAt || new Date().toISOString()
+      };
+    }
+
+    function saveFromForm() {
+      profile.nickname = (nicknameInput.value.trim() || '未命名旅人').slice(0, 24);
+      profile.bio = bioInput.value.trim().slice(0, 120);
+      profile.preferences.music = musicInput.checked;
+      profile.preferences.reducedMotion = motionInput.checked;
+      profile.preferences.rememberLastPage = rememberInput.checked;
+      profile.updatedAt = new Date().toISOString();
+      localStorage.setItem(key, JSON.stringify(profile));
+      localStorage.setItem('zhushen_background_music_enabled', String(profile.preferences.music));
+      document.documentElement.classList.toggle('reduced-motion', profile.preferences.reducedMotion);
+      render();
+      setStatus('已保存到当前设备');
+    }
+
+    function render() {
+      nicknameInput.value = profile.nickname;
+      bioInput.value = profile.bio;
+      musicInput.checked = profile.preferences.music;
+      motionInput.checked = profile.preferences.reducedMotion;
+      rememberInput.checked = profile.preferences.rememberLastPage;
+      page.querySelector('[data-profile-display-name]').textContent = profile.nickname;
+      page.querySelector('[data-profile-display-bio]').textContent = profile.bio;
+      page.querySelector('[data-profile-id]').textContent = 'ID ' + profile.id;
+      avatarFallback.textContent = profile.nickname.charAt(0) || '旅';
+      avatarImage.hidden = !profile.avatarDataUrl;
+      avatarFallback.hidden = !!profile.avatarDataUrl;
+      if (profile.avatarDataUrl) {
+        avatarImage.src = profile.avatarDataUrl;
+      }
+    }
+
+    function applyImportedProfile(value) {
+      profile = normalize(value);
+      localStorage.setItem(key, JSON.stringify(profile));
+      render();
+      setStatus('档案已导入');
+    }
+
+    function exportProfile() {
+      profile.updatedAt = new Date().toISOString();
+      localStorage.setItem(key, JSON.stringify(profile));
+      if (isDesktopClient() && typeof window.ZhushenDesktop.exportData === 'function') {
+        window.ZhushenDesktop.exportData({profile: profile}).then(function (saved) {
+          setStatus(saved ? '档案已导出' : '已取消导出');
+        });
+        return;
+      }
+      var blob = new Blob([JSON.stringify(profile, null, 2)], {type: 'application/json'});
+      var link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'zhushen-profile-' + profile.id + '.json';
+      link.click();
+      URL.revokeObjectURL(link.href);
+      setStatus('档案已导出');
+    }
+
+    function setStatus(message) {
+      status.textContent = message;
+    }
+  }
+
   function run() {
     installStyles();
     if (isDesktopClient()) {
       document.body.classList.add('desktop-client');
     }
     configureImages();
+    installLazyMedia();
     hideDuplicateNavigation();
+    installDesktopTitlebar();
     installDesktopDock();
     installDesktopSplash();
     installDesktopMusic();
     installDesktopControls();
+    installIncrementalLists();
+    installProfilePage();
     installCountdown();
     showDisclaimer();
   }

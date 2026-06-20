@@ -38,6 +38,7 @@ import android.view.animation.Animation;
 import android.webkit.JavascriptInterface;
 import android.webkit.MimeTypeMap;
 import android.webkit.SafeBrowsingResponse;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -81,6 +82,7 @@ public final class MainActivity extends ComponentActivity {
         "https://appassets.androidplatform.net/assets/";
     private static final String HOME_PAGE = "zy.html";
     private static final int STORAGE_PERMISSION_REQUEST = 1001;
+    private static final int AVATAR_FILE_REQUEST = 1002;
     private static final String PREFS_NAME = "zhushen_prefs";
     private static final String PREF_SKIP_DISCLAIMER = "disclaimer_skip";
     private static final String PREF_ORIENTATION_MODE = "orientation_mode";
@@ -153,6 +155,7 @@ public final class MainActivity extends ComponentActivity {
     private boolean backgroundMusicPausedByLifecycle = false;
     private String pendingSaveUrl;
     private String pendingNativeVideoAssetPath;
+    private ValueCallback<Uri[]> pendingFileChooser;
     private Uri currentExternalUri;
     private TextView browserTitle;
     private TextView nativeVideoTitle;
@@ -457,7 +460,7 @@ public final class MainActivity extends ComponentActivity {
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
         settings.setAllowFileAccess(false);
-        settings.setAllowContentAccess(false);
+        settings.setAllowContentAccess(true);
         settings.setAllowFileAccessFromFileURLs(false);
         settings.setAllowUniversalAccessFromFileURLs(false);
         settings.setMediaPlaybackRequiresUserGesture(false);
@@ -502,6 +505,32 @@ public final class MainActivity extends ComponentActivity {
                     browserTitle.setText(title == null || title.isEmpty()
                         ? "内置网页"
                         : title);
+                }
+            }
+
+            @Override
+            public boolean onShowFileChooser(
+                WebView view,
+                ValueCallback<Uri[]> filePathCallback,
+                FileChooserParams fileChooserParams
+            ) {
+                if (pendingFileChooser != null) {
+                    pendingFileChooser.onReceiveValue(null);
+                }
+                pendingFileChooser = filePathCallback;
+                try {
+                    Intent intent = fileChooserParams.createIntent();
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    String[] acceptTypes = fileChooserParams.getAcceptTypes();
+                    if (acceptTypes.length > 0 && !acceptTypes[0].isEmpty()) {
+                        intent.setType(acceptTypes[0]);
+                    }
+                    startActivityForResult(intent, AVATAR_FILE_REQUEST);
+                    return true;
+                } catch (ActivityNotFoundException error) {
+                    pendingFileChooser = null;
+                    showToast("未找到可用的图片选择器");
+                    return false;
                 }
             }
         };
@@ -1811,6 +1840,20 @@ public final class MainActivity extends ComponentActivity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode != AVATAR_FILE_REQUEST || pendingFileChooser == null) {
+            return;
+        }
+        Uri[] result = WebChromeClient.FileChooserParams.parseResult(
+            resultCode,
+            data
+        );
+        pendingFileChooser.onReceiveValue(result);
+        pendingFileChooser = null;
+    }
+
+    @Override
     public void onRequestPermissionsResult(
         int requestCode,
         @NonNull String[] permissions,
@@ -1865,6 +1908,10 @@ public final class MainActivity extends ComponentActivity {
     @Override
     protected void onDestroy() {
         mainHandler.removeCallbacksAndMessages(null);
+        if (pendingFileChooser != null) {
+            pendingFileChooser.onReceiveValue(null);
+            pendingFileChooser = null;
+        }
         ioExecutor.shutdownNow();
         if (webView != null) {
             webView.removeJavascriptInterface("Android");

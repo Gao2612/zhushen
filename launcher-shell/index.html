@@ -254,6 +254,17 @@
     .manage-panel[hidden] {
       display: none;
     }
+    .manage-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 0 8px;
+      color: rgba(247,234,212,.72);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .manage-toggle input { accent-color: #d4a754; }
     .danger {
       color: #f2aaa1;
       border-color: rgba(166,60,50,.5);
@@ -293,6 +304,11 @@
     .update-info.ready {
       color: #f0d78c;
     }
+    body.is-installed .panel h2 { margin-bottom: 0; }
+    body.is-installed .panel { align-self: center; transform: none; }
+    body.is-installed .path-box,
+    body.is-installed .progress { display: none; }
+    body.is-installed.is-busy .progress { display: grid; }
     .notice-board {
       display: grid;
       gap: 10px;
@@ -614,11 +630,11 @@
   <main>
     <section class="hero">
       <div class="notice-board" id="noticeBoard"></div>
-      <p class="eyebrow">Archive Installer</p>
+      <p class="eyebrow">Archive Launcher</p>
       <img class="title-mark" src="../manual-build/assets/logo/title-wordmark.png" alt="诸神终应知晓">
       <p class="subtitle">
-        玩家自制史记档案馆安装器。安装完成后可从桌面或开始菜单进入资料馆，
-        所有安装、启动与卸载操作均由本安装器直接管理。
+        玩家自制史记档案馆启动器。日常打开时直接进入资料馆，
+        更新、修复与目录管理集中在右侧齿轮菜单。
       </p>
       <div class="meta">
         <span>资料馆</span>
@@ -672,6 +688,7 @@
     const noticeBoard = document.getElementById('noticeBoard');
     const quickLinks = document.getElementById('quickLinks');
     const pathBox = document.querySelector('.path-box');
+    const panelTitle = document.querySelector('.panel h2');
     const qqCard = document.createElement('div');
     const profileOverlay = document.createElement('div');
     let currentProfile = null;
@@ -681,6 +698,8 @@
     const updateButton = document.createElement('button');
     const repairButton = document.createElement('button');
     const reinstallButton = document.createElement('button');
+    const closeAfterLaunchLabel = document.createElement('label');
+    const closeAfterLaunchInput = document.createElement('input');
 
     spaceNode.className = 'space-info';
     updateNode.className = 'update-info';
@@ -693,6 +712,10 @@
     updateButton.textContent = '\u66f4\u65b0';
     repairButton.textContent = '\u4fee\u590d';
     reinstallButton.textContent = '\u91cd\u65b0\u5b89\u88c5';
+    closeAfterLaunchLabel.className = 'manage-toggle';
+    closeAfterLaunchInput.type = 'checkbox';
+    closeAfterLaunchLabel.appendChild(closeAfterLaunchInput);
+    closeAfterLaunchLabel.appendChild(document.createTextNode('\u542f\u52a8\u540e\u81ea\u52a8\u5173\u95ed'));
     logsButton.textContent = '\u65e5\u5fd7';
     updateButton.hidden = true;
     qqCard.className = 'qq-card';
@@ -708,6 +731,7 @@
     managePanel.insertBefore(updateButton, repairButton);
     managePanel.insertBefore(checkUpdateButton, updateButton);
     managePanel.insertBefore(logsButton, uninstallButton);
+    managePanel.insertBefore(closeAfterLaunchLabel, uninstallButton);
 
     windowMinimizeButton.addEventListener('click', () => {
       window.ZhushenInstaller.windowMinimize();
@@ -724,7 +748,7 @@
       },
       {
         tab: '\u7248\u672c',
-        title: 'v1.1.0',
+        title: 'v1.1.1',
         body: '\u672c\u7248\u672c\u4f18\u5316\u5b89\u88c5\u3001\u4fee\u590d\u3001\u91cd\u88c5\u548c\u66f4\u65b0\u6d41\u7a0b\uff0c\u4e3b\u6309\u94ae\u805a\u7126\u542f\u52a8\u4f53\u9a8c\u3002'
       },
       {
@@ -808,13 +832,6 @@
       qqCard.innerHTML = '';
       addQuickLink('TapTap', 'https://www.taptap.cn/app/513986');
       addQuickLink('\u66f4\u65b0\u9875', 'https://github.com/Gao2612/zhushen/releases/latest');
-      const profileButton = document.createElement('button');
-      profileButton.textContent = '\u6863\u6848';
-      profileButton.addEventListener('click', (event) => {
-        event.stopPropagation();
-        openProfile();
-      });
-      quickLinks.appendChild(profileButton);
       const qqButton = document.createElement('button');
       const qqTitle = document.createElement('strong');
       const qqPrimary = document.createElement('span');
@@ -953,6 +970,7 @@
     };
     const setBusy = (value) => {
       busy = value;
+      document.body.classList.toggle('is-busy', value);
       installButton.disabled = value;
       chooseButton.disabled = value || installed;
       manageButton.disabled = value;
@@ -976,6 +994,9 @@
     async function refresh() {
       const status = await window.ZhushenInstaller.getStatus();
       installed = status.installed;
+      document.body.classList.toggle('is-installed', installed);
+      panelTitle.textContent = installed ? '\u8bf8\u795e\u7ec8\u5e94\u77e5\u6653' : '\u6e38\u620f\u5b89\u88c5';
+      closeAfterLaunchInput.checked = status.closeAfterLaunch !== false;
       pathNode.textContent = status.installDir;
       if (status.space) {
         spaceNode.textContent = '\u6240\u9700\u7a7a\u95f4 '
@@ -994,7 +1015,7 @@
       }
       setProgress(installed ? 100 : 0);
       setStatus(installed
-        ? '\u5ba2\u6237\u7aef\u5df2\u5c31\u7eea\uff0c\u53ef\u4ee5\u76f4\u63a5\u542f\u52a8\u3002\u76ee\u5f55\u4e0e\u5378\u8f7d\u64cd\u4f5c\u5df2\u653e\u5165\u53f3\u4fa7\u9f7f\u8f6e\u3002'
+        ? ''
         : status.payloadExists
           ? '\u51c6\u5907\u5c31\u7eea\uff0c\u70b9\u51fb\u7acb\u5373\u5b89\u88c5\u3002'
           : '\u672a\u627e\u5230\u5185\u7f6e\u5ba2\u6237\u7aef\u8d44\u6e90\uff0c\u8bf7\u91cd\u65b0\u6784\u5efa\u5b89\u88c5\u5668\u3002');
@@ -1037,6 +1058,12 @@
         return;
       }
       setManageOpen(managePanel.hidden);
+    });
+
+    closeAfterLaunchInput.addEventListener('change', async () => {
+      closeAfterLaunchInput.checked = await window.ZhushenInstaller.setCloseAfterLaunch(
+        closeAfterLaunchInput.checked
+      );
     });
 
     document.addEventListener('click', (event) => {
