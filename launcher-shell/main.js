@@ -14,6 +14,7 @@ const {
   unlinkSync,
   writeFileSync
 } = require('fs');
+const originalFs = require('original-fs');
 const { createHash, randomUUID } = require('crypto');
 const https = require('https');
 const { basename, dirname, join, relative, sep } = require('path');
@@ -213,9 +214,19 @@ const toPortablePath = (path) => {
   return path.split(sep).join('/');
 };
 
+const isAsarFile = (path) => String(path).toLowerCase().endsWith('.asar');
+
+const getFileStats = (path) => {
+  return isAsarFile(path) ? originalFs.statSync(path) : statSync(path);
+};
+
+const readFileBytes = (path) => {
+  return isAsarFile(path) ? originalFs.readFileSync(path) : readFileSync(path);
+};
+
 const hashFile = (path) => {
   const hash = createHash('sha256');
-  hash.update(readFileSync(path));
+  hash.update(readFileBytes(path));
   return hash.digest('hex');
 };
 
@@ -240,7 +251,7 @@ const getDirectorySize = (dir) => {
     return 0;
   }
   return listFiles(dir).reduce((total, filePath) => {
-    return total + statSync(filePath).size;
+    return total + getFileStats(filePath).size;
   }, 0);
 };
 
@@ -348,7 +359,7 @@ const getFileProblems = (baseDir, manifest, verifyHash = true) => {
       problems.push({ file, reason: 'missing' });
       continue;
     }
-    const stats = statSync(targetPath);
+    const stats = getFileStats(targetPath);
     if (Number(file.size) && stats.size !== Number(file.size)) {
       problems.push({ file, reason: 'size' });
       continue;
@@ -362,6 +373,10 @@ const getFileProblems = (baseDir, manifest, verifyHash = true) => {
 
 const copyFileEnsured = (sourcePath, targetPath) => {
   ensureDirectory(dirname(targetPath));
+  if (isAsarFile(sourcePath) || isAsarFile(targetPath)) {
+    originalFs.copyFileSync(sourcePath, targetPath);
+    return;
+  }
   copyFileSync(sourcePath, targetPath);
 };
 
@@ -369,13 +384,13 @@ const copyPayloadFiles = (mode, overwriteAll = true) => {
   const payloadDir = findPayloadDir();
   const installDir = getInstallDir();
   const files = listFiles(payloadDir);
-  const totalBytes = files.reduce((total, filePath) => total + statSync(filePath).size, 0);
+  const totalBytes = files.reduce((total, filePath) => total + getFileStats(filePath).size, 0);
   let copiedBytes = 0;
   const startedAt = Date.now();
   files.forEach((sourcePath, index) => {
     const relativePath = toPortablePath(relative(payloadDir, sourcePath));
     const targetPath = getLocalFilePath(installDir, relativePath);
-    const size = statSync(sourcePath).size;
+    const size = getFileStats(sourcePath).size;
     if (overwriteAll || !existsSync(targetPath)) {
       copyFileEnsured(sourcePath, targetPath);
     }
@@ -407,7 +422,7 @@ const verifyInstalledFiles = (manifest, progressOffset = 0, progressRange = 100)
       problems.push({ file, reason: 'missing' });
       return;
     }
-    if (statSync(targetPath).size !== Number(file.size)) {
+    if (getFileStats(targetPath).size !== Number(file.size)) {
       problems.push({ file, reason: 'size' });
       return;
     }
