@@ -47,10 +47,28 @@
 - 云备份入口先显示为“未启用”，不接入真实联网服务。
 - 新增 `docs/account-sync-plan.md`，记录未来登录、账号、联网同步的实现方案和风险。
 
+## 安装器细节修复
+
+- 修复安装到盘符根目录下一级目录时可能尝试创建 `G:\` 根目录导致 `EPERM` 的问题。
+- 空间显示改为接近 1000 MB 时切换为 GB，例如 `1008.7 MB` 显示为约 `1.0 GB`。
+- 左侧轮播图放大，公告 / 版本 / 维护信息卡压缩。
+- 右侧安装面板改为靠近底部显示。
+- 使用桌面原始书法图提取“诸神终应知晓”字标，不再通过字体或图像模型重新生成文字。
+- 新增白色透明字标 `manual-build/assets/logo/title-wordmark.png`，用于深色启动器背景。
+- 新增黑色透明字标 `manual-build/assets/logo/title-wordmark-ink.png`，用于浅色页面和文档。
+- 保留原始字标图 `manual-build/assets/logo/title-wordmark-source.png`，方便后续重新调整透明阈值。
+- 新增可重复执行的提取脚本 `scripts/extract-wordmark.ps1`，并让安装器构建脚本同步打包透明字标。
+
 ## 验证
 
 已通过：
 
 ```powershell
 npm run verify
+npm run installer-shell:win
+npm run build
 ```
+
+- Windows 便携安装器构建成功。
+- Android debug APK 构建成功。
+- 最新构建已覆盖到桌面。

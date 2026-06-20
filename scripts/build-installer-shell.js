@@ -254,6 +254,15 @@ function copyAppFiles() {
     join(rootDir, 'manual-build', 'assets', 'logo', 'logo.png'),
     join(appTempDir, 'manual-build', 'assets', 'logo', 'logo.png')
   );
+  for (const wordmarkName of [
+    'title-wordmark.png',
+    'title-wordmark-ink.png'
+  ]) {
+    cpSync(
+      join(rootDir, 'manual-build', 'assets', 'logo', wordmarkName),
+      join(appTempDir, 'manual-build', 'assets', 'logo', wordmarkName)
+    );
+  }
   writeFileSync(
     join(appTempDir, 'package.json'),
     JSON.stringify({

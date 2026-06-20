@@ -186,11 +186,17 @@ const formatBytes = (bytes) => {
   const units = ['B', 'KB', 'MB', 'GB'];
   let size = value;
   let unitIndex = 0;
-  while (size >= 1024 && unitIndex < units.length - 1) {
+  while (size >= 1000 && unitIndex < units.length - 1) {
     size /= 1024;
     unitIndex += 1;
   }
   return `${size.toFixed(unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
+};
+
+const ensureDirectory = (path) => {
+  if (!existsSync(path)) {
+    mkdirSync(path, { recursive: true });
+  }
 };
 
 const formatEta = (seconds) => {
@@ -355,7 +361,7 @@ const getFileProblems = (baseDir, manifest, verifyHash = true) => {
 };
 
 const copyFileEnsured = (sourcePath, targetPath) => {
-  mkdirSync(dirname(targetPath), { recursive: true });
+  ensureDirectory(dirname(targetPath));
   copyFileSync(sourcePath, targetPath);
 };
 
@@ -448,7 +454,7 @@ const requestJson = (url) => {
 
 const downloadFileOnce = (url, targetPath, expectedSize, progress) => {
   return new Promise((resolve, reject) => {
-    mkdirSync(dirname(targetPath), { recursive: true });
+    ensureDirectory(dirname(targetPath));
     const tempPath = `${targetPath}.download`;
     const file = createWriteStream(tempPath);
     const startedAt = Date.now();
@@ -572,7 +578,7 @@ const runPowerShell = (script) => {
 };
 
 const createShortcut = async (shortcutPath, targetPath) => {
-  mkdirSync(dirname(shortcutPath), { recursive: true });
+  ensureDirectory(dirname(shortcutPath));
   const workingDirectory = dirname(targetPath);
   const script = [
     '$ErrorActionPreference = "Stop"',
@@ -649,9 +655,9 @@ const installPayload = async () => {
     sendProgress('failed', 0, '\u78c1\u76d8\u7a7a\u95f4\u4e0d\u8db3');
     return false;
   }
-  mkdirSync(dirname(installDir), { recursive: true });
+  ensureDirectory(dirname(installDir));
   removeInstallDir();
-  mkdirSync(installDir, { recursive: true });
+  ensureDirectory(installDir);
 
   sendProgress('copy', 34, '正在写入桌面客户端文件');
   copyPayloadFiles('copy', true);
@@ -680,7 +686,7 @@ const repairPayload = async () => {
     return await updateFromRemote();
   }
   const installDir = getGameDir();
-  mkdirSync(installDir, { recursive: true });
+  ensureDirectory(installDir);
   sendProgress('verify', 5, '\u6b63\u5728\u626b\u63cf\u672c\u5730\u6587\u4ef6');
   const problems = getFileProblems(installDir, manifest);
   if (problems.length === 0) {
