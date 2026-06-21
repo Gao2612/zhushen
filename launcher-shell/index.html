@@ -304,11 +304,8 @@
     .update-info.ready {
       color: #f0d78c;
     }
-    body.is-installed .panel h2 { margin-bottom: 0; }
-    body.is-installed .panel { align-self: center; transform: none; }
     body.is-installed .path-box,
     body.is-installed .progress { display: none; }
-    body.is-installed.is-busy .progress { display: grid; }
     .notice-board {
       display: grid;
       gap: 10px;
@@ -970,7 +967,6 @@
     };
     const setBusy = (value) => {
       busy = value;
-      document.body.classList.toggle('is-busy', value);
       installButton.disabled = value;
       chooseButton.disabled = value || installed;
       manageButton.disabled = value;

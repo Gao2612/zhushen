@@ -10,8 +10,7 @@ const pages = [
   { href: 'gfjs.html', label: '角色' },
   { href: 'gfgn.html', label: '概念' },
   { href: 'wjec.html', label: '二创' },
-  { href: 'qyxhhj.html', label: '笑话' },
-  { href: 'profile.html', label: '档案' }
+  { href: 'qyxhhj.html', label: '笑话' }
 ];
 
 const characters = [
@@ -662,10 +661,14 @@ function htmlPage({ title, active, hero, body, extraClass = '' }) {
 
 function nav(active) {
   return `<nav class="archive-nav">
-    <a class="brand" href="zy.html" aria-label="诸神终应知晓首页">
-      <img src="logo/logo.png" alt="">
-      <span><strong>诸神终应知晓</strong><small>玩家自制史记</small></span>
-    </a>
+    <div class="brand">
+      <button class="brand-avatar" type="button" data-profile-open title="个人档案" aria-label="打开个人档案">
+        <img src="logo/logo.png" alt="">
+      </button>
+      <a class="brand-copy" href="zy.html" aria-label="诸神终应知晓首页">
+        <strong>诸神终应知晓</strong><small>玩家自制史记</small>
+      </a>
+    </div>
     <button class="nav-toggle" data-nav-toggle aria-label="打开导航">☰</button>
     <ul class="nav-menu" data-nav-menu>
       ${pages.map((page) => `<li><a class="${page.label === active ? 'active' : ''}" href="${page.href}">${page.label}</a></li>`).join('')}
@@ -746,7 +749,7 @@ function homePage() {
       <p class="eyebrow">My Archive</p>
       <h2>我的档案</h2>
       <p>收藏、最近浏览与免责声明偏好仅保存在当前设备。你可以把常看的角色、概念图和二创作品留在这里，方便回溯。</p>
-      <a class="wide-button" href="profile.html">编辑个人档案</a>
+      <button class="wide-button" type="button" data-profile-open>编辑个人档案</button>
     </div>
     <div class="mini-list" data-favorite-list></div>
   </section>`;
@@ -1013,55 +1016,6 @@ function jokesPage() {
   });
 }
 
-function profilePage() {
-  const body = `<section class="profile-workspace" data-profile-page>
-    <aside class="profile-identity">
-      <button class="profile-avatar-button" type="button" data-profile-avatar-button title="更换头像">
-        <img data-profile-avatar-image alt="用户头像" hidden>
-        <span data-profile-avatar-fallback>旅</span>
-      </button>
-      <input data-profile-avatar-input type="file" accept="image/png,image/jpeg,image/webp" hidden>
-      <strong data-profile-display-name>未命名旅人</strong>
-      <span class="profile-number" data-profile-id>ID 读取中</span>
-      <p data-profile-display-bio>把喜欢的资料、设定和回忆收进自己的空间。</p>
-    </aside>
-    <div class="profile-editor">
-      <div class="profile-section-head">
-        <div><p class="eyebrow">Local Profile</p><h2>个人档案</h2></div>
-        <span class="profile-save-state" data-profile-status>保存在当前设备</span>
-      </div>
-      <label class="profile-field"><span>昵称</span><input data-profile-nickname maxlength="24" placeholder="未命名旅人"></label>
-      <label class="profile-field"><span>个人备注</span><textarea data-profile-bio maxlength="120" rows="4" placeholder="写下一句属于你的档案说明"></textarea></label>
-      <div class="profile-preferences">
-        <label><input data-profile-music type="checkbox"> 保持背景音乐</label>
-        <label><input data-profile-motion type="checkbox"> 减少动态效果</label>
-        <label><input data-profile-remember type="checkbox"> 记住浏览记录</label>
-      </div>
-      <div class="profile-actions">
-        <button class="wide-button profile-primary" type="button" data-profile-save>保存档案</button>
-        <button class="wide-button" type="button" data-profile-export>导出 JSON</button>
-        <button class="wide-button" type="button" data-profile-import>导入 JSON</button>
-        <input data-profile-import-input type="file" accept="application/json" hidden>
-      </div>
-      <div class="profile-cloud-row">
-        <div><strong>云备份</strong><p>未来接入账号同步时会沿用当前档案结构。</p></div>
-        <button type="button" disabled>敬请期待</button>
-      </div>
-    </div>
-  </section>`;
-  return htmlPage({
-    title: '个人档案 · 诸神终应知晓',
-    active: '档案',
-    hero: {
-      eyebrow: 'My Archive',
-      title: '属于你的汇流地档案',
-      desc: '昵称、头像、偏好和浏览资料只保存在当前设备，可随时导入或导出。',
-      searchScope: 'page'
-    },
-    body
-  });
-}
-
 function settingsPage() {
   const body = `<section class="settings-grid">
     <article class="settings-card">
@@ -1151,6 +1105,14 @@ function settingsPage() {
         <button class="wide-button" data-desktop-import>导入本地数据</button>
         <button class="wide-button danger-button" data-desktop-uninstall>卸载桌面客户端</button>
       </div>
+      <div class="desktop-combo">
+        <span>首页背景</span>
+        <div class="segmented-actions">
+          <button data-desktop-background-mode="dynamic">动态 PV</button>
+          <button data-desktop-background-mode="static">静态封面</button>
+        </div>
+      </div>
+      <p class="settings-note" data-desktop-background-status>背景模式：读取中</p>
       <p class="settings-note">快捷键：F11 全屏/退出全屏，Esc 退出全屏，Ctrl+F 搜索，Ctrl+加号/减号缩放，Ctrl+0 恢复缩放，Alt+左/右前进后退。</p>
       <p class="settings-note" data-desktop-status>桌面功能：读取中</p>
     </article>
@@ -1185,7 +1147,6 @@ writeFileSync(join(assetsRoot, 'gfjs.html'), charactersPage());
 writeFileSync(join(assetsRoot, 'gfgn.html'), conceptsPage());
 writeFileSync(join(assetsRoot, 'wjec.html'), fanArtPage());
 writeFileSync(join(assetsRoot, 'qyxhhj.html'), jokesPage());
-writeFileSync(join(assetsRoot, 'profile.html'), profilePage());
 writeFileSync(join(assetsRoot, 'settings.html'), settingsPage());
 
 writeFileSync(join(assetsRoot, 'lib', 'app-theme.css'), `:root {
@@ -1251,10 +1212,11 @@ button, input { font: inherit; }
   min-width: 0;
   max-width: calc(100% - 56px);
 }
-.brand img { width: 42px; height: 42px; object-fit: contain; border-radius: 10px; }
-.brand span { min-width: 0; }
-.brand strong { display: block; color: var(--gold-soft); font-size: 16px; }
-.brand small { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+.brand-avatar { width: 42px; height: 42px; flex: 0 0 auto; overflow: hidden; padding: 0; border: 1px solid var(--line); border-radius: 8px; background: transparent; cursor: pointer; }
+.brand-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.brand-copy { min-width: 0; }
+.brand-copy strong { display: block; color: var(--gold-soft); font-size: 16px; }
+.brand-copy small { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
 .nav-menu { display: flex; align-items: center; gap: 8px; padding: 0; margin: 0; list-style: none; }
 .nav-menu a {
   display: block;
@@ -2307,14 +2269,20 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
     writeList(recentKey, list);
   }
 
+  function refreshPage() {
+    installSearch();
+    installFilters();
+    installNativeVideoBridge();
+    installSettings();
+    syncFavorites();
+    recordRecent();
+  }
+
   installNavigation();
-  installSearch();
-  installFilters();
   installLightbox();
-  installNativeVideoBridge();
   installFavorites();
-  installSettings();
-  recordRecent();
+  refreshPage();
+  window.ZhushenUIRefresh = refreshPage;
 })();
 `);
 

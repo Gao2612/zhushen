@@ -999,10 +999,10 @@ const uninstallPayload = async () => {
 
 const createWindow = () => {
   mainWindow = new BrowserWindow({
-    width: 1000,
-    height: 650,
-    minWidth: 900,
-    minHeight: 560,
+    width: 1180,
+    height: 720,
+    minWidth: 980,
+    minHeight: 620,
     title: productName,
     frame: false,
     autoHideMenuBar: true,

@@ -109,6 +109,50 @@ for (const forbiddenAsset of forbiddenAssets) {
   }
 }
 
+const generatedPages = pages.map((page) => ({
+  page,
+  content: readFileSync(join(assetsRoot, page), 'utf8')
+}));
+if (existsSync(join(assetsRoot, 'profile.html'))) {
+  recordFailure('仍生成独立档案页面：profile.html');
+}
+for (const { page, content } of generatedPages) {
+  if (/href=["']profile\.html["']/i.test(content)) {
+    recordFailure(`导航仍包含独立档案入口：${page}`);
+  }
+  if (!/class="brand-avatar"[^>]*data-profile-open/i.test(content)) {
+    recordFailure(`左上角头像未设置为档案抽屉入口：${page}`);
+  }
+}
+
+const enhancements = readFileSync(
+  join(assetsRoot, 'app-enhancements.js'),
+  'utf8'
+);
+const enhancementRequirements = [
+  ['档案抽屉', 'installProfileDrawer()'],
+  ['局部切页', 'installSmoothNavigation()'],
+  ['本地页面读取兼容', 'new XMLHttpRequest()'],
+  ['分页面背景', 'installPageBackdrop()'],
+  ['页面增强刷新入口', 'window.ZhushenEnhancementsRefresh']
+];
+for (const [label, source] of enhancementRequirements) {
+  if (!enhancements.includes(source)) {
+    recordFailure(`客户端缺少${label}：${source}`);
+  }
+}
+
+const launcher = readFileSync(join(root, 'launcher-shell', 'index.html'), 'utf8');
+if (!/body\.is-installed \.path-box,\s*body\.is-installed \.progress\s*\{\s*display:\s*none;/m.test(launcher)) {
+  recordFailure('启动器已安装态仍可能显示安装路径、空间或进度');
+}
+if (/游戏已就绪/.test(launcher)) {
+  recordFailure('启动器仍包含“游戏已就绪”卡片文案');
+}
+if (launcher.includes('\\u8bf7\\u795e\\u7ec8\\u5e94\\u77e5\\u6653')) {
+  recordFailure('启动器已安装态标题误写为“请神终应知晓”');
+}
+
 const manifest = readFileSync(
   join(root, 'android', 'app', 'src', 'main', 'AndroidManifest.xml'),
   'utf8'

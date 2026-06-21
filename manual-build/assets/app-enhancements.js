@@ -5,6 +5,16 @@
   var BACKGROUND_MUSIC_TITLE = 'Mass No.19 in D Minor, K.626 Requiem: Introitus: Requiem Aeternam';
   var ENHANCEMENT_STYLE_ID = '_app_enhancement_style';
   var DISCLAIMER_ID = '_app_disclaimer';
+  var BACKGROUND_MODE_KEY = 'zhushen_desktop_background_mode';
+  var PAGE_BACKGROUNDS = {
+    'zy.html': 'zy/诸神终应知晓概念图.jpg',
+    'official.html': 'official-posts/492288870839223557/cover.jpg',
+    'gfjs.html': '官方-角色/阿塔尔/阿塔尔1 .jpeg',
+    'gfgn.html': 'zy/诸神终应知晓概念图.jpg',
+    'wjec.html': 'zy/玩家二创.jpg',
+    'qyxhhj.html': 'zy/群友笑话合集.jpg',
+    'settings.html': 'splash.jpg'
+  };
 
   function createElement(tagName, className, textContent) {
     var element = document.createElement(tagName);
@@ -26,7 +36,7 @@
     style.id = ENHANCEMENT_STYLE_ID;
     style.textContent = [
       'html{overflow-y:auto;-webkit-overflow-scrolling:touch;}',
-      'body{background:#1a1a1a!important;background-image:none!important;',
+      'body{background:transparent!important;background-image:none!important;',
       'padding-top:max(80px,env(safe-area-inset-top));',
       'padding-bottom:calc(72px + env(safe-area-inset-bottom));',
       'padding-left:env(safe-area-inset-left);',
@@ -120,7 +130,43 @@
       '.performance-page-hidden{display:none!important;}',
       '.load-more-row{display:flex;justify-content:center;margin:22px 0;}',
       '.load-more-row button{min-width:180px;min-height:44px;border:1px solid rgba(212,167,84,.22);',
-      'border-radius:6px;color:#f0d78c;background:rgba(212,167,84,.08);}'
+      'border-radius:6px;color:#f0d78c;background:rgba(212,167,84,.08);}',
+      '.app-page-backdrop{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:#0d0d10;}',
+      '.app-shell{position:relative;z-index:1;}',
+      '.app-page-backdrop img,.app-page-backdrop video{position:absolute;inset:0;width:100%;height:100%;',
+      'object-fit:cover;opacity:.34;transition:opacity .32s ease;}',
+      '.app-page-backdrop video{opacity:.24;}',
+      '.app-page-backdrop-shade{position:absolute;inset:0;background:rgba(8,8,11,.72);}',
+      '.app-page-backdrop-shade:after{content:"";position:absolute;inset:0;',
+      'background:linear-gradient(180deg,rgba(8,8,11,.28),rgba(8,8,11,.82));}',
+      '.profile-drawer-backdrop{position:fixed;inset:0;z-index:99970;opacity:0;visibility:hidden;',
+      'background:rgba(0,0,0,.58);transition:opacity .2s ease,visibility .2s ease;}',
+      '.profile-drawer-backdrop.open{opacity:1;visibility:visible;}',
+      '.profile-drawer{position:fixed;top:0;right:0;bottom:0;z-index:99980;width:min(440px,100vw);',
+      'overflow:auto;padding:22px;border-left:1px solid rgba(212,167,84,.24);background:#111116;',
+      'box-shadow:-24px 0 70px rgba(0,0,0,.48);transform:translateX(102%);transition:transform .2s ease;}',
+      '.desktop-client .profile-drawer{top:44px;}',
+      '.profile-drawer.open{transform:translateX(0);}',
+      '.profile-drawer-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;}',
+      '.profile-drawer-head h2{margin:0;color:#f0d78c;font-size:20px;}',
+      '.profile-drawer-close{width:38px;height:38px;border:1px solid rgba(212,167,84,.22);',
+      'border-radius:50%;color:#eee4d2;background:transparent;font-size:22px;}',
+      '.profile-drawer .profile-workspace{display:block;margin:0;}',
+      '.profile-drawer .profile-identity,.profile-drawer .profile-editor{border-radius:8px;}',
+      '.profile-drawer .profile-identity{padding:22px 18px;}',
+      '.profile-drawer .profile-editor{margin-top:12px;padding:20px;}',
+      '.profile-drawer .profile-actions{grid-template-columns:1fr 1fr;}',
+      '.profile-drawer .profile-cloud-row{align-items:flex-start;}',
+      '.brand-avatar{transition:border-color .18s ease,transform .18s ease;}',
+      '.brand-avatar:hover{border-color:rgba(240,215,140,.62);transform:translateY(-1px);}',
+      '.app-shell{view-transition-name:app-content;}',
+      '::view-transition-old(app-content){animation:app-page-out .09s ease both;}',
+      '::view-transition-new(app-content){animation:app-page-in .18s ease both;}',
+      '@keyframes app-page-out{to{opacity:0;transform:translateY(-3px);}}',
+      '@keyframes app-page-in{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:none;}}',
+      '.reduced-motion .app-page-backdrop video{display:none!important;}',
+      '.reduced-motion *{scroll-behavior:auto!important;}',
+      '@media(max-width:560px){.profile-drawer{padding:16px;}.profile-drawer .profile-actions{grid-template-columns:1fr;}}'
     ].join('');
     document.head.appendChild(style);
   }
@@ -304,6 +350,98 @@
     }
   }
 
+  function getCurrentPage() {
+    return location.pathname.split('/').pop() || HOME_PAGE;
+  }
+
+  function installPageBackdrop() {
+    if (!document.querySelector('.app-page-backdrop')) {
+      var backdrop = createElement('div', 'app-page-backdrop');
+      var image = document.createElement('img');
+      var video = document.createElement('video');
+      var shade = createElement('div', 'app-page-backdrop-shade');
+      image.alt = '';
+      image.setAttribute('aria-hidden', 'true');
+      video.muted = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.preload = 'metadata';
+      video.setAttribute('aria-hidden', 'true');
+      backdrop.appendChild(image);
+      backdrop.appendChild(video);
+      backdrop.appendChild(shade);
+      document.body.insertBefore(backdrop, document.body.firstChild);
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+          video.pause();
+        } else if (!video.hidden) {
+          video.play().catch(function () {});
+        }
+      });
+    }
+    updatePageBackdrop();
+    installBackgroundControls();
+  }
+
+  function installBackgroundControls() {
+    var controls = document.querySelectorAll('[data-desktop-background-mode]');
+    var status = document.querySelector('[data-desktop-background-status]');
+    var mode = localStorage.getItem(BACKGROUND_MODE_KEY) || 'dynamic';
+    controls.forEach(function (button) {
+      var buttonMode = button.dataset.desktopBackgroundMode;
+      button.classList.toggle('active', buttonMode === mode);
+      if (button.dataset.backgroundBound === 'true') {
+        return;
+      }
+      button.dataset.backgroundBound = 'true';
+      button.addEventListener('click', function () {
+        localStorage.setItem(BACKGROUND_MODE_KEY, buttonMode);
+        installBackgroundControls();
+        updatePageBackdrop();
+      });
+    });
+    if (status) {
+      status.textContent = '首页背景：' + (mode === 'dynamic' ? '动态 PV' : '静态封面');
+    }
+  }
+
+  function updatePageBackdrop() {
+    var backdrop = document.querySelector('.app-page-backdrop');
+    if (!backdrop) {
+      return;
+    }
+    var page = getCurrentPage();
+    var image = backdrop.querySelector('img');
+    var video = backdrop.querySelector('video');
+    var mode = localStorage.getItem(BACKGROUND_MODE_KEY) || 'dynamic';
+    var profile = {};
+    try {
+      profile = JSON.parse(localStorage.getItem('zhushen:profile:v1') || '{}');
+    } catch (error) {}
+    var reducedMotion = !!(profile.preferences && profile.preferences.reducedMotion);
+    var useVideo = isDesktopClient()
+      && page === HOME_PAGE
+      && mode === 'dynamic'
+      && !reducedMotion;
+    image.src = PAGE_BACKGROUNDS[page] || 'splash.jpg';
+    image.hidden = useVideo;
+    video.hidden = !useVideo;
+    if (!useVideo) {
+      video.pause();
+      return;
+    }
+    var videoSrc = 'official-posts/492288870839223557/pv.mp4';
+    if (!video.getAttribute('src')) {
+      video.src = videoSrc;
+    }
+    if (!document.hidden) {
+      video.play().catch(function () {
+        video.hidden = true;
+        image.hidden = false;
+      });
+    }
+  }
+
   function installDesktopDock() {
     if (!isDesktopClient() || document.querySelector('.desktop-dock')) {
       return;
@@ -315,7 +453,6 @@
       ['概念', 'gfgn.html'],
       ['二创', 'wjec.html'],
       ['笑话', 'qyxhhj.html'],
-      ['档案', 'profile.html'],
       ['设置', 'settings.html']
     ];
     var current = location.pathname.split('/').pop() || HOME_PAGE;
@@ -333,6 +470,101 @@
     document.body.classList.add('has-desktop-dock');
   }
 
+  function updateNavigationState() {
+    var current = getCurrentPage();
+    document.querySelectorAll('.nav-menu a, .desktop-dock a').forEach(function (link) {
+      var href = link.getAttribute('href') || '';
+      if (!/^[^:#?]+\.html(?:[?#].*)?$/.test(href)) {
+        return;
+      }
+      link.classList.toggle('active', href.split(/[?#]/, 1)[0] === current);
+    });
+  }
+
+  function installSmoothNavigation() {
+    if (window.__zhushenSmoothNavigationInstalled) {
+      return;
+    }
+    window.__zhushenSmoothNavigationInstalled = true;
+    document.addEventListener('click', function (event) {
+      var link = event.target.closest('a[href]');
+      if (!link || event.defaultPrevented || event.button !== 0
+        || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey
+        || link.target || link.hasAttribute('download')) {
+        return;
+      }
+      var href = link.getAttribute('href') || '';
+      if (!/^[^:#?]+\.html(?:[?#].*)?$/.test(href)) {
+        return;
+      }
+      var target = new URL(href, location.href);
+      if (target.origin !== location.origin) {
+        return;
+      }
+      event.preventDefault();
+      navigate(target.href, true);
+    });
+    window.addEventListener('popstate', function () {
+      navigate(location.href, false);
+    });
+
+    function navigate(url, pushState) {
+      loadPage(url).then(function (html) {
+        var parsed = new DOMParser().parseFromString(html, 'text/html');
+        var nextMain = parsed.querySelector('main.app-shell');
+        var currentMain = document.querySelector('main.app-shell');
+        if (!nextMain || !currentMain) {
+          throw new Error('页面缺少主内容容器');
+        }
+        var swap = function () {
+          currentMain.replaceWith(document.importNode(nextMain, true));
+          document.title = parsed.title || document.title;
+          if (pushState) {
+            history.pushState({}, '', url);
+          }
+          document.querySelectorAll('[data-nav-menu].show').forEach(function (menu) {
+            menu.classList.remove('show');
+          });
+          updateNavigationState();
+          if (typeof window.ZhushenUIRefresh === 'function') {
+            window.ZhushenUIRefresh();
+          }
+          if (typeof window.ZhushenEnhancementsRefresh === 'function') {
+            window.ZhushenEnhancementsRefresh();
+          }
+          window.scrollTo({top: 0, behavior: 'auto'});
+        };
+        if (document.startViewTransition
+          && !document.documentElement.classList.contains('reduced-motion')) {
+          document.startViewTransition(swap);
+        } else {
+          swap();
+        }
+      }).catch(function () {
+        location.href = url;
+      });
+    }
+
+    function loadPage(url) {
+      return new Promise(function (resolve, reject) {
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.onload = function () {
+          if ((request.status >= 200 && request.status < 300)
+            || (request.status === 0 && request.responseText)) {
+            resolve(request.responseText);
+            return;
+          }
+          reject(new Error('HTTP ' + request.status));
+        };
+        request.onerror = function () {
+          reject(new Error('本地页面读取失败'));
+        };
+        request.send();
+      });
+    }
+  }
+
   function installDesktopTitlebar() {
     if (!isDesktopClient() || document.querySelector('.desktop-titlebar')) {
       return;
@@ -340,7 +572,7 @@
     var bar = createElement('div', 'desktop-titlebar');
     var brand = createElement('div', 'desktop-titlebar-brand');
     var logo = document.createElement('img');
-    var title = createElement('span', '', '诸神终应知晓 · 玩家自制史记');
+    var title = createElement('span', '', '诸神终应知晓');
     var actions = createElement('div', 'desktop-titlebar-actions');
     var minimize = createElement('button', '', '−');
     var maximize = createElement('button', '', '□');
@@ -588,9 +820,10 @@
     var importButton = document.querySelector('[data-desktop-import]');
     var uninstallButton = document.querySelector('[data-desktop-uninstall]');
     var status = document.querySelector('[data-desktop-status]');
-    if (card) {
-      card.hidden = false;
+    if (!card) {
+      return;
     }
+    card.hidden = false;
     if (alwaysOnTopButton) {
       alwaysOnTopButton.addEventListener('click', function () {
         var current = alwaysOnTopButton.dataset.enabled === 'true';
@@ -903,6 +1136,86 @@
     }
   }
 
+  function installProfileDrawer() {
+    if (document.querySelector('.profile-drawer')) {
+      return;
+    }
+    var backdrop = createElement('div', 'profile-drawer-backdrop');
+    var drawer = createElement('aside', 'profile-drawer');
+    drawer.setAttribute('aria-hidden', 'true');
+    drawer.innerHTML = [
+      '<div class="profile-drawer-head">',
+        '<h2>个人档案</h2>',
+        '<button class="profile-drawer-close" type="button" title="关闭" aria-label="关闭">×</button>',
+      '</div>',
+      '<section class="profile-workspace" data-profile-page>',
+        '<aside class="profile-identity">',
+          '<button class="profile-avatar-button" type="button" data-profile-avatar-button title="更换头像">',
+            '<img data-profile-avatar-image alt="用户头像" hidden>',
+            '<span data-profile-avatar-fallback>旅</span>',
+          '</button>',
+          '<input data-profile-avatar-input type="file" accept="image/png,image/jpeg,image/webp" hidden>',
+          '<strong data-profile-display-name>未命名旅人</strong>',
+          '<span class="profile-number" data-profile-id>ID 读取中</span>',
+          '<p data-profile-display-bio>把喜欢的资料、设定和回忆收进自己的空间。</p>',
+        '</aside>',
+        '<div class="profile-editor">',
+          '<div class="profile-section-head">',
+            '<div><p class="eyebrow">Local Profile</p><h2>本地资料</h2></div>',
+            '<span class="profile-save-state" data-profile-status>保存在当前设备</span>',
+          '</div>',
+          '<label class="profile-field"><span>昵称</span><input data-profile-nickname maxlength="24" placeholder="未命名旅人"></label>',
+          '<label class="profile-field"><span>个人备注</span><textarea data-profile-bio maxlength="120" rows="4" placeholder="写下一句属于你的档案说明"></textarea></label>',
+          '<div class="profile-preferences">',
+            '<label><input data-profile-music type="checkbox"> 保持背景音乐</label>',
+            '<label><input data-profile-motion type="checkbox"> 减少动态效果</label>',
+            '<label><input data-profile-remember type="checkbox"> 记住浏览记录</label>',
+          '</div>',
+          '<div class="profile-actions">',
+            '<button class="wide-button profile-primary" type="button" data-profile-save>保存档案</button>',
+            '<button class="wide-button" type="button" data-profile-export>导出 JSON</button>',
+            '<button class="wide-button" type="button" data-profile-import>导入 JSON</button>',
+            '<input data-profile-import-input type="file" accept="application/json" hidden>',
+          '</div>',
+          '<div class="profile-cloud-row">',
+            '<div><strong>云备份</strong><p>未来接入账号同步时会沿用当前档案结构。</p></div>',
+            '<button type="button" disabled>敬请期待</button>',
+          '</div>',
+        '</div>',
+      '</section>'
+    ].join('');
+    document.body.appendChild(backdrop);
+    document.body.appendChild(drawer);
+    drawer.querySelector('.profile-drawer-close').addEventListener('click', close);
+    backdrop.addEventListener('click', close);
+    document.addEventListener('click', function (event) {
+      var trigger = event.target.closest('[data-profile-open]');
+      if (!trigger) {
+        return;
+      }
+      event.preventDefault();
+      open();
+    });
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && drawer.classList.contains('open')) {
+        close();
+      }
+    });
+    installProfilePage();
+
+    function open() {
+      drawer.classList.add('open');
+      backdrop.classList.add('open');
+      drawer.setAttribute('aria-hidden', 'false');
+    }
+
+    function close() {
+      drawer.classList.remove('open');
+      backdrop.classList.remove('open');
+      drawer.setAttribute('aria-hidden', 'true');
+    }
+  }
+
   function installProfilePage() {
     var page = document.querySelector('[data-profile-page]');
     if (!page) {
@@ -1012,6 +1325,7 @@
       localStorage.setItem('zhushen_background_music_enabled', String(profile.preferences.music));
       document.documentElement.classList.toggle('reduced-motion', profile.preferences.reducedMotion);
       render();
+      updatePageBackdrop();
       setStatus('已保存到当前设备');
     }
 
@@ -1030,6 +1344,10 @@
       if (profile.avatarDataUrl) {
         avatarImage.src = profile.avatarDataUrl;
       }
+      document.querySelectorAll('.brand-avatar img').forEach(function (image) {
+        image.src = profile.avatarDataUrl || 'logo/logo.png';
+        image.alt = profile.nickname;
+      });
     }
 
     function applyImportedProfile(value) {
@@ -1067,16 +1385,26 @@
     if (isDesktopClient()) {
       document.body.classList.add('desktop-client');
     }
-    configureImages();
-    installLazyMedia();
     hideDuplicateNavigation();
     installDesktopTitlebar();
     installDesktopDock();
+    updateNavigationState();
+    installProfileDrawer();
+    installPageBackdrop();
     installDesktopSplash();
     installDesktopMusic();
+    installSmoothNavigation();
+    window.ZhushenEnhancementsRefresh = refreshPageEnhancements;
+    refreshPageEnhancements();
+  }
+
+  function refreshPageEnhancements() {
+    configureImages();
+    installLazyMedia();
     installDesktopControls();
     installIncrementalLists();
-    installProfilePage();
+    installBackgroundControls();
+    updatePageBackdrop();
     installCountdown();
     showDisclaimer();
   }

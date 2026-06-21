@@ -14,6 +14,7 @@
     "desktop:mac": "npm run verify && electron-builder --mac dmg zip --x64",
     "installer-shell:win": "npm run verify && electron-builder --win dir --x64 && electron-builder --config launcher-shell/electron-builder.json --win dir --x64 && node scripts/build-installer-shell.js",
     "test:asar-copy": "electron scripts/test-asar-copy.js",
+    "test:client-navigation": "electron scripts/test-client-navigation.js",
     "lint:android": "cd android && gradlew.bat :app:lintDebug --no-daemon"
   },
   "build": {
