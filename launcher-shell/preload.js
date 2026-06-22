@@ -3,6 +3,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('ZhushenInstaller', {
   chooseInstallDir: () => ipcRenderer.invoke('installer:choose-install-dir'),
   checkUpdate: () => ipcRenderer.invoke('installer:check-update'),
+  createShortcuts: () => ipcRenderer.invoke('launcher:create-shortcuts'),
   getStatus: () => ipcRenderer.invoke('installer:status'),
   install: () => ipcRenderer.invoke('installer:install'),
   launch: () => ipcRenderer.invoke('installer:launch'),

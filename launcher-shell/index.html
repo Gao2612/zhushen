@@ -136,13 +136,13 @@
       align-self: end;
       display: grid;
       gap: 14px;
-      width: min(390px, 100%);
+      width: min(420px, 100%);
       padding: 22px;
-      border: 1px solid rgba(240,215,140,.22);
-      border-radius: 22px;
+      border: 1px solid rgba(240,215,140,.16);
+      border-radius: 14px;
       background:
-        radial-gradient(circle at 18% 0%, rgba(240,215,140,.12), transparent 30%),
-        linear-gradient(145deg, rgba(13,14,20,.92), rgba(6,7,11,.86));
+        linear-gradient(180deg, rgba(13,14,20,.86), rgba(7,8,12,.82)),
+        rgba(6,7,11,.78);
       box-shadow: 0 28px 92px rgba(0,0,0,.52);
       backdrop-filter: blur(22px);
       transform: translateY(-24px);
@@ -172,96 +172,16 @@
       font-size: 12px;
       font-weight: 800;
     }
-    .launcher-overview {
-      display: none;
-      gap: 14px;
-      padding: 14px;
-      border: 1px solid rgba(240,215,140,.14);
-      border-radius: 18px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.028)),
-        rgba(0,0,0,.16);
-    }
-    body.is-installed .launcher-overview {
-      display: grid;
-    }
-    .launcher-summary {
-      display: flex;
-      align-items: start;
-      justify-content: space-between;
-      gap: 12px;
-    }
-    .launcher-kicker {
-      display: block;
-      margin-bottom: 5px;
-      color: rgba(240,215,140,.64);
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-    }
     .launcher-version {
-      color: #fff7e8;
-      font-size: 17px;
-      letter-spacing: .04em;
-    }
-    .launcher-pill {
-      padding: 7px 10px;
-      border: 1px solid rgba(240,215,140,.28);
-      border-radius: 999px;
-      color: #f0d78c;
-      background: rgba(240,215,140,.08);
-      font-size: 11px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-    .launcher-checks {
-      display: grid;
-      gap: 8px;
-    }
-    .launcher-check {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 9px;
-      align-items: center;
-      min-height: 36px;
-      padding: 8px 10px;
-      border: 1px solid rgba(240,215,140,.12);
-      border-radius: 12px;
-      background: rgba(255,255,255,.04);
-    }
-    .check-icon {
-      display: inline-grid;
-      place-items: center;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      color: #121014;
-      background: #f0d78c;
-      font-size: 12px;
-      font-weight: 900;
-    }
-    .check-label {
       color: rgba(247,234,212,.58);
       font-size: 12px;
+      letter-spacing: .04em;
     }
-    .check-value {
-      color: rgba(255,247,232,.92);
-      font-size: 12px;
-      font-weight: 800;
-      text-align: right;
-    }
-    .launcher-tools {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-    .tool-button {
-      min-height: 36px;
-      border-radius: 10px;
-      color: rgba(247,234,212,.78);
-      background: rgba(255,255,255,.045);
-      font-size: 12px;
+    .launcher-summary {
+      min-height: 20px;
+      color: rgba(247,234,212,.64);
+      font-size: 13px;
+      line-height: 1.6;
     }
     .path-box {
       display: grid;
@@ -315,6 +235,32 @@
       font-weight: 900;
       letter-spacing: .08em;
       box-shadow: 0 18px 48px rgba(212,167,84,.24);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      border-radius: 999px;
+      font-size: 17px;
+    }
+    .primary::before {
+      content: "↓";
+      display: inline-grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      color: #f0d78c;
+      background: rgba(12,10,6,.92);
+      font-size: 18px;
+      line-height: 1;
+    }
+    body.is-installed .primary::before {
+      content: "▶";
+      font-size: 14px;
+    }
+    body.has-update .primary::before {
+      content: "↓";
+      font-size: 18px;
     }
     .primary-row {
       display: grid;
@@ -328,9 +274,11 @@
     .gear {
       width: 56px;
       min-height: 58px;
-      border-radius: 16px;
-      font-size: 24px;
+      border-radius: 50%;
+      font-size: 28px;
       line-height: 1;
+      color: rgba(247,234,212,.78);
+      background: rgba(16,18,25,.82);
     }
     .manage-panel {
       position: absolute;
@@ -338,7 +286,7 @@
       bottom: calc(100% + 10px);
       z-index: 4;
       display: grid;
-      min-width: 188px;
+      min-width: 210px;
       gap: 8px;
       padding: 10px;
       border: 1px solid rgba(240,215,140,.22);
@@ -406,6 +354,52 @@
     }
     body.is-installed .path-box,
     body.is-installed .progress { display: none; }
+    .action-rail {
+      position: fixed;
+      top: 92px;
+      right: 20px;
+      z-index: 6;
+      display: grid;
+      gap: 14px;
+      -webkit-app-region: no-drag;
+    }
+    .rail-button {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 42px;
+      min-height: 42px;
+      border-radius: 50%;
+      color: rgba(247,234,212,.72);
+      background: rgba(6,7,11,.34);
+      border-color: rgba(247,234,212,.18);
+      box-shadow: 0 12px 28px rgba(0,0,0,.26);
+      backdrop-filter: blur(12px);
+      font-size: 18px;
+    }
+    .rail-button:hover {
+      color: #100b04;
+      background: #f0d78c;
+    }
+    .rail-button::after {
+      content: attr(data-tip);
+      position: absolute;
+      right: calc(100% + 10px);
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0;
+      pointer-events: none;
+      padding: 5px 8px;
+      border-radius: 8px;
+      color: rgba(247,234,212,.82);
+      background: rgba(7,8,12,.88);
+      white-space: nowrap;
+      font-size: 11px;
+      transition: opacity .16s ease;
+    }
+    .rail-button:hover::after {
+      opacity: 1;
+    }
     .notice-board {
       display: grid;
       gap: 10px;
@@ -595,41 +589,9 @@
         <h2>游戏安装</h2>
         <div class="state" id="state">读取中</div>
       </div>
-      <div class="launcher-overview" id="launcherOverview">
-        <div class="launcher-summary">
-          <div>
-            <span class="launcher-kicker">Desktop Archive</span>
-            <strong class="launcher-version" id="launcherVersion">v1.1.1</strong>
-          </div>
-          <span class="launcher-pill" id="launcherReady">本地已就绪</span>
-        </div>
-        <div class="launcher-checks">
-          <div class="launcher-check">
-            <span class="check-icon">✓</span>
-            <span class="check-label">安装状态</span>
-            <strong class="check-value" id="installStateText">已安装</strong>
-          </div>
-          <div class="launcher-check">
-            <span class="check-icon">✓</span>
-            <span class="check-label">文件完整性</span>
-            <strong class="check-value" id="healthText">完整</strong>
-          </div>
-          <div class="launcher-check">
-            <span class="check-icon">↻</span>
-            <span class="check-label">更新状态</span>
-            <strong class="check-value" id="updateStateText">待检查</strong>
-          </div>
-          <div class="launcher-check">
-            <span class="check-icon">◎</span>
-            <span class="check-label">可用空间</span>
-            <strong class="check-value" id="spaceText">读取中</strong>
-          </div>
-        </div>
-        <div class="launcher-tools">
-          <button class="tool-button" id="quickCheckUpdate">检查更新</button>
-          <button class="tool-button" id="quickRepair">修复</button>
-          <button class="tool-button" id="quickLogs">日志</button>
-        </div>
+      <div class="launcher-version" id="launcherVersion">版本 v1.1.1</div>
+      <div class="launcher-summary" id="launcherSummary">
+        准备就绪，点击主按钮进入资料馆。
       </div>
       <div class="path-box">
         <label>安装位置</label>
@@ -654,6 +616,13 @@
       </div>
     </section>
   </main>
+  <aside class="action-rail" id="actionRail">
+    <button class="rail-button" id="railSettings" data-tip="设置">⚙</button>
+    <button class="rail-button" id="railTapTap" data-tip="TapTap">T</button>
+    <button class="rail-button" id="railQQ" data-tip="QQ群">Q</button>
+    <button class="rail-button" id="railUpdate" data-tip="更新页">↻</button>
+    <button class="rail-button" id="railLogs" data-tip="帮助 / 日志">?</button>
+  </aside>
   <nav class="quick-links" id="quickLinks"></nav>
   <script>
     const stateNode = document.getElementById('state');
@@ -674,17 +643,17 @@
     const pathBox = document.querySelector('.path-box');
     const panelTitle = document.querySelector('.panel h2');
     const launcherVersionNode = document.getElementById('launcherVersion');
-    const launcherReadyNode = document.getElementById('launcherReady');
-    const installStateText = document.getElementById('installStateText');
-    const healthText = document.getElementById('healthText');
-    const updateStateText = document.getElementById('updateStateText');
-    const spaceText = document.getElementById('spaceText');
-    const quickCheckUpdateButton = document.getElementById('quickCheckUpdate');
-    const quickRepairButton = document.getElementById('quickRepair');
-    const quickLogsButton = document.getElementById('quickLogs');
+    const launcherSummaryNode = document.getElementById('launcherSummary');
+    const railSettingsButton = document.getElementById('railSettings');
+    const railTapTapButton = document.getElementById('railTapTap');
+    const railQQButton = document.getElementById('railQQ');
+    const railUpdateButton = document.getElementById('railUpdate');
+    const railLogsButton = document.getElementById('railLogs');
     const qqCard = document.createElement('div');
     const spaceNode = document.createElement('div');
     const updateNode = document.createElement('div');
+    const settingsButton = document.createElement('button');
+    const shortcutButton = document.createElement('button');
     const checkUpdateButton = document.createElement('button');
     const updateButton = document.createElement('button');
     const repairButton = document.createElement('button');
@@ -694,11 +663,15 @@
 
     spaceNode.className = 'space-info';
     updateNode.className = 'update-info';
+    settingsButton.id = 'launcherSettings';
+    shortcutButton.id = 'createShortcut';
     checkUpdateButton.id = 'checkUpdate';
     updateButton.id = 'update';
     repairButton.id = 'repair';
     reinstallButton.id = 'reinstall';
     logsButton.id = 'openLogs';
+    settingsButton.textContent = '\u6e38\u620f\u8bbe\u7f6e';
+    shortcutButton.textContent = '\u6dfb\u52a0\u684c\u9762\u5feb\u6377\u65b9\u5f0f';
     checkUpdateButton.textContent = '\u68c0\u67e5\u66f4\u65b0';
     updateButton.textContent = '\u66f4\u65b0';
     repairButton.textContent = '\u4fee\u590d';
@@ -714,6 +687,8 @@
     pathBox.appendChild(spaceNode);
     pathBox.appendChild(updateNode);
     document.body.appendChild(qqCard);
+    managePanel.appendChild(settingsButton);
+    managePanel.appendChild(shortcutButton);
     managePanel.appendChild(openButton);
     managePanel.appendChild(repairButton);
     managePanel.appendChild(checkUpdateButton);
@@ -861,19 +836,27 @@
       openButton.disabled = value || !installed;
       logsButton.disabled = value;
       checkUpdateButton.disabled = value;
+      shortcutButton.disabled = value;
+      settingsButton.disabled = value;
       updateButton.disabled = value || !installed || !updateAvailable;
       repairButton.disabled = value || !installed;
       reinstallButton.disabled = value || !installed;
-      quickCheckUpdateButton.disabled = value || !installed;
-      quickRepairButton.disabled = value || !installed;
-      quickLogsButton.disabled = value;
+      railSettingsButton.disabled = value;
+      railTapTapButton.disabled = value;
+      railQQButton.disabled = value;
+      railUpdateButton.disabled = value;
+      railLogsButton.disabled = value;
       if (value || !installed) {
         setManageOpen(false);
       }
     };
     const syncButtons = () => {
       stateNode.textContent = installed ? '\u5df2\u5b89\u88c5' : '\u5f85\u5b89\u88c5';
-      installButton.textContent = installed ? '\u542f\u52a8' : '\u7acb\u5373\u5b89\u88c5';
+      installButton.textContent = updateAvailable
+        ? '\u66f4\u65b0\u6e38\u620f'
+        : installed
+          ? '\u542f\u52a8'
+          : '\u7acb\u5373\u5b89\u88c5';
       setBusy(false);
     };
 
@@ -881,29 +864,27 @@
       const status = await window.ZhushenInstaller.getStatus();
       installed = status.installed;
       document.body.classList.toggle('is-installed', installed);
+      document.body.classList.toggle('has-update', updateAvailable);
       panelTitle.textContent = installed ? '\u8bf8\u795e\u7ec8\u5e94\u77e5\u6653' : '\u6e38\u620f\u5b89\u88c5';
-      launcherVersionNode.textContent = status.version ? 'v' + status.version : 'v1.1.1';
-      launcherReadyNode.textContent = installed ? '\u672c\u5730\u5df2\u5c31\u7eea' : '\u7b49\u5f85\u5b89\u88c5';
-      installStateText.textContent = installed ? '\u5df2\u5b89\u88c5' : '\u672a\u5b89\u88c5';
+      launcherVersionNode.textContent = '\u7248\u672c v' + (status.version || '1.1.1');
       closeAfterLaunchInput.checked = status.closeAfterLaunch !== false;
       pathNode.textContent = status.installDir;
       if (status.space) {
         spaceNode.textContent = '\u6240\u9700\u7a7a\u95f4 '
           + status.space.requiredText + ' / \u53ef\u7528 '
           + status.space.freeText;
-        spaceText.textContent = status.space.freeText;
       }
       if (status.healthProblems > 0) {
-        healthText.textContent = status.healthProblems + ' \u4e2a\u5f85\u4fee\u590d';
-        updateStateText.textContent = '\u5efa\u8bae\u4fee\u590d';
+        launcherSummaryNode.textContent = '\u68c0\u6d4b\u5230\u6587\u4ef6\u9700\u8981\u4fee\u590d\uff0c\u53ef\u4ece\u83dc\u5355\u6267\u884c\u4e00\u952e\u4fee\u590d\u3002';
         updateNode.textContent = '\u68c0\u6d4b\u5230 '
           + status.healthProblems + ' \u4e2a\u6587\u4ef6\u9700\u8981\u4fee\u590d\u3002';
         updateNode.classList.add('ready');
       } else if (!updateAvailable) {
-        healthText.textContent = installed ? '\u5b8c\u6574' : '\u5f85\u5b89\u88c5';
-        updateStateText.textContent = installed ? '\u5f85\u68c0\u67e5' : '\u5f85\u5b89\u88c5';
-        updateNode.textContent = status.buildId
-          ? '\u672c\u5730\u6784\u5efa\uff1a' + status.buildId
+        launcherSummaryNode.textContent = installed
+          ? '\u51c6\u5907\u5c31\u7eea\uff0c\u70b9\u51fb\u4e3b\u6309\u94ae\u8fdb\u5165\u8d44\u6599\u9986\u3002'
+          : '\u9009\u62e9\u5b89\u88c5\u4f4d\u7f6e\u540e\u5373\u53ef\u5199\u5165\u684c\u9762\u5ba2\u6237\u7aef\u3002';
+        updateNode.textContent = installed
+          ? '\u5df2\u662f\u6700\u65b0\u7248\u672c\u3002'
           : '\u5c1a\u672a\u5b89\u88c5\u3002';
         updateNode.classList.remove('ready');
       }
@@ -929,6 +910,10 @@
     });
 
     installButton.addEventListener('click', async () => {
+      if (installed && updateAvailable) {
+        updateButton.click();
+        return;
+      }
       if (installed) {
         const result = await window.ZhushenInstaller.launch();
         const ok = result === true || !!(result && result.ok);
@@ -952,6 +937,20 @@
         return;
       }
       setManageOpen(managePanel.hidden);
+    });
+
+    settingsButton.addEventListener('click', () => {
+      setManageOpen(false);
+      setStatus('\u542f\u52a8\u5668\u8bbe\u7f6e\u5df2\u6536\u7eb3\u5728\u83dc\u5355\u4e2d\uff0c\u53ef\u5207\u6362\u201c\u542f\u52a8\u540e\u81ea\u52a8\u5173\u95ed\u201d\u3002');
+    });
+
+    shortcutButton.addEventListener('click', async () => {
+      setManageOpen(false);
+      setStatus('\u6b63\u5728\u6dfb\u52a0\u684c\u9762\u5feb\u6377\u65b9\u5f0f...');
+      const ok = await window.ZhushenInstaller.createShortcuts();
+      setStatus(ok
+        ? '\u5df2\u6dfb\u52a0\u684c\u9762\u548c\u5f00\u59cb\u83dc\u5355\u5feb\u6377\u65b9\u5f0f\u3002'
+        : '\u5feb\u6377\u65b9\u5f0f\u6dfb\u52a0\u5931\u8d25\u3002');
     });
 
     closeAfterLaunchInput.addEventListener('change', async () => {
@@ -998,18 +997,20 @@
       const result = await window.ZhushenInstaller.checkUpdate();
       updateAvailable = !!(result && result.available);
       updateButton.hidden = !updateAvailable;
+      document.body.classList.toggle('has-update', updateAvailable);
       if (result && result.error) {
         updateNode.textContent = '\u66f4\u65b0\u68c0\u67e5\u5931\u8d25\uff1a' + result.error;
-        updateStateText.textContent = '\u68c0\u67e5\u5931\u8d25';
+        launcherSummaryNode.textContent = '\u66f4\u65b0\u68c0\u67e5\u5931\u8d25\uff0c\u53ef\u7a0d\u540e\u91cd\u8bd5\u3002';
       } else if (updateAvailable) {
-        updateNode.textContent = '\u53d1\u73b0\u65b0\u6784\u5efa\uff1a' + result.remote.buildId;
-        updateStateText.textContent = '\u53d1\u73b0\u66f4\u65b0';
+        updateNode.textContent = '\u53d1\u73b0\u65b0\u7248\u672c\u3002';
+        launcherSummaryNode.textContent = '\u53d1\u73b0\u66f4\u65b0\uff0c\u4e3b\u6309\u94ae\u5df2\u5207\u6362\u4e3a\u66f4\u65b0\u6e38\u620f\u3002';
         updateNode.classList.add('ready');
       } else {
         updateNode.textContent = '\u5df2\u662f\u6700\u65b0\u7248\u672c\u3002';
-        updateStateText.textContent = '\u5df2\u662f\u6700\u65b0';
+        launcherSummaryNode.textContent = '\u5df2\u662f\u6700\u65b0\u7248\u672c\uff0c\u53ef\u76f4\u63a5\u542f\u52a8\u3002';
         updateNode.classList.remove('ready');
       }
+      syncButtons();
       setBusy(false);
     });
 
@@ -1019,6 +1020,7 @@
       setStatus('\u6b63\u5728\u66f4\u65b0...');
       const result = await window.ZhushenInstaller.update();
       updateAvailable = false;
+      document.body.classList.remove('has-update');
       updateButton.hidden = true;
       setStatus(result ? '\u66f4\u65b0\u5b8c\u6210\u3002' : '\u66f4\u65b0\u672a\u5b8c\u6210\u3002');
       await refresh();
@@ -1043,15 +1045,24 @@
       await refresh();
     });
 
-    quickCheckUpdateButton.addEventListener('click', () => {
-      checkUpdateButton.click();
+    railSettingsButton.addEventListener('click', () => {
+      setManageOpen(managePanel.hidden);
     });
 
-    quickRepairButton.addEventListener('click', () => {
-      repairButton.click();
+    railTapTapButton.addEventListener('click', () => {
+      window.ZhushenInstaller.openExternal('https://www.taptap.cn/app/513986');
     });
 
-    quickLogsButton.addEventListener('click', () => {
+    railQQButton.addEventListener('click', (event) => {
+      event.stopPropagation();
+      qqCard.hidden = !qqCard.hidden;
+    });
+
+    railUpdateButton.addEventListener('click', () => {
+      window.ZhushenInstaller.openExternal('https://github.com/Gao2612/zhushen/releases/latest');
+    });
+
+    railLogsButton.addEventListener('click', () => {
       logsButton.click();
     });
 

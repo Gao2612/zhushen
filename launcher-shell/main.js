@@ -1027,6 +1027,11 @@ ipcMain.handle('launcher:set-close-after-launch', (event, enabled) => {
   return config.closeAfterLaunch;
 });
 
+ipcMain.handle('launcher:create-shortcuts', async () => {
+  await createShortcuts();
+  return true;
+});
+
 ipcMain.handle('installer:choose-install-dir', async () => {
   const result = await dialog.showOpenDialog(mainWindow, {
     title: '选择安装位置',

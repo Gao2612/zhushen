@@ -164,6 +164,13 @@
       '::view-transition-new(app-content){animation:app-page-in .18s ease both;}',
       '@keyframes app-page-out{to{opacity:0;transform:translateY(-3px);}}',
       '@keyframes app-page-in{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:none;}}',
+      '.page-transition-curtain{position:fixed;inset:0;z-index:99998;',
+      'display:grid;place-items:center;background:rgba(5,6,10,.58);',
+      'opacity:0;pointer-events:none;transition:opacity .14s ease;backdrop-filter:blur(8px);}',
+      '.page-transition-curtain.show{opacity:1;pointer-events:auto;}',
+      '.page-transition-card{min-width:168px;padding:18px 22px;border:1px solid rgba(240,215,140,.24);',
+      'border-radius:18px;background:rgba(12,13,18,.86);color:#f0d78c;',
+      'box-shadow:0 24px 80px rgba(0,0,0,.46);font-size:14px;letter-spacing:.16em;text-align:center;}',
       '.reduced-motion .app-page-backdrop video{display:none!important;}',
       '.reduced-motion *{scroll-behavior:auto!important;}',
       '@media(max-width:560px){.profile-drawer{padding:16px;}.profile-drawer .profile-actions{grid-template-columns:1fr;}}'
@@ -486,6 +493,21 @@
       return;
     }
     window.__zhushenSmoothNavigationInstalled = true;
+    var pageCache = window.__zhushenPageCache || {};
+    window.__zhushenPageCache = pageCache;
+    var corePages = [
+      'zy.html',
+      'official.html',
+      'gfjs.html',
+      'gfgn.html',
+      'wjec.html',
+      'qyxhhj.html',
+      'settings.html'
+    ];
+    var curtain = null;
+
+    preloadCorePages();
+
     document.addEventListener('click', function (event) {
       var link = event.target.closest('a[href]');
       if (!link || event.defaultPrevented || event.button !== 0
@@ -509,6 +531,11 @@
     });
 
     function navigate(url, pushState) {
+      var normalizedUrl = new URL(url, location.href).href;
+      if (normalizedUrl === location.href) {
+        return;
+      }
+      showCurtain();
       loadPage(url).then(function (html) {
         var parsed = new DOMParser().parseFromString(html, 'text/html');
         var nextMain = parsed.querySelector('main.app-shell');
@@ -533,6 +560,7 @@
             window.ZhushenEnhancementsRefresh();
           }
           window.scrollTo({top: 0, behavior: 'auto'});
+          window.setTimeout(hideCurtain, 120);
         };
         if (document.startViewTransition
           && !document.documentElement.classList.contains('reduced-motion')) {
@@ -541,17 +569,24 @@
           swap();
         }
       }).catch(function () {
+        hideCurtain();
         location.href = url;
       });
     }
 
     function loadPage(url) {
+      var cacheKey = new URL(url, location.href).href;
+      if (pageCache[cacheKey]) {
+        return Promise.resolve(pageCache[cacheKey]);
+      }
       return new Promise(function (resolve, reject) {
         var request = new XMLHttpRequest();
-        request.open('GET', url, true);
+        request.open('GET', cacheKey, true);
+        request.timeout = 8000;
         request.onload = function () {
           if ((request.status >= 200 && request.status < 300)
             || (request.status === 0 && request.responseText)) {
+            pageCache[cacheKey] = request.responseText;
             resolve(request.responseText);
             return;
           }
@@ -560,8 +595,40 @@
         request.onerror = function () {
           reject(new Error('本地页面读取失败'));
         };
+        request.ontimeout = function () {
+          reject(new Error('本地页面读取超时'));
+        };
         request.send();
       });
+    }
+
+    function preloadCorePages() {
+      window.setTimeout(function () {
+        corePages.forEach(function (page) {
+          var url = new URL(page, location.href).href;
+          if (url === location.href || pageCache[url]) {
+            return;
+          }
+          loadPage(url).catch(function () {});
+        });
+      }, 480);
+    }
+
+    function showCurtain() {
+      if (!curtain) {
+        curtain = createElement('div', 'page-transition-curtain');
+        curtain.appendChild(createElement('div', 'page-transition-card', '加载中'));
+        document.body.appendChild(curtain);
+      }
+      window.requestAnimationFrame(function () {
+        curtain.classList.add('show');
+      });
+    }
+
+    function hideCurtain() {
+      if (curtain) {
+        curtain.classList.remove('show');
+      }
     }
   }
 

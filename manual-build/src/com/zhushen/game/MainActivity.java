@@ -519,8 +519,8 @@ public class MainActivity extends Activity {
                 public void onClick(View v) {
                     for (TextView t : tabViews) t.setTextColor(Color.parseColor("#55ffffff"));
                     tabViews[idx].setTextColor(Color.parseColor("#f0d78c"));
-                    webView.loadUrl("file:///android_asset/" + tabPages[idx]);
                     showLoading();
+                    webView.loadUrl("file:///android_asset/" + tabPages[idx]);
                 }
             });
             tabViews[i] = tab;

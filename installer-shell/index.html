@@ -720,8 +720,8 @@
           + status.healthProblems + ' \u4e2a\u6587\u4ef6\u9700\u8981\u4fee\u590d\u3002';
         updateNode.classList.add('ready');
       } else if (!updateAvailable) {
-        updateNode.textContent = status.buildId
-          ? '\u672c\u5730\u6784\u5efa\uff1a' + status.buildId
+        updateNode.textContent = installed
+          ? '\u7248\u672c v' + (status.version || '1.1.1')
           : '\u5c1a\u672a\u5b89\u88c5\u3002';
         updateNode.classList.remove('ready');
       }
@@ -813,7 +813,7 @@
       if (result && result.error) {
         updateNode.textContent = '\u66f4\u65b0\u68c0\u67e5\u5931\u8d25\uff1a' + result.error;
       } else if (updateAvailable) {
-        updateNode.textContent = '\u53d1\u73b0\u65b0\u6784\u5efa\uff1a' + result.remote.buildId;
+        updateNode.textContent = '\u53d1\u73b0\u65b0\u7248\u672c\u3002';
         updateNode.classList.add('ready');
       } else {
         updateNode.textContent = '\u5df2\u662f\u6700\u65b0\u7248\u672c\u3002';
