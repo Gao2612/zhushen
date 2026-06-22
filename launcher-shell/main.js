@@ -15,7 +15,7 @@ const {
   writeFileSync
 } = require('fs');
 const originalFs = require('original-fs');
-const { createHash, randomUUID } = require('crypto');
+const { createHash } = require('crypto');
 const https = require('https');
 const { basename, dirname, join, relative, sep } = require('path');
 const { spawn } = require('child_process');
@@ -24,7 +24,6 @@ const appRoot = __dirname;
 const productName = '诸神终应知晓';
 const executableName = 'zhushen-archive.exe';
 const configFileName = 'installer-state.json';
-const profileFileName = 'profile.json';
 const updateManifestName = 'zhushen-update-manifest.json';
 const updateManifestUrl = 'https://github.com/Gao2612/zhushen/releases/latest/download/zhushen-update-manifest.json';
 
@@ -85,9 +84,6 @@ const getConfigPath = () => {
   return join(app.getPath('userData'), configFileName);
 };
 
-const getProfilePath = () => {
-  return join(app.getPath('userData'), profileFileName);
-};
 
 const readConfig = () => {
   try {
@@ -102,81 +98,6 @@ const writeConfig = (config) => {
   writeFileSync(getConfigPath(), JSON.stringify(config, null, 2), 'utf8');
 };
 
-const createDefaultProfile = () => {
-  const now = new Date().toISOString();
-  return {
-    schemaVersion: 1,
-    profileId: randomUUID(),
-    nickname: '未命名旅人',
-    avatar: '旅',
-    bio: '把喜欢的资料、设定和回忆收进自己的空间。',
-    preferences: {
-      music: true,
-      reducedMotion: false,
-      rememberLastPage: true
-    },
-    favorites: [],
-    history: [],
-    cloudBackup: {
-      enabled: false,
-      provider: '',
-      lastSyncAt: ''
-    },
-    createdAt: now,
-    updatedAt: now
-  };
-};
-
-const normalizeProfile = (profile = {}) => {
-  const base = createDefaultProfile();
-  const preferences = {
-    ...base.preferences,
-    ...(profile.preferences && typeof profile.preferences === 'object'
-      ? profile.preferences
-      : {})
-  };
-  const cloudBackup = {
-    ...base.cloudBackup,
-    ...(profile.cloudBackup && typeof profile.cloudBackup === 'object'
-      ? profile.cloudBackup
-      : {})
-  };
-  return {
-    ...base,
-    ...profile,
-    schemaVersion: 1,
-    profileId: String(profile.profileId || base.profileId),
-    nickname: String(profile.nickname || base.nickname).slice(0, 24),
-    avatar: String(profile.avatar || base.avatar).slice(0, 2),
-    bio: String(profile.bio || base.bio).slice(0, 80),
-    preferences,
-    favorites: Array.isArray(profile.favorites) ? profile.favorites : [],
-    history: Array.isArray(profile.history) ? profile.history : [],
-    cloudBackup,
-    createdAt: profile.createdAt || base.createdAt,
-    updatedAt: profile.updatedAt || base.updatedAt
-  };
-};
-
-const readProfile = () => {
-  try {
-    return normalizeProfile(JSON.parse(readFileSync(getProfilePath(), 'utf8')));
-  } catch (error) {
-    const profile = createDefaultProfile();
-    writeProfile(profile);
-    return profile;
-  }
-};
-
-const writeProfile = (profile) => {
-  const normalized = normalizeProfile({
-    ...profile,
-    updatedAt: new Date().toISOString()
-  });
-  mkdirSync(app.getPath('userData'), { recursive: true });
-  writeFileSync(getProfilePath(), JSON.stringify(normalized, null, 2), 'utf8');
-  return normalized;
-};
 
 const getInstallDir = () => {
   const config = readConfig();
@@ -1239,52 +1160,6 @@ ipcMain.handle('installer:open-external', async (event, url) => {
   return true;
 });
 
-ipcMain.handle('profile:get', () => {
-  return readProfile();
-});
-
-ipcMain.handle('profile:save', (event, patch) => {
-  return writeProfile({
-    ...readProfile(),
-    ...(patch && typeof patch === 'object' ? patch : {})
-  });
-});
-
-ipcMain.handle('profile:export', async () => {
-  const profile = readProfile();
-  const result = await dialog.showSaveDialog(mainWindow, {
-    title: '导出本地用户档案',
-    defaultPath: `zhushen-profile-${profile.nickname}.json`,
-    filters: [{ name: 'JSON', extensions: ['json'] }]
-  });
-  if (result.canceled || !result.filePath) {
-    return { ok: false, canceled: true };
-  }
-  writeFileSync(result.filePath, JSON.stringify(profile, null, 2), 'utf8');
-  return { ok: true, path: result.filePath };
-});
-
-ipcMain.handle('profile:import', async () => {
-  const result = await dialog.showOpenDialog(mainWindow, {
-    title: '导入本地用户档案',
-    properties: ['openFile'],
-    filters: [{ name: 'JSON', extensions: ['json'] }]
-  });
-  if (result.canceled || result.filePaths.length === 0) {
-    return { ok: false, canceled: true, profile: readProfile() };
-  }
-  try {
-    const imported = JSON.parse(readFileSync(result.filePaths[0], 'utf8'));
-    const profile = writeProfile(imported);
-    return { ok: true, profile };
-  } catch (error) {
-    return {
-      ok: false,
-      error: error.message || String(error),
-      profile: readProfile()
-    };
-  }
-});
 
 ipcMain.handle('window:minimize', () => {
   if (mainWindow && !mainWindow.isDestroyed()) {

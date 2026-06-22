@@ -455,155 +455,6 @@
       font-size: 12px;
       line-height: 1.8;
     }
-    .profile-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 20;
-      display: grid;
-      place-items: center;
-      padding: 48px;
-      background: rgba(0,0,0,.42);
-      backdrop-filter: blur(10px);
-    }
-    .profile-overlay[hidden] {
-      display: none;
-    }
-    .profile-panel {
-      width: min(920px, calc(100vw - 96px));
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: 16px;
-      padding: 18px;
-      border: 1px solid rgba(240,215,140,.2);
-      border-radius: 10px;
-      background: rgba(9,10,15,.92);
-      box-shadow: 0 30px 96px rgba(0,0,0,.58);
-    }
-    .profile-side,
-    .profile-main,
-    .profile-card {
-      border: 1px solid rgba(240,215,140,.14);
-      border-radius: 8px;
-      background: rgba(255,255,255,.045);
-    }
-    .profile-side {
-      display: grid;
-      align-content: start;
-      gap: 14px;
-      padding: 16px;
-    }
-    .profile-avatar {
-      width: 76px;
-      height: 76px;
-      display: grid;
-      place-items: center;
-      border: 1px solid rgba(240,215,140,.35);
-      border-radius: 50%;
-      color: #100b04;
-      background: #f0d78c;
-      font-size: 30px;
-      font-weight: 900;
-    }
-    .profile-name {
-      margin: 0;
-      color: #fff7e8;
-      font-size: 20px;
-    }
-    .profile-muted {
-      margin: 0;
-      color: rgba(247,234,212,.58);
-      font-size: 12px;
-      line-height: 1.65;
-      word-break: break-all;
-    }
-    .profile-main {
-      display: grid;
-      gap: 12px;
-      padding: 16px;
-    }
-    .profile-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-    .profile-head h2 {
-      margin: 0;
-      color: #f0d78c;
-      font-size: 18px;
-    }
-    .profile-close {
-      width: 32px;
-      min-height: 32px;
-      border-radius: 50%;
-      line-height: 1;
-    }
-    .profile-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-    }
-    .profile-card {
-      display: grid;
-      gap: 10px;
-      padding: 12px;
-    }
-    .profile-card h3 {
-      margin: 0;
-      color: #fff7e8;
-      font-size: 13px;
-    }
-    .profile-field {
-      display: grid;
-      gap: 6px;
-    }
-    .profile-field label,
-    .profile-toggle {
-      color: rgba(247,234,212,.64);
-      font-size: 12px;
-    }
-    .profile-field input,
-    .profile-field textarea {
-      width: 100%;
-      border: 1px solid rgba(240,215,140,.16);
-      border-radius: 8px;
-      color: #fff7e8;
-      background: rgba(255,255,255,.055);
-      font: inherit;
-      font-size: 13px;
-    }
-    .profile-field input {
-      min-height: 38px;
-      padding: 0 10px;
-    }
-    .profile-field textarea {
-      min-height: 72px;
-      padding: 9px 10px;
-      resize: none;
-    }
-    .profile-toggle {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .profile-toggle input {
-      accent-color: #f0d78c;
-    }
-    .profile-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .profile-actions button {
-      min-height: 36px;
-      padding: 0 12px;
-      border-radius: 8px;
-      font-size: 12px;
-    }
-    .profile-cloud {
-      opacity: .58;
-      cursor: default;
-    }
   </style>
 </head>
 <body>
@@ -687,8 +538,6 @@
     const pathBox = document.querySelector('.path-box');
     const panelTitle = document.querySelector('.panel h2');
     const qqCard = document.createElement('div');
-    const profileOverlay = document.createElement('div');
-    let currentProfile = null;
     const spaceNode = document.createElement('div');
     const updateNode = document.createElement('div');
     const checkUpdateButton = document.createElement('button');
@@ -717,12 +566,9 @@
     updateButton.hidden = true;
     qqCard.className = 'qq-card';
     qqCard.hidden = true;
-    profileOverlay.className = 'profile-overlay';
-    profileOverlay.hidden = true;
     pathBox.appendChild(spaceNode);
     pathBox.appendChild(updateNode);
     document.body.appendChild(qqCard);
-    document.body.appendChild(profileOverlay);
     managePanel.insertBefore(reinstallButton, openButton);
     managePanel.insertBefore(repairButton, reinstallButton);
     managePanel.insertBefore(updateButton, repairButton);
@@ -847,112 +693,6 @@
       qqCard.appendChild(qqSecondary);
     }
 
-    function getProfileFormData() {
-      const nickname = profileOverlay.querySelector('#profileNickname').value;
-      const avatar = profileOverlay.querySelector('#profileAvatar').value;
-      const bio = profileOverlay.querySelector('#profileBio').value;
-      return {
-        nickname,
-        avatar,
-        bio,
-        preferences: {
-          music: profileOverlay.querySelector('#profileMusic').checked,
-          reducedMotion: profileOverlay.querySelector('#profileMotion').checked,
-          rememberLastPage: profileOverlay.querySelector('#profileRemember').checked
-        }
-      };
-    }
-
-    async function saveProfileFromForm() {
-      currentProfile = await window.ZhushenInstaller.profileSave(getProfileFormData());
-      renderProfile(currentProfile);
-    }
-
-    function renderProfile(profile) {
-      currentProfile = profile;
-      const updated = profile.updatedAt
-        ? new Date(profile.updatedAt).toLocaleString()
-        : '--';
-      profileOverlay.innerHTML = [
-        '<section class="profile-panel">',
-          '<aside class="profile-side">',
-            '<div class="profile-avatar"></div>',
-            '<div>',
-              '<h2 class="profile-name"></h2>',
-              '<p class="profile-muted">本机档案</p>',
-            '</div>',
-            '<p class="profile-muted profile-id"></p>',
-            '<p class="profile-muted profile-updated"></p>',
-          '</aside>',
-          '<section class="profile-main">',
-            '<div class="profile-head">',
-              '<h2>个人档案</h2>',
-              '<button class="profile-close" id="profileClose" title="关闭">×</button>',
-            '</div>',
-            '<div class="profile-grid">',
-              '<div class="profile-card">',
-                '<h3>身份资料</h3>',
-                '<div class="profile-field"><label>昵称</label><input id="profileNickname" maxlength="24"></div>',
-                '<div class="profile-field"><label>头像字</label><input id="profileAvatar" maxlength="2"></div>',
-                '<div class="profile-field"><label>备注</label><textarea id="profileBio" maxlength="80"></textarea></div>',
-              '</div>',
-              '<div class="profile-card">',
-                '<h3>偏好设置</h3>',
-                '<label class="profile-toggle"><input id="profileMusic" type="checkbox"> 保持背景音乐</label>',
-                '<label class="profile-toggle"><input id="profileMotion" type="checkbox"> 减少动态效果</label>',
-                '<label class="profile-toggle"><input id="profileRemember" type="checkbox"> 记住上次浏览位置</label>',
-              '</div>',
-              '<div class="profile-card">',
-                '<h3>我的空间</h3>',
-                '<p class="profile-muted">收藏内容：' + profile.favorites.length + ' 项</p>',
-                '<p class="profile-muted">浏览记录：' + profile.history.length + ' 条</p>',
-                '<p class="profile-muted">后续会与资料馆收藏、阅读记录打通。</p>',
-              '</div>',
-              '<div class="profile-card">',
-                '<h3>数据备份</h3>',
-                '<p class="profile-muted">档案保存在本机，可先通过 JSON 导入 / 导出备份。</p>',
-                '<div class="profile-actions">',
-                  '<button id="profileSave">保存</button>',
-                  '<button id="profileExport">导出档案</button>',
-                  '<button id="profileImport">导入档案</button>',
-                  '<button class="profile-cloud" disabled>云备份 未启用</button>',
-                '</div>',
-              '</div>',
-            '</div>',
-          '</section>',
-        '</section>'
-      ].join('');
-      profileOverlay.querySelector('.profile-avatar').textContent = profile.avatar;
-      profileOverlay.querySelector('.profile-name').textContent = profile.nickname;
-      profileOverlay.querySelector('.profile-id').textContent = 'ID ' + profile.profileId;
-      profileOverlay.querySelector('.profile-updated').textContent = '更新于 ' + updated;
-      profileOverlay.querySelector('#profileNickname').value = profile.nickname;
-      profileOverlay.querySelector('#profileAvatar').value = profile.avatar;
-      profileOverlay.querySelector('#profileBio').value = profile.bio;
-      profileOverlay.querySelector('#profileMusic').checked = !!profile.preferences.music;
-      profileOverlay.querySelector('#profileMotion').checked = !!profile.preferences.reducedMotion;
-      profileOverlay.querySelector('#profileRemember').checked = !!profile.preferences.rememberLastPage;
-      profileOverlay.querySelector('#profileClose').addEventListener('click', () => {
-        profileOverlay.hidden = true;
-      });
-      profileOverlay.querySelector('#profileSave').addEventListener('click', saveProfileFromForm);
-      profileOverlay.querySelector('#profileExport').addEventListener('click', async () => {
-        await saveProfileFromForm();
-        await window.ZhushenInstaller.profileExport();
-      });
-      profileOverlay.querySelector('#profileImport').addEventListener('click', async () => {
-        const result = await window.ZhushenInstaller.profileImport();
-        renderProfile(result.profile || await window.ZhushenInstaller.profileGet());
-      });
-    }
-
-    async function openProfile() {
-      if (!currentProfile) {
-        currentProfile = await window.ZhushenInstaller.profileGet();
-      }
-      renderProfile(currentProfile);
-      profileOverlay.hidden = false;
-    }
 
     let installed = false;
     let busy = false;

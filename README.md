@@ -30,6 +30,7 @@
 
 ## 维护记录
 
+- [2026-06-22 变更记录](docs/change-notes-2026-06-22.md)
 - [2026-06-21 变更记录](docs/change-notes-2026-06-21.md)
 - [2026-06-20 变更记录](docs/change-notes-2026-06-20.md)
 - [2026-06-19 变更记录](docs/change-notes-2026-06-19.md)
