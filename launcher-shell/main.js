@@ -747,6 +747,43 @@ const removeInstallDir = () => {
   rmSync(installDir, { recursive: true, force: true });
 };
 
+const isRunningInsideInstallDir = () => {
+  const installDir = getInstallDir().toLowerCase();
+  const executablePath = process.execPath.toLowerCase();
+  const installRoot = installDir.endsWith(sep) ? installDir : installDir + sep;
+  return executablePath.startsWith(installRoot);
+};
+
+const scheduleInstallDirRemovalAfterExit = (installDir) => {
+  const script = [
+    '$ErrorActionPreference = "SilentlyContinue"',
+    `$target = ${quotePowerShell(installDir)}`,
+    `$pidToWait = ${process.pid}`,
+    'Wait-Process -Id $pidToWait -ErrorAction SilentlyContinue',
+    'Start-Sleep -Milliseconds 800',
+    'Remove-Item -LiteralPath $target -Recurse -Force -ErrorAction SilentlyContinue'
+  ].join('; ');
+  const child = spawn(
+    'powershell.exe',
+    ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-WindowStyle', 'Hidden', '-Command', script],
+    {
+      cwd: app.getPath('temp'),
+      detached: true,
+      stdio: 'ignore',
+      windowsHide: true
+    }
+  );
+  child.unref();
+};
+
+const getFriendlyUninstallError = (error) => {
+  const code = String(error && error.code || '').toUpperCase();
+  if (code === 'EPERM' || code === 'EBUSY') {
+    return '\u5378\u8f7d\u5931\u8d25\uff1a\u5ba2\u6237\u7aef\u6216\u542f\u52a8\u5668\u4ecd\u5728\u8fd0\u884c\uff0c\u8bf7\u5173\u95ed\u6b63\u5728\u8fd0\u884c\u7684\u8bf8\u795e\u7ec8\u5e94\u77e5\u6653\u540e\u91cd\u8bd5\u3002';
+  }
+  return error && error.message ? error.message : String(error);
+};
+
 const installPayload = async () => {
   const payloadDir = findPayloadDir();
   const installDir = getInstallDir();
@@ -908,10 +945,20 @@ const updateFromRemote = async () => {
 
 const uninstallPayload = async () => {
   const installDir = getInstallDir();
+  const cleanupAfterExit = isRunningInsideInstallDir();
   writeInstallerLog('uninstall_start', { installDir });
   sendProgress('uninstall', 25, '正在移除快捷方式');
   removeShortcuts();
   sendProgress('uninstall', 68, '正在删除本地客户端文件');
+  if (cleanupAfterExit) {
+    scheduleInstallDirRemovalAfterExit(installDir);
+    sendProgress('complete', 100, '\u5378\u8f7d\u5df2\u5b89\u6392\uff0c\u542f\u52a8\u5668\u5373\u5c06\u9000\u51fa');
+    writeInstallerLog('uninstall_scheduled_after_exit', { installDir });
+    setTimeout(() => {
+      app.quit();
+    }, 800);
+    return true;
+  }
   removeInstallDir();
   sendProgress('complete', 100, '卸载完成');
   writeInstallerLog('uninstall_complete', { installDir });
@@ -1086,7 +1133,7 @@ ipcMain.handle('installer:uninstall', async () => {
     await dialog.showMessageBox(mainWindow, {
       type: 'error',
       title: '卸载失败',
-      message: error.message || String(error)
+      message: getFriendlyUninstallError(error)
     });
     sendProgress('failed', 0, '卸载失败');
     return false;

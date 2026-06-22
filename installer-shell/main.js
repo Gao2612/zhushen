@@ -904,7 +904,17 @@ ipcMain.handle('installer:choose-install-dir', async () => {
 
 ipcMain.handle('installer:install', async () => {
   try {
-    return await installPayload();
+    const installed = await installPayload();
+    if (installed) {
+      sendProgress('complete', 100, '\u5b89\u88c5\u5b8c\u6210\uff0c\u6b63\u5728\u542f\u52a8\u8d44\u6599\u9986');
+      runDetached(getLauncherExePath());
+      setTimeout(() => {
+        if (mainWindow && !mainWindow.isDestroyed()) {
+          mainWindow.close();
+        }
+      }, 1000);
+    }
+    return installed;
   } catch (error) {
     writeInstallerLog('install_failed', {
       message: error.message,
