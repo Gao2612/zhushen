@@ -441,6 +441,65 @@ const requestJson = (url) => {
   });
 };
 
+const removeFileIfExists = (filePath) => {
+  try {
+    rmSync(filePath, { force: true });
+  } catch (error) {
+    writeInstallerLog('remove_file_failed', {
+      path: filePath,
+      message: error.message,
+      code: error.code
+    });
+  }
+};
+
+const annotateTargetFileError = (error, targetPath) => {
+  error.targetPath = targetPath;
+  return error;
+};
+
+const replaceDownloadedFile = (tempPath, targetPath) => {
+  const backupPath = `${targetPath}.backup`;
+  let backupCreated = false;
+  try {
+    removeFileIfExists(backupPath);
+    if (existsSync(targetPath)) {
+      renameSync(targetPath, backupPath);
+      backupCreated = true;
+    }
+    renameSync(tempPath, targetPath);
+    if (backupCreated) {
+      removeFileIfExists(backupPath);
+    }
+  } catch (error) {
+    if (backupCreated && !existsSync(targetPath) && existsSync(backupPath)) {
+      try {
+        renameSync(backupPath, targetPath);
+      } catch (restoreError) {
+        writeInstallerLog('restore_download_backup_failed', {
+          targetPath,
+          backupPath,
+          message: restoreError.message,
+          code: restoreError.code
+        });
+      }
+    }
+    throw annotateTargetFileError(error, targetPath);
+  }
+};
+
+const isFileBusyError = (error) => {
+  const code = String(error && error.code || '').toUpperCase();
+  return code === 'EPERM' || code === 'EBUSY' || code === 'EACCES';
+};
+
+const getFriendlyUpdateError = (error) => {
+  if (isFileBusyError(error)) {
+    return '更新失败：桌面客户端正在运行，或目标文件被 Windows 占用。请先关闭诸神终应知晓桌面客户端后重试。';
+  }
+  return error && error.message ? error.message : String(error);
+};
+
 const downloadFileOnce = (url, targetPath, expectedSize, progress) => {
   return new Promise((resolve, reject) => {
     ensureDirectory(dirname(targetPath));
@@ -448,20 +507,37 @@ const downloadFileOnce = (url, targetPath, expectedSize, progress) => {
     const file = createWriteStream(tempPath);
     const startedAt = Date.now();
     let downloaded = 0;
+    let settled = false;
+    const resolveOnce = (value) => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      resolve(value);
+    };
+    const rejectOnce = (error) => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      removeFileIfExists(tempPath);
+      reject(error);
+    };
     const request = https.get(url, {
       headers: { 'User-Agent': 'ZhushenInstaller' }
     }, (response) => {
       if ([301, 302, 303, 307, 308].includes(response.statusCode)) {
-        file.close();
-        rmSync(tempPath, { force: true });
-        resolve(downloadFileOnce(response.headers.location, targetPath, expectedSize, progress));
+        file.close(() => {
+          removeFileIfExists(tempPath);
+          resolveOnce(downloadFileOnce(response.headers.location, targetPath, expectedSize, progress));
+        });
         return;
       }
       if (response.statusCode !== 200) {
         response.resume();
-        file.close();
-        rmSync(tempPath, { force: true });
-        reject(new Error(`HTTP ${response.statusCode}`));
+        file.close(() => {
+          rejectOnce(new Error(`HTTP ${response.statusCode}`));
+        });
         return;
       }
       response.on('data', (chunk) => {
@@ -480,16 +556,26 @@ const downloadFileOnce = (url, targetPath, expectedSize, progress) => {
       });
       response.pipe(file);
       file.on('finish', () => {
-        file.close(() => {
-          renameSync(tempPath, targetPath);
-          resolve(true);
+        file.close((error) => {
+          if (error) {
+            rejectOnce(error);
+            return;
+          }
+          try {
+            replaceDownloadedFile(tempPath, targetPath);
+          } catch (replaceError) {
+            rejectOnce(replaceError);
+            return;
+          }
+          resolveOnce(true);
         });
       });
+      file.on('error', rejectOnce);
     });
     request.on('error', (error) => {
-      file.close();
-      rmSync(tempPath, { force: true });
-      reject(error);
+      file.close(() => {
+        rejectOnce(error);
+      });
     });
   });
 };
@@ -511,7 +597,11 @@ const downloadFileWithRetry = async (file, targetPath, progressOffset, progressR
       return true;
     } catch (error) {
       lastError = error;
-      rmSync(targetPath, { force: true });
+      removeFileIfExists(`${targetPath}.download`);
+      if (isFileBusyError(error)) {
+        sendProgress('failed', progressOffset, getFriendlyUpdateError(error));
+        throw error;
+      }
       sendProgress(
         'retry',
         progressOffset,
@@ -1112,9 +1202,9 @@ ipcMain.handle('installer:update', async () => {
     await dialog.showMessageBox(mainWindow, {
       type: 'error',
       title: '\u66f4\u65b0\u5931\u8d25',
-      message: error.message || String(error)
+      message: getFriendlyUpdateError(error)
     });
-    sendProgress('failed', 0, '\u66f4\u65b0\u5931\u8d25');
+    sendProgress('failed', 0, getFriendlyUpdateError(error));
     return false;
   }
 });

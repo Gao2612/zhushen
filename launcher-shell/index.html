@@ -223,7 +223,7 @@
       background: rgba(240,215,140,.14);
     }
     button:disabled {
-      opacity: .48;
+      opacity: .72;
       cursor: default;
     }
     .primary {
@@ -354,6 +354,9 @@
     }
     body.is-installed .path-box,
     body.is-installed .progress { display: none; }
+    body.is-installed.is-updating .progress {
+      display: grid;
+    }
     .action-rail {
       position: fixed;
       top: 92px;
@@ -375,7 +378,19 @@
       border-color: rgba(247,234,212,.18);
       box-shadow: 0 12px 28px rgba(0,0,0,.26);
       backdrop-filter: blur(12px);
-      font-size: 18px;
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .rail-button svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+    .rail-button .rail-text {
+      display: block;
+      font-size: 11px;
+      line-height: 1;
+      letter-spacing: -.04em;
     }
     .rail-button:hover {
       color: #100b04;
@@ -500,7 +515,7 @@
       right: 48px;
       bottom: 20px;
       z-index: 3;
-      display: flex;
+      display: none;
       gap: 18px;
       align-items: center;
       color: rgba(247,234,212,.58);
@@ -523,8 +538,8 @@
     }
     .qq-card {
       position: fixed;
-      left: 208px;
-      bottom: 50px;
+      top: 206px;
+      right: 76px;
       z-index: 12;
       width: 220px;
       padding: 12px 14px;
@@ -618,9 +633,13 @@
   </main>
   <aside class="action-rail" id="actionRail">
     <button class="rail-button" id="railSettings" data-tip="设置">⚙</button>
-    <button class="rail-button" id="railTapTap" data-tip="TapTap">T</button>
-    <button class="rail-button" id="railQQ" data-tip="QQ群">Q</button>
-    <button class="rail-button" id="railUpdate" data-tip="更新页">↻</button>
+    <button class="rail-button" id="railTapTap" data-tip="TapTap"><span class="rail-text">Tap</span></button>
+    <button class="rail-button" id="railGithub" data-tip="GitHub">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 2C6.48 2 2 6.58 2 12.26c0 4.52 2.87 8.36 6.84 9.72.5.1.68-.22.68-.49v-1.72c-2.78.62-3.37-1.37-3.37-1.37-.45-1.19-1.11-1.51-1.11-1.51-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.35 1.12 2.92.86.09-.66.35-1.12.63-1.38-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.04 1.03-2.76-.1-.26-.45-1.31.1-2.72 0 0 .84-.28 2.75 1.05A9.32 9.32 0 0 1 12 6.96c.85 0 1.7.12 2.5.35 1.9-1.33 2.74-1.05 2.74-1.05.55 1.41.2 2.46.1 2.72.64.72 1.03 1.64 1.03 2.76 0 3.94-2.34 4.8-4.57 5.06.36.32.68.95.68 1.92v2.77c0 .27.18.59.69.49A10.16 10.16 0 0 0 22 12.26C22 6.58 17.52 2 12 2z"/>
+      </svg>
+    </button>
+    <button class="rail-button" id="railQQ" data-tip="QQ群"><span class="rail-text">QQ</span></button>
     <button class="rail-button" id="railLogs" data-tip="帮助 / 日志">?</button>
   </aside>
   <nav class="quick-links" id="quickLinks"></nav>
@@ -647,7 +666,7 @@
     const railSettingsButton = document.getElementById('railSettings');
     const railTapTapButton = document.getElementById('railTapTap');
     const railQQButton = document.getElementById('railQQ');
-    const railUpdateButton = document.getElementById('railUpdate');
+    const railGithubButton = document.getElementById('railGithub');
     const railLogsButton = document.getElementById('railLogs');
     const qqCard = document.createElement('div');
     const spaceNode = document.createElement('div');
@@ -783,33 +802,15 @@
       }, 4500);
     }
 
-    function addQuickLink(label, url) {
-      const link = document.createElement('button');
-      link.textContent = label;
-      link.addEventListener('click', () => {
-        window.ZhushenInstaller.openExternal(url);
-      });
-      quickLinks.appendChild(link);
-    }
-
     function renderQuickLinks() {
       quickLinks.innerHTML = '';
       qqCard.innerHTML = '';
-      addQuickLink('TapTap', 'https://www.taptap.cn/app/513986');
-      addQuickLink('\u66f4\u65b0\u9875', 'https://github.com/Gao2612/zhushen/releases/latest');
-      const qqButton = document.createElement('button');
       const qqTitle = document.createElement('strong');
       const qqPrimary = document.createElement('span');
       const qqSecondary = document.createElement('span');
-      qqButton.textContent = 'QQ\u7fa4';
       qqTitle.textContent = 'QQ\u7fa4';
       qqPrimary.textContent = '\u5b98\u65b9\u4e00\u7fa4\uff1a913044248';
       qqSecondary.textContent = '\u5b98\u65b9\u4e8c\u7fa4\uff1a130340208';
-      qqButton.addEventListener('click', (event) => {
-        event.stopPropagation();
-        qqCard.hidden = !qqCard.hidden;
-      });
-      quickLinks.appendChild(qqButton);
       qqCard.appendChild(qqTitle);
       qqCard.appendChild(qqPrimary);
       qqCard.appendChild(qqSecondary);
@@ -844,7 +845,7 @@
       railSettingsButton.disabled = value;
       railTapTapButton.disabled = value;
       railQQButton.disabled = value;
-      railUpdateButton.disabled = value;
+      railGithubButton.disabled = value;
       railLogsButton.disabled = value;
       if (value || !installed) {
         setManageOpen(false);
@@ -963,7 +964,7 @@
       if (!event.target.closest('.settings-menu')) {
         setManageOpen(false);
       }
-      if (!event.target.closest('.quick-links') && !event.target.closest('.qq-card')) {
+      if (!event.target.closest('.action-rail') && !event.target.closest('.qq-card')) {
         qqCard.hidden = true;
       }
     });
@@ -1017,13 +1018,21 @@
     updateButton.addEventListener('click', async () => {
       setManageOpen(false);
       setBusy(true);
+      document.body.classList.add('is-updating');
+      setProgress(0);
       setStatus('\u6b63\u5728\u66f4\u65b0...');
       const result = await window.ZhushenInstaller.update();
-      updateAvailable = false;
-      document.body.classList.remove('has-update');
-      updateButton.hidden = true;
-      setStatus(result ? '\u66f4\u65b0\u5b8c\u6210\u3002' : '\u66f4\u65b0\u672a\u5b8c\u6210\u3002');
-      await refresh();
+      document.body.classList.remove('is-updating');
+      if (result) {
+        updateAvailable = false;
+        document.body.classList.remove('has-update');
+        updateButton.hidden = true;
+        setStatus('\u66f4\u65b0\u5b8c\u6210\u3002');
+        await refresh();
+        return;
+      }
+      setBusy(false);
+      setStatus('\u66f4\u65b0\u672a\u5b8c\u6210\uff0c\u8bf7\u6839\u636e\u63d0\u793a\u5904\u7406\u540e\u91cd\u8bd5\u3002');
     });
 
     repairButton.addEventListener('click', async () => {
@@ -1058,7 +1067,7 @@
       qqCard.hidden = !qqCard.hidden;
     });
 
-    railUpdateButton.addEventListener('click', () => {
+    railGithubButton.addEventListener('click', () => {
       window.ZhushenInstaller.openExternal('https://github.com/Gao2612/zhushen/releases/latest');
     });
 
