@@ -529,6 +529,7 @@
     window.addEventListener('popstate', function () {
       navigate(location.href, false);
     });
+    window.ZhushenNavigate = navigate;
 
     function navigate(url, pushState) {
       var normalizedUrl = new URL(url, location.href).href;

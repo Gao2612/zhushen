@@ -1218,7 +1218,47 @@ public final class MainActivity extends ComponentActivity {
             return;
         }
         closeBrowserBarOnly();
+        if (canNavigateWithinCurrentPage()) {
+            navigateWithinCurrentPage(page);
+            return;
+        }
         webView.loadUrl(BASE_URL + page);
+    }
+
+    private boolean canNavigateWithinCurrentPage() {
+        if (webView == null) {
+            return false;
+        }
+        String currentUrl = webView.getUrl();
+        if (currentUrl == null || currentUrl.trim().isEmpty()) {
+            return false;
+        }
+        return isTrustedAssetUri(Uri.parse(currentUrl));
+    }
+
+    private void navigateWithinCurrentPage(String page) {
+        loadingOverlay.setVisibility(View.GONE);
+        updateSelectedTab(BASE_URL + page);
+        String script = "(function(){"
+            + "if(typeof window.ZhushenNavigate!=='function'){return false;}"
+            + "window.ZhushenNavigate(" + quoteJavascriptString(page) + ",true);"
+            + "return true;"
+            + "})();";
+        webView.evaluateJavascript(script, result -> {
+            if (!"true".equals(result)) {
+                showLoading();
+                webView.loadUrl(BASE_URL + page);
+            }
+        });
+    }
+
+    private String quoteJavascriptString(String value) {
+        return "'" + value
+            .replace("\\", "\\\\")
+            .replace("'", "\\'")
+            .replace("\r", "\\r")
+            .replace("\n", "\\n")
+            + "'";
     }
 
     private boolean isKnownPage(String page) {

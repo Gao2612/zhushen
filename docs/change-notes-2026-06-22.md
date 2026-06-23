@@ -79,3 +79,12 @@ gh release view v1.1.1 --json assets
 
 - `zhushen-installer-1.1.1-win-x64.exe`：`sha256:a907dd66319f45c400fd1ac967bbd34a9c768f6419a8112368ea9d9f172362fc`
 - `zhushen-launcher-1.1.1-win-x64.zip`：`sha256:a65f715577ffaf2fc0d4963a19cffddd015b1b917c722315da5e9a1ee59c5ed2`
+
+## 2026-06-23 Android 局部切页补齐
+
+- Android 原生底部 Tab 不再直接整页 `webView.loadUrl(...)` 切换资料页。
+- 前端增强层暴露 `window.ZhushenNavigate`，Android 原生层优先调用同一套局部切页逻辑。
+- 当页面尚未初始化、正在外部内置浏览层或局部切页 API 不可用时，Android 仍回退到整页加载，保证首次启动和异常兜底可用。
+- 局部切页时由原生层同步底部 Tab 高亮，不依赖整页加载完成回调。
+- `scripts/verify-project.js` 新增回归检查，防止后续把 Android 底部 Tab 改回整页刷新。
+- 重新构建 Android debug 包、桌面客户端、启动器压缩包和推荐安装器，并覆盖 GitHub Release `v1.1.1` 相关资产。

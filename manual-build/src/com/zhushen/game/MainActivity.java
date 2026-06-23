@@ -517,10 +517,7 @@ public class MainActivity extends Activity {
             tab.setPadding(0, dp(8), 0, dp(10));
             tab.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    for (TextView t : tabViews) t.setTextColor(Color.parseColor("#55ffffff"));
-                    tabViews[idx].setTextColor(Color.parseColor("#f0d78c"));
-                    showLoading();
-                    webView.loadUrl("file:///android_asset/" + tabPages[idx]);
+                    navigateTabPage(tabPages[idx], tabViews, idx);
                 }
             });
             tabViews[i] = tab;
@@ -617,6 +614,54 @@ public class MainActivity extends Activity {
 
     private void showLoading() {
         loadingOverlay.setVisibility(View.VISIBLE);
+    }
+
+    private void navigateTabPage(String page, TextView[] tabViews, int selectedIndex) {
+        for (TextView tab : tabViews) {
+            tab.setTextColor(Color.parseColor("#55ffffff"));
+        }
+        tabViews[selectedIndex].setTextColor(Color.parseColor("#f0d78c"));
+        if (canNavigateWithinCurrentPage()) {
+            navigateWithinCurrentPage(page);
+            return;
+        }
+        showLoading();
+        webView.loadUrl("file:///android_asset/" + page);
+    }
+
+    private boolean canNavigateWithinCurrentPage() {
+        if (webView == null) {
+            return false;
+        }
+        String currentUrl = webView.getUrl();
+        return currentUrl != null && currentUrl.startsWith("file:///android_asset/");
+    }
+
+    private void navigateWithinCurrentPage(String page) {
+        loadingOverlay.setVisibility(View.GONE);
+        String script = "(function(){"
+            + "if(typeof window.ZhushenNavigate!=='function'){return false;}"
+            + "window.ZhushenNavigate(" + quoteJavascriptString(page) + ",true);"
+            + "return true;"
+            + "})();";
+        webView.evaluateJavascript(script, new android.webkit.ValueCallback<String>() {
+            @Override
+            public void onReceiveValue(String result) {
+                if (!"true".equals(result)) {
+                    showLoading();
+                    webView.loadUrl("file:///android_asset/" + page);
+                }
+            }
+        });
+    }
+
+    private String quoteJavascriptString(String value) {
+        return "'" + value
+            .replace("\\", "\\\\")
+            .replace("'", "\\'")
+            .replace("\r", "\\r")
+            .replace("\n", "\\n")
+            + "'";
     }
 
     @Override

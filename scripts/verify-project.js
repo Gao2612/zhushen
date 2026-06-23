@@ -187,6 +187,16 @@ for (const insecureCall of insecureWebViewCalls) {
   }
 }
 
+if (!activity.includes('navigateWithinCurrentPage(page)')) {
+  recordFailure('Android 底部 Tab 未走客户端局部切页入口：navigateWithinCurrentPage(page)');
+}
+if (!activity.includes('window.ZhushenNavigate')) {
+  recordFailure('Android 原生导航未调用前端局部切页 API：window.ZhushenNavigate');
+}
+if (!enhancements.includes('window.ZhushenNavigate = navigate')) {
+  recordFailure('前端未暴露 Android 可调用的局部切页 API：window.ZhushenNavigate');
+}
+
 if (failures.length > 0) {
   console.error(failures.join('\n'));
   process.exit(1);
