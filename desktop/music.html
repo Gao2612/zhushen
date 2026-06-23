@@ -8,8 +8,17 @@
   <audio id="music" src="../manual-build/assets/audio/background_music.oga" loop preload="auto"></audio>
   <script>
     const music = document.getElementById('music');
-    let lastState = { enabled: null, volume: null };
+    let lastState = { enabled: null, volume: null, positionApplied: false };
     music.muted = false;
+    const readState = () => ({
+      enabled: lastState.enabled === true,
+      playing: !music.paused,
+      paused: music.paused,
+      position: Number.isFinite(music.currentTime) ? music.currentTime : 0,
+      duration: Number.isFinite(music.duration) ? music.duration : 0,
+      volume: Math.round(music.volume * 100)
+    });
+    window.readMusicState = () => Promise.resolve(readState());
     window.applyMusicState = (state) => {
       const volume = Math.max(0, Math.min(1, Number(state.volume || 0) / 100));
       const normalizedVolume = Math.round(volume * 100);
@@ -17,38 +26,29 @@
         && lastState.volume === normalizedVolume;
       music.volume = volume;
       music.muted = false;
-      lastState = { enabled: !!state.enabled, volume: normalizedVolume };
+      if (!lastState.positionApplied && Number(state.position) > 0) {
+        music.currentTime = Math.max(0, Number(state.position) || 0);
+        lastState.positionApplied = true;
+      }
+      lastState = {
+        enabled: !!state.enabled,
+        volume: normalizedVolume,
+        positionApplied: lastState.positionApplied
+      };
       if (!state.enabled) {
         if (!music.paused) {
           music.pause();
         }
-        return Promise.resolve({
-          enabled: false,
-          playing: false,
-          paused: music.paused,
-          volume: normalizedVolume
-        });
+        return Promise.resolve(readState());
       }
       if (stateUnchanged && !music.paused) {
-        return Promise.resolve({
-          enabled: true,
-          playing: true,
-          paused: false,
-          volume: normalizedVolume
-        });
+        return Promise.resolve(readState());
       }
-      return music.play().then(() => ({
-        enabled: true,
-        playing: !music.paused,
-        paused: false,
-        volume: normalizedVolume
-      })).catch((error) => ({
-        enabled: true,
-        playing: false,
-        paused: music.paused,
-        volume: normalizedVolume,
-        error: error && error.message ? error.message : String(error)
-      }));
+      return music.play().then(() => readState()).catch((error) => {
+        const result = readState();
+        result.error = error && error.message ? error.message : String(error);
+        return result;
+      });
     };
   </script>
 </body>

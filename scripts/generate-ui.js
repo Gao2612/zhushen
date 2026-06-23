@@ -112,11 +112,28 @@ const characters = [
       '官方-角色/夕岚/夕岚8.jpeg',
       '官方-角色/夕岚/夕岚9.gif'
     ],
-    videos: [
-      { src: '官方-角色/视频/夕岚玩家二创1.mp4', label: '玩家二创一' },
-      { src: '官方-角色/视频/夕岚玩家二创2.mp4', label: '玩家二创二' },
-      { src: '官方-角色/视频/夕岚我的世界.mp4', label: '我的世界' }
-    ]
+    videos: []
+  }
+];
+
+const fanVideos = [
+  {
+    src: '官方-角色/视频/夕岚玩家二创1.mp4',
+    title: '夕岚玩家二创一',
+    desc: '从角色官方页移入二创归档，避免与官方设定混放。',
+    character: '夕岚'
+  },
+  {
+    src: '官方-角色/视频/夕岚玩家二创2.mp4',
+    title: '夕岚玩家二创二',
+    desc: '从角色官方页移入二创归档，保留应用内播放入口。',
+    character: '夕岚'
+  },
+  {
+    src: '官方-角色/视频/夕岚我的世界.mp4',
+    title: '夕岚我的世界',
+    desc: '玩家自制内容，作为二创视频单独收录。',
+    character: '夕岚'
   }
 ];
 
@@ -616,6 +633,16 @@ function buildSearchIndex() {
     });
   });
 
+  fanVideos.forEach((video) => {
+    pushEntry({
+      section: '二创',
+      title: video.title,
+      desc: video.desc,
+      href: 'wjec.html',
+      keywords: [video.character, video.src, '视频', '玩家二创'].join(' ')
+    });
+  });
+
   jokes.forEach((joke, index) => {
     pushEntry({
       section: '笑话',
@@ -894,11 +921,11 @@ function charactersPage() {
 
 function characterDetail(item) {
   const media = item.images.map((src) => card({
-    title: item.name,
-    desc: item.title,
+    title: `${item.name}资料图`,
+    desc: '官方角色图像资料',
     src,
-    meta: '角色图集',
-    kind: '图片',
+    meta: src.toLowerCase().endsWith('.gif') ? '角色动态图' : '角色图集',
+    kind: src.toLowerCase().endsWith('.gif') ? '动图' : '官方图像',
     favoriteId: `image:${src}`
   })).join('');
   const videos = item.videos.map((video) => `<article class="video-card" data-search-text="${escapeAttr(item.name + ' ' + video.label)}">
@@ -908,6 +935,7 @@ function characterDetail(item) {
     <a class="native-video-button" href="${nativeVideoHref(video.src, `${item.name} · ${video.label}`)}">应用内播放</a>
     <p>${video.label}</p>
   </article>`).join('');
+  const videoBlock = videos ? `<div class="video-grid">${videos}</div>` : '';
   return `<article class="dossier" data-search-text="${escapeAttr(item.name + ' ' + item.title + ' ' + item.desc)}">
     <div>
       <p class="eyebrow">${item.title}</p>
@@ -916,7 +944,7 @@ function characterDetail(item) {
       <blockquote>${item.quote}</blockquote>
     </div>
     <div class="media-grid">${media}</div>
-    ${videos ? `<div class="video-grid">${videos}</div>` : ''}
+${videoBlock}
   </article>`;
 }
 
@@ -958,6 +986,20 @@ function fanArtPage() {
   const filters = ['全部', '阿塔尔', '德赫奴', '拉夏', '梅赛德斯', '夕岚', '综合', '动图'];
   const body = `<section class="filter-row" data-filter-group>
     ${filters.map((name) => `<button data-filter="${name}">${name}</button>`).join('')}
+  </section>
+  <section class="section-head compact">
+    <p class="eyebrow">Fan Video</p>
+    <h2>二创视频</h2>
+  </section>
+  <section class="video-grid fan-video-grid">
+    ${fanVideos.map((video) => `<article class="video-card" data-search-text="${escapeAttr([video.title, video.desc, video.character, '二创 视频'].join(' '))}" data-kind="${video.character}">
+      <video controls preload="none" playsinline webkit-playsinline data-lazy-video>
+        <source data-src="${video.src}" type="video/mp4">
+      </video>
+      <a class="native-video-button" href="${nativeVideoHref(video.src, video.title)}">应用内播放</a>
+      <p>${video.title}</p>
+      <span>${video.desc}</span>
+    </article>`).join('')}
   </section>
   <section class="artist-summary">
     ${artists.map((artist) => `<a href="#artist-${slug(artist.name)}">${artist.name}<span>${artist.files.length}</span></a>`).join('')}
@@ -1068,14 +1110,48 @@ function settingsPage() {
       <h2>背景音乐</h2>
       <p>进入档案馆后循环播放内置音乐；可以关闭，也可以调整音量。应用退到后台时会自动暂停，回到前台后继续。</p>
       <div class="audio-options" data-background-music-options>
-        <button class="wide-button" data-background-music-set="true">开启背景音乐</button>
-        <button class="wide-button" data-background-music-set="false">关闭背景音乐</button>
+        <div class="segmented-actions audio-toggle-row">
+          <button data-background-music-set="true">开启背景音乐</button>
+          <button data-background-music-set="false">关闭背景音乐</button>
+        </div>
         <label class="range-control">
           <span>音量</span>
           <input data-background-music-volume type="range" min="0" max="100" step="5">
         </label>
       </div>
+      <button class="wide-button" type="button" data-music-detail-toggle>查看曲名与歌词</button>
+      <div class="music-detail-panel" data-music-detail hidden>
+        <p><strong>Mass No.19 in D Minor, K.626 Requiem: Introitus: Requiem Aeternam</strong></p>
+        <ol data-music-lyrics>
+          <li data-lyric-time="0">Requiem aeternam dona eis, Domine.</li>
+          <li data-lyric-time="18">Et lux perpetua luceat eis.</li>
+          <li data-lyric-time="36">Te decet hymnus, Deus, in Sion.</li>
+          <li data-lyric-time="56">Exaudi orationem meam.</li>
+          <li data-lyric-time="76">Ad te omnis caro veniet.</li>
+        </ol>
+      </div>
       <p class="settings-note" data-background-music-status>当前音乐：读取中</p>
+    </article>
+    <article class="settings-card">
+      <p class="eyebrow">Display & History</p>
+      <h2>显示与记录</h2>
+      <div class="desktop-combo">
+        <span>低动态模式</span>
+        <div class="segmented-actions">
+          <button data-reduced-motion-set="true">开启</button>
+          <button data-reduced-motion-set="false">关闭</button>
+        </div>
+      </div>
+      <p class="settings-note">开启后会减少动态背景、淡入动画和部分自动播放视觉效果。</p>
+      <div class="desktop-combo">
+        <span>最近浏览</span>
+        <div class="segmented-actions">
+          <button data-recent-history-set="true">记录</button>
+          <button data-recent-history-set="false">不记录</button>
+        </div>
+      </div>
+      <p class="settings-note">用于“我的档案”里快速回到刚看过的页面；关闭后不再写入新记录。</p>
+      <p class="settings-note" data-display-history-status>显示与记录：读取中</p>
     </article>
     <article class="settings-card desktop-settings-card" data-desktop-settings hidden>
       <p class="eyebrow">Desktop Client</p>
@@ -1086,14 +1162,6 @@ function settingsPage() {
         <div class="segmented-actions">
           <button data-desktop-startup-set="true">开启</button>
           <button data-desktop-startup-set="false">关闭</button>
-        </div>
-      </div>
-      <div class="desktop-combo">
-        <span>窗口缩放</span>
-        <div class="segmented-actions">
-          <button data-desktop-zoom-out>缩小</button>
-          <button data-desktop-zoom-reset>恢复</button>
-          <button data-desktop-zoom-in>放大</button>
         </div>
       </div>
       <div class="desktop-options">
@@ -1634,8 +1702,6 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   resize: vertical;
 }
 .profile-field input:focus, .profile-field textarea:focus { border-color: rgba(240,215,140,.58); }
-.profile-preferences { display: grid; gap: 10px; margin-top: 18px; color: var(--muted); }
-.profile-preferences input { accent-color: var(--gold); }
 .profile-actions { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 10px; margin-top: 22px; }
 .profile-actions .wide-button { margin-top: 0; }
 .profile-primary { color: #15110a; background: var(--gold-soft); font-weight: 700; }
@@ -1666,6 +1732,10 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   gap: 14px;
   align-items: center;
   margin-top: 14px;
+}
+.audio-toggle-row {
+  grid-auto-columns: minmax(0, 1fr);
+  min-width: 0;
 }
 .orientation-options .wide-button,
 .video-options .wide-button,
@@ -1720,6 +1790,27 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
 .range-control input {
   width: 100%;
   accent-color: var(--gold);
+}
+.music-detail-panel {
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid rgba(212, 167, 84, .16);
+  border-radius: 16px;
+  background: rgba(255,255,255,.026);
+}
+.music-detail-panel p {
+  margin: 0 0 10px;
+}
+.music-detail-panel ol {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 22px;
+  color: var(--muted);
+}
+.music-detail-panel li.active {
+  color: var(--gold-soft);
+  text-shadow: 0 0 16px rgba(240,215,140,.22);
 }
 .wide-button { width: 100%; margin-top: 10px; }
 .archive-footer {
@@ -2204,6 +2295,42 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
       });
     }
 
+    function isReducedMotionEnabled() {
+      return localStorage.getItem('zhushen_reduced_motion_enabled') === 'true';
+    }
+
+    function setReducedMotionEnabled(enabled) {
+      localStorage.setItem('zhushen_reduced_motion_enabled', String(enabled));
+      document.documentElement.classList.toggle('reduced-motion', enabled);
+    }
+
+    function isRecentHistoryEnabled() {
+      return localStorage.getItem('zhushen_recent_history_enabled') !== 'false';
+    }
+
+    function setRecentHistoryEnabled(enabled) {
+      localStorage.setItem('zhushen_recent_history_enabled', String(enabled));
+    }
+
+    function syncDisplayHistoryControls() {
+      var reducedMotion = isReducedMotionEnabled();
+      var recentHistory = isRecentHistoryEnabled();
+      document.querySelectorAll('[data-reduced-motion-set]').forEach(function (button) {
+        var buttonEnabled = button.dataset.reducedMotionSet === 'true';
+        button.classList.toggle('active', buttonEnabled === reducedMotion);
+      });
+      document.querySelectorAll('[data-recent-history-set]').forEach(function (button) {
+        var buttonEnabled = button.dataset.recentHistorySet === 'true';
+        button.classList.toggle('active', buttonEnabled === recentHistory);
+      });
+      document.querySelectorAll('[data-display-history-status]').forEach(function (node) {
+        node.textContent = '显示与记录：'
+          + (reducedMotion ? '低动态开启' : '低动态关闭')
+          + ' · '
+          + (recentHistory ? '记录最近浏览' : '不记录最近浏览');
+      });
+    }
+
     document.querySelectorAll('[data-clear-favorites]').forEach(function (button) {
       button.addEventListener('click', function () {
         localStorage.removeItem(favoritesKey);
@@ -2255,13 +2382,29 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
         syncBackgroundMusicControls();
       });
     });
+    document.querySelectorAll('[data-reduced-motion-set]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        setReducedMotionEnabled(button.dataset.reducedMotionSet === 'true');
+        syncDisplayHistoryControls();
+      });
+    });
+    document.querySelectorAll('[data-recent-history-set]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        setRecentHistoryEnabled(button.dataset.recentHistorySet === 'true');
+        syncDisplayHistoryControls();
+      });
+    });
     syncOrientationControls();
     syncSplashVideoControls();
     syncSplashEntryControls();
     syncBackgroundMusicControls();
+    syncDisplayHistoryControls();
   }
 
   function recordRecent() {
+    if (localStorage.getItem('zhushen_recent_history_enabled') === 'false') {
+      return;
+    }
     var title = document.title;
     var href = location.pathname.split('/').pop();
     var list = readList(recentKey).filter(function (item) { return item.href !== href; });

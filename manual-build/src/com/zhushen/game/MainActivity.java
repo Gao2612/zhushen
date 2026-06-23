@@ -667,6 +667,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+        dispatchLifecycleEvent("zhushen:pause");
         if (webView != null) webView.onPause();
     }
 
@@ -675,6 +676,17 @@ public class MainActivity extends Activity {
         super.onResume();
         applyImmersiveSystemBars();
         if (webView != null) webView.onResume();
+        dispatchLifecycleEvent("zhushen:resume");
+    }
+
+    private void dispatchLifecycleEvent(String eventName) {
+        if (webView == null) {
+            return;
+        }
+        String script = "window.dispatchEvent(new Event("
+            + quoteJavascriptString(eventName)
+            + "));";
+        webView.evaluateJavascript(script, null);
     }
 
     @Override

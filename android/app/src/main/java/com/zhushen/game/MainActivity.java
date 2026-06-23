@@ -1921,6 +1921,7 @@ public final class MainActivity extends ComponentActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        dispatchLifecycleEvent("zhushen:pause");
         pauseBackgroundMusicForLifecycle();
         if (webView != null) {
             webView.onPause();
@@ -1934,7 +1935,18 @@ public final class MainActivity extends ComponentActivity {
         if (webView != null) {
             webView.onResume();
         }
+        dispatchLifecycleEvent("zhushen:resume");
         resumeBackgroundMusicForLifecycle();
+    }
+
+    private void dispatchLifecycleEvent(String eventName) {
+        if (webView == null) {
+            return;
+        }
+        String script = "window.dispatchEvent(new Event("
+            + quoteJavascriptString(eventName)
+            + "));";
+        webView.evaluateJavascript(script, null);
     }
 
     @Override

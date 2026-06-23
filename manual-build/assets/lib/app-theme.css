@@ -483,8 +483,6 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   resize: vertical;
 }
 .profile-field input:focus, .profile-field textarea:focus { border-color: rgba(240,215,140,.58); }
-.profile-preferences { display: grid; gap: 10px; margin-top: 18px; color: var(--muted); }
-.profile-preferences input { accent-color: var(--gold); }
 .profile-actions { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 10px; margin-top: 22px; }
 .profile-actions .wide-button { margin-top: 0; }
 .profile-primary { color: #15110a; background: var(--gold-soft); font-weight: 700; }
@@ -515,6 +513,10 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   gap: 14px;
   align-items: center;
   margin-top: 14px;
+}
+.audio-toggle-row {
+  grid-auto-columns: minmax(0, 1fr);
+  min-width: 0;
 }
 .orientation-options .wide-button,
 .video-options .wide-button,
@@ -569,6 +571,27 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
 .range-control input {
   width: 100%;
   accent-color: var(--gold);
+}
+.music-detail-panel {
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid rgba(212, 167, 84, .16);
+  border-radius: 16px;
+  background: rgba(255,255,255,.026);
+}
+.music-detail-panel p {
+  margin: 0 0 10px;
+}
+.music-detail-panel ol {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 22px;
+  color: var(--muted);
+}
+.music-detail-panel li.active {
+  color: var(--gold-soft);
+  text-shadow: 0 0 16px rgba(240,215,140,.22);
 }
 .wide-button { width: 100%; margin-top: 10px; }
 .archive-footer {

@@ -89,14 +89,48 @@
       <h2>背景音乐</h2>
       <p>进入档案馆后循环播放内置音乐；可以关闭，也可以调整音量。应用退到后台时会自动暂停，回到前台后继续。</p>
       <div class="audio-options" data-background-music-options>
-        <button class="wide-button" data-background-music-set="true">开启背景音乐</button>
-        <button class="wide-button" data-background-music-set="false">关闭背景音乐</button>
+        <div class="segmented-actions audio-toggle-row">
+          <button data-background-music-set="true">开启背景音乐</button>
+          <button data-background-music-set="false">关闭背景音乐</button>
+        </div>
         <label class="range-control">
           <span>音量</span>
           <input data-background-music-volume type="range" min="0" max="100" step="5">
         </label>
       </div>
+      <button class="wide-button" type="button" data-music-detail-toggle>查看曲名与歌词</button>
+      <div class="music-detail-panel" data-music-detail hidden>
+        <p><strong>Mass No.19 in D Minor, K.626 Requiem: Introitus: Requiem Aeternam</strong></p>
+        <ol data-music-lyrics>
+          <li data-lyric-time="0">Requiem aeternam dona eis, Domine.</li>
+          <li data-lyric-time="18">Et lux perpetua luceat eis.</li>
+          <li data-lyric-time="36">Te decet hymnus, Deus, in Sion.</li>
+          <li data-lyric-time="56">Exaudi orationem meam.</li>
+          <li data-lyric-time="76">Ad te omnis caro veniet.</li>
+        </ol>
+      </div>
       <p class="settings-note" data-background-music-status>当前音乐：读取中</p>
+    </article>
+    <article class="settings-card">
+      <p class="eyebrow">Display & History</p>
+      <h2>显示与记录</h2>
+      <div class="desktop-combo">
+        <span>低动态模式</span>
+        <div class="segmented-actions">
+          <button data-reduced-motion-set="true">开启</button>
+          <button data-reduced-motion-set="false">关闭</button>
+        </div>
+      </div>
+      <p class="settings-note">开启后会减少动态背景、淡入动画和部分自动播放视觉效果。</p>
+      <div class="desktop-combo">
+        <span>最近浏览</span>
+        <div class="segmented-actions">
+          <button data-recent-history-set="true">记录</button>
+          <button data-recent-history-set="false">不记录</button>
+        </div>
+      </div>
+      <p class="settings-note">用于“我的档案”里快速回到刚看过的页面；关闭后不再写入新记录。</p>
+      <p class="settings-note" data-display-history-status>显示与记录：读取中</p>
     </article>
     <article class="settings-card desktop-settings-card" data-desktop-settings hidden>
       <p class="eyebrow">Desktop Client</p>
@@ -107,14 +141,6 @@
         <div class="segmented-actions">
           <button data-desktop-startup-set="true">开启</button>
           <button data-desktop-startup-set="false">关闭</button>
-        </div>
-      </div>
-      <div class="desktop-combo">
-        <span>窗口缩放</span>
-        <div class="segmented-actions">
-          <button data-desktop-zoom-out>缩小</button>
-          <button data-desktop-zoom-reset>恢复</button>
-          <button data-desktop-zoom-in>放大</button>
         </div>
       </div>
       <div class="desktop-options">

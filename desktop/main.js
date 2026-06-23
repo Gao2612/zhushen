@@ -58,7 +58,48 @@ const configureRuntimeStorage = () => {
   }
 };
 
+const normalizeMusicState = (value) => {
+  const source = value && typeof value === 'object' ? value : {};
+  return {
+    enabled: source.enabled !== false,
+    volume: Math.max(0, Math.min(100, Number(source.volume) || 45)),
+    position: Math.max(0, Number(source.position) || 0),
+    updatedAt: source.updatedAt || new Date().toISOString()
+  };
+};
+
+const getMusicStatePath = () => {
+  return join(app.getPath('userData'), 'music-state.json');
+};
+
+const loadMusicState = () => {
+  try {
+    return normalizeMusicState(JSON.parse(readFileSync(getMusicStatePath(), 'utf8')));
+  } catch (error) {
+    return normalizeMusicState(musicState);
+  }
+};
+
+const persistMusicState = (state) => {
+  const normalizedState = normalizeMusicState({
+    ...state,
+    updatedAt: new Date().toISOString()
+  });
+  try {
+    mkdirSync(dirname(getMusicStatePath()), { recursive: true });
+    writeFileSync(
+      getMusicStatePath(),
+      JSON.stringify(normalizedState, null, 2),
+      'utf8'
+    );
+  } catch (error) {
+    writeStartupLog('music_state_persist_failed', getErrorDetail(error));
+  }
+  return normalizedState;
+};
+
 configureRuntimeStorage();
+musicState = loadMusicState();
 
 const writeStartupLog = (message, detail) => {
   try {
@@ -149,6 +190,12 @@ const applyMusicState = async () => {
       `window.applyMusicState(${serializedState})`,
       true
     );
+    musicState = persistMusicState({
+      ...musicState,
+      position: lastMusicResult && Number(lastMusicResult.position) >= 0
+        ? Number(lastMusicResult.position)
+        : musicState.position
+    });
     return lastMusicResult;
   } catch (error) {
     lastMusicResult = {
@@ -159,6 +206,41 @@ const applyMusicState = async () => {
     };
     return lastMusicResult;
   }
+};
+
+const readMusicPlaybackState = async () => {
+  if (!musicWindow || musicWindow.isDestroyed()) {
+    return {
+      ...musicState,
+      playing: false,
+      paused: true
+    };
+  }
+  try {
+    const playbackState = await musicWindow.webContents.executeJavaScript(
+      'window.readMusicState ? window.readMusicState() : null',
+      true
+    );
+    if (playbackState) {
+      musicState = persistMusicState({
+        ...musicState,
+        position: playbackState.position
+      });
+      lastMusicResult = {
+        ...playbackState,
+        enabled: musicState.enabled,
+        volume: musicState.volume
+      };
+      return lastMusicResult;
+    }
+  } catch (error) {
+    writeStartupLog('music_state_read_failed', getErrorDetail(error));
+  }
+  return {
+    ...musicState,
+    playing: false,
+    paused: true
+  };
 };
 
 const destroyMusicWindow = () => {
@@ -492,18 +574,23 @@ const registerDesktopIpc = () => {
     return JSON.parse(content);
   });
 
-  ipcMain.handle('desktop:get-music-state', () => {
-    return musicState;
+  ipcMain.handle('desktop:get-music-state', async () => {
+    return await readMusicPlaybackState();
   });
 
   ipcMain.handle('desktop:set-music-state', async (event, payload) => {
     const nextState = {
       enabled: !!(payload && payload.enabled),
-      volume: Math.max(0, Math.min(100, Number(payload && payload.volume) || 0))
+      volume: Math.max(0, Math.min(100, Number(payload && payload.volume) || 0)),
+      position: Math.max(
+        0,
+        Number(payload && payload.position) || Number(musicState.position) || 0
+      )
     };
     const unchanged = musicState.enabled === nextState.enabled
-      && musicState.volume === nextState.volume;
-    musicState = nextState;
+      && musicState.volume === nextState.volume
+      && Math.abs(Number(musicState.position || 0) - nextState.position) < 1;
+    musicState = persistMusicState(nextState);
     if (unchanged && lastMusicResult) {
       return lastMusicResult;
     }
