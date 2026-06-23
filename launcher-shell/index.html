@@ -372,29 +372,29 @@
       place-items: center;
       width: 42px;
       min-height: 42px;
+      padding: 0;
+      border: 1px solid rgba(247,234,212,.16);
       border-radius: 50%;
       color: rgba(247,234,212,.72);
-      background: rgba(6,7,11,.34);
-      border-color: rgba(247,234,212,.18);
-      box-shadow: 0 12px 28px rgba(0,0,0,.26);
-      backdrop-filter: blur(12px);
-      font-size: 13px;
-      font-weight: 900;
+      background: transparent;
+      box-shadow: none;
+      backdrop-filter: none;
+      transition: color .16s ease, opacity .16s ease, transform .16s ease, border-color .16s ease;
     }
     .rail-button svg {
-      width: 20px;
-      height: 20px;
+      width: 23px;
+      height: 23px;
       fill: currentColor;
-    }
-    .rail-button .rail-text {
-      display: block;
-      font-size: 11px;
-      line-height: 1;
-      letter-spacing: -.04em;
+      stroke: currentColor;
+      stroke-width: 0;
+      opacity: .9;
     }
     .rail-button:hover {
-      color: #100b04;
-      background: #f0d78c;
+      color: #fff8e8;
+      border-color: rgba(247,234,212,.34);
+      background: transparent;
+      transform: translateX(-2px);
+      box-shadow: 0 0 18px rgba(247,234,212,.12);
     }
     .rail-button::after {
       content: attr(data-tip);
@@ -538,7 +538,7 @@
     }
     .qq-card {
       position: fixed;
-      top: 206px;
+      top: 148px;
       right: 76px;
       z-index: 12;
       width: 220px;
@@ -632,15 +632,21 @@
     </section>
   </main>
   <aside class="action-rail" id="actionRail">
-    <button class="rail-button" id="railSettings" data-tip="设置">⚙</button>
-    <button class="rail-button" id="railTapTap" data-tip="TapTap"><span class="rail-text">Tap</span></button>
+    <button class="rail-button" id="railTapTap" data-tip="TapTap" aria-label="打开 TapTap 页面">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M7.5 3.5h9A4.5 4.5 0 0 1 21 8v8a4.5 4.5 0 0 1-4.5 4.5h-9A4.5 4.5 0 0 1 3 16V8a4.5 4.5 0 0 1 4.5-4.5zm.8 5.1a2.9 2.9 0 1 0 0 5.8 2.9 2.9 0 0 0 0-5.8zm7.4 0a2.9 2.9 0 1 0 0 5.8 2.9 2.9 0 0 0 0-5.8zM8.3 10.4a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2zm7.4 0a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2zM10 16.7h4a1 1 0 0 1 0 2h-4a1 1 0 0 1 0-2z"/>
+      </svg>
+    </button>
+    <button class="rail-button" id="railQQ" data-tip="QQ群" aria-label="查看 QQ 群信息">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 2.7c-3.2 0-5.8 2.8-5.8 6.5v2.1c-1.5 1.3-2.5 3.1-2.5 5 0 1.6.7 2.8 1.9 3.4.7.4 1.4.1 1.9-.5 1.2 1.2 2.8 1.9 4.5 1.9s3.3-.7 4.5-1.9c.5.6 1.2.9 1.9.5 1.2-.6 1.9-1.8 1.9-3.4 0-1.9-1-3.7-2.5-5V9.2c0-3.7-2.6-6.5-5.8-6.5zm-2.1 7.2c.7 0 1.3.7 1.3 1.5s-.6 1.5-1.3 1.5-1.3-.7-1.3-1.5.6-1.5 1.3-1.5zm4.2 0c.7 0 1.3.7 1.3 1.5s-.6 1.5-1.3 1.5-1.3-.7-1.3-1.5.6-1.5 1.3-1.5zm-5.9 6c1 .7 2.3 1.1 3.8 1.1s2.8-.4 3.8-1.1c-.5 1.2-1.9 2.1-3.8 2.1s-3.3-.9-3.8-2.1z"/>
+      </svg>
+    </button>
     <button class="rail-button" id="railGithub" data-tip="GitHub">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M12 2C6.48 2 2 6.58 2 12.26c0 4.52 2.87 8.36 6.84 9.72.5.1.68-.22.68-.49v-1.72c-2.78.62-3.37-1.37-3.37-1.37-.45-1.19-1.11-1.51-1.11-1.51-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.57 2.35 1.12 2.92.86.09-.66.35-1.12.63-1.38-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.04 1.03-2.76-.1-.26-.45-1.31.1-2.72 0 0 .84-.28 2.75 1.05A9.32 9.32 0 0 1 12 6.96c.85 0 1.7.12 2.5.35 1.9-1.33 2.74-1.05 2.74-1.05.55 1.41.2 2.46.1 2.72.64.72 1.03 1.64 1.03 2.76 0 3.94-2.34 4.8-4.57 5.06.36.32.68.95.68 1.92v2.77c0 .27.18.59.69.49A10.16 10.16 0 0 0 22 12.26C22 6.58 17.52 2 12 2z"/>
       </svg>
     </button>
-    <button class="rail-button" id="railQQ" data-tip="QQ群"><span class="rail-text">QQ</span></button>
-    <button class="rail-button" id="railLogs" data-tip="帮助 / 日志">?</button>
   </aside>
   <nav class="quick-links" id="quickLinks"></nav>
   <script>
@@ -663,11 +669,9 @@
     const panelTitle = document.querySelector('.panel h2');
     const launcherVersionNode = document.getElementById('launcherVersion');
     const launcherSummaryNode = document.getElementById('launcherSummary');
-    const railSettingsButton = document.getElementById('railSettings');
     const railTapTapButton = document.getElementById('railTapTap');
     const railQQButton = document.getElementById('railQQ');
     const railGithubButton = document.getElementById('railGithub');
-    const railLogsButton = document.getElementById('railLogs');
     const qqCard = document.createElement('div');
     const spaceNode = document.createElement('div');
     const updateNode = document.createElement('div');
@@ -820,6 +824,8 @@
     let installed = false;
     let busy = false;
     let updateAvailable = false;
+    let qqCardPinned = false;
+    let qqHideTimer = null;
 
     const setStatus = (text) => { statusNode.textContent = text; };
     const setProgress = (percent) => {
@@ -842,11 +848,9 @@
       updateButton.disabled = value || !installed || !updateAvailable;
       repairButton.disabled = value || !installed;
       reinstallButton.disabled = value || !installed;
-      railSettingsButton.disabled = value;
       railTapTapButton.disabled = value;
       railQQButton.disabled = value;
       railGithubButton.disabled = value;
-      railLogsButton.disabled = value;
       if (value || !installed) {
         setManageOpen(false);
       }
@@ -965,6 +969,7 @@
         setManageOpen(false);
       }
       if (!event.target.closest('.action-rail') && !event.target.closest('.qq-card')) {
+        qqCardPinned = false;
         qqCard.hidden = true;
       }
     });
@@ -1054,25 +1059,37 @@
       await refresh();
     });
 
-    railSettingsButton.addEventListener('click', () => {
-      setManageOpen(managePanel.hidden);
-    });
-
     railTapTapButton.addEventListener('click', () => {
       window.ZhushenInstaller.openExternal('https://www.taptap.cn/app/513986');
     });
 
+    const showQQCard = () => {
+      window.clearTimeout(qqHideTimer);
+      qqCard.hidden = false;
+    };
+    const scheduleHideQQCard = () => {
+      window.clearTimeout(qqHideTimer);
+      if (qqCardPinned) {
+        return;
+      }
+      qqHideTimer = window.setTimeout(() => {
+        if (!qqCardPinned) {
+          qqCard.hidden = true;
+        }
+      }, 180);
+    };
+    railQQButton.addEventListener('mouseenter', showQQCard);
+    railQQButton.addEventListener('mouseleave', scheduleHideQQCard);
+    qqCard.addEventListener('mouseenter', showQQCard);
+    qqCard.addEventListener('mouseleave', scheduleHideQQCard);
     railQQButton.addEventListener('click', (event) => {
       event.stopPropagation();
-      qqCard.hidden = !qqCard.hidden;
+      qqCardPinned = qqCard.hidden ? true : !qqCardPinned;
+      qqCard.hidden = false;
     });
 
     railGithubButton.addEventListener('click', () => {
       window.ZhushenInstaller.openExternal('https://github.com/Gao2612/zhushen/releases/latest');
-    });
-
-    railLogsButton.addEventListener('click', () => {
-      logsButton.click();
     });
 
     renderNotice();
