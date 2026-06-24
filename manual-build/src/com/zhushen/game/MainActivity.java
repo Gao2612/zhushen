@@ -747,6 +747,29 @@ public class MainActivity extends Activity {
     @Override
     public void onBackPressed() {
         haptic();
+        if (webView != null) {
+            String script = "(function(){"
+                + "try{"
+                + "if(typeof window.ZhushenCloseTopLayer!=='function'){return false;}"
+                + "return !!window.ZhushenCloseTopLayer();"
+                + "}catch(error){return false;}"
+                + "})();";
+            webView.evaluateJavascript(script, new android.webkit.ValueCallback<String>() {
+                @Override
+                public void onReceiveValue(String value) {
+                    if ("true".equals(value)) {
+                        exitTwice = false;
+                        return;
+                    }
+                    continueBackNavigation();
+                }
+            });
+            return;
+        }
+        continueBackNavigation();
+    }
+
+    private void continueBackNavigation() {
         if (webView != null && webView.canGoBack()) {
             webView.goBack();
             exitTwice = false;

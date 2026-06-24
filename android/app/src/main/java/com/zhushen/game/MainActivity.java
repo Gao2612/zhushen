@@ -99,6 +99,30 @@ public final class MainActivity extends ComponentActivity {
     private static final String ORIENTATION_AUTO = "auto";
     private static final String SPLASH_VIDEO_RANDOM = "random";
     private static final String SPLASH_VIDEO_NONE = "none";
+    private static final String[] TAB_PAGES = {
+        "zy.html",
+        "official.html",
+        "gfjs.html",
+        "gfgn.html",
+        "wjec.html",
+        "qyxhhj.html"
+    };
+    private static final String[] TAB_NAMES = {
+        "首页",
+        "官方",
+        "角色",
+        "概念",
+        "二创",
+        "笑话"
+    };
+    private static final String[] TAB_ICONS = {
+        "⌂",
+        "官",
+        "角",
+        "概",
+        "创",
+        "趣"
+    };
     private static final SplashVideo[] SPLASH_VIDEOS = {
         new SplashVideo(
             "atal",
@@ -719,19 +743,12 @@ public final class MainActivity extends ComponentActivity {
         tabs.setVisibility(View.GONE);
         tabs.setPadding(0, dp(2), 0, dp(2));
 
-        String[] names = {"首页", "官方", "角色", "概念", "二创", "笑话"};
-        String[] pages = {
-            "zy.html",
-            "official.html",
-            "gfjs.html",
-            "gfgn.html",
-            "wjec.html",
-            "qyxhhj.html"
-        };
-        String[] icons = {"⌂", "官", "角", "概", "创", "趣"};
-
-        for (int index = 0; index < names.length; index++) {
-            TextView tab = createTab(names[index], icons[index], pages[index]);
+        for (int index = 0; index < TAB_NAMES.length; index++) {
+            TextView tab = createTab(
+                TAB_NAMES[index],
+                TAB_ICONS[index],
+                TAB_PAGES[index]
+            );
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 0,
                 dp(58),
@@ -1594,15 +1611,32 @@ public final class MainActivity extends ComponentActivity {
     }
 
     private void updateSelectedTab(String url) {
+        if (tabBar == null) {
+            return;
+        }
         for (int index = 0; index < tabBar.getChildCount(); index++) {
             TextView tab = (TextView) tabBar.getChildAt(index);
             String page = (String) tab.getTag();
             boolean selected = url.endsWith("/" + page);
-            tab.setTextColor(
-                Color.parseColor(selected ? "#f0d78c" : "#99ffffff")
-            );
-            tab.setSelected(selected);
+            applyTabState(tab, selected);
         }
+    }
+
+    private void updateSelectedTabByPage(String page) {
+        if (tabBar == null || !isKnownPage(page)) {
+            return;
+        }
+        for (int index = 0; index < tabBar.getChildCount(); index++) {
+            TextView tab = (TextView) tabBar.getChildAt(index);
+            applyTabState(tab, page.equals(tab.getTag()));
+        }
+    }
+
+    private void applyTabState(TextView tab, boolean selected) {
+        tab.setTextColor(
+            Color.parseColor(selected ? "#f0d78c" : "#99ffffff")
+        );
+        tab.setSelected(selected);
     }
 
     private boolean showImageActions(View ignoredView) {
@@ -1993,6 +2027,35 @@ public final class MainActivity extends ComponentActivity {
 
     private void handleBackNavigation() {
         haptic();
+        closeWebTopLayerThenContinueBack();
+    }
+
+    private void closeWebTopLayerThenContinueBack() {
+        if (webView == null) {
+            finishAfterSecondBack();
+            return;
+        }
+        String script = "(function(){"
+            + "try{"
+            + "if(typeof window.ZhushenCloseTopLayer!=='function'){return false;}"
+            + "return !!window.ZhushenCloseTopLayer();"
+            + "}catch(error){return false;}"
+            + "})();";
+        webView.evaluateJavascript(script, result -> {
+            if ("true".equals(result)) {
+                exitTwice = false;
+                return;
+            }
+            continueBackAfterWebLayers();
+        });
+    }
+
+    private void continueBackAfterWebLayers() {
+        if (isInternalBrowserVisible()) {
+            closeInternalBrowserLayer();
+            exitTwice = false;
+            return;
+        }
         if (nativeVideoOverlay != null
             && nativeVideoOverlay.getVisibility() == View.VISIBLE) {
             closeNativeVideoOverlay();
@@ -2004,6 +2067,23 @@ public final class MainActivity extends ComponentActivity {
             exitTwice = false;
             return;
         }
+        finishAfterSecondBack();
+    }
+
+    private void closeInternalBrowserLayer() {
+        closeBrowserBarOnly();
+        if (webView == null) {
+            return;
+        }
+        if (webView.canGoBack()) {
+            webView.goBack();
+            return;
+        }
+        showLoading();
+        webView.loadUrl(BASE_URL + HOME_PAGE);
+    }
+
+    private void finishAfterSecondBack() {
         if (exitTwice) {
             finish();
             return;
@@ -2019,6 +2099,11 @@ public final class MainActivity extends ComponentActivity {
             preferences.edit()
                 .putBoolean(PREF_SKIP_DISCLAIMER, skip)
                 .apply();
+        }
+
+        @JavascriptInterface
+        public void setActivePage(String page) {
+            mainHandler.post(() -> updateSelectedTabByPage(page));
         }
 
         @JavascriptInterface

@@ -8,6 +8,15 @@
   var BACKGROUND_MODE_KEY = 'zhushen_desktop_background_mode';
   var REDUCED_MOTION_KEY = 'zhushen_reduced_motion_enabled';
   var MUSIC_PROGRESS_KEY = 'zhushen_background_music_position';
+  var NAV_ITEMS = [
+    {label: '首页', shortLabel: '首页', icon: '⌂', href: 'zy.html'},
+    {label: '官方发布', shortLabel: '官方', icon: '官', href: 'official.html'},
+    {label: '角色', shortLabel: '角色', icon: '角', href: 'gfjs.html'},
+    {label: '概念', shortLabel: '概念', icon: '概', href: 'gfgn.html'},
+    {label: '二创', shortLabel: '二创', icon: '创', href: 'wjec.html'},
+    {label: '笑话', shortLabel: '笑话', icon: '趣', href: 'qyxhhj.html'},
+    {label: '设置', shortLabel: '设置', icon: '设', href: 'settings.html'}
+  ];
   var PAGE_BACKGROUNDS = {
     'zy.html': 'zy/诸神终应知晓概念图.jpg',
     'official.html': 'official-posts/492288870839223557/cover.jpg',
@@ -44,7 +53,7 @@
       'padding-left:env(safe-area-inset-left);',
       'padding-right:env(safe-area-inset-right);}',
       'body.desktop-client{padding-top:44px!important;padding-bottom:0!important;}',
-      'body.desktop-client.has-desktop-dock{padding-bottom:82px!important;}',
+      'body.desktop-client.has-desktop-dock{padding-bottom:88px!important;}',
       'html.app-resuming body{animation:appResumeFade .18s ease both;}',
       '@keyframes appResumeFade{from{opacity:.86}to{opacity:1}}',
       'body.desktop-client .archive-nav{top:44px;}',
@@ -100,15 +109,28 @@
       '.desktop-splash-progress-text{margin-top:12px;color:rgba(238,228,210,.76);',
       'font-size:13px;letter-spacing:.14em;}',
       '.desktop-dock{position:fixed;left:50%;bottom:16px;z-index:90;',
-      'display:flex;gap:8px;align-items:center;transform:translateX(-50%);',
-      'padding:10px;border:1px solid rgba(212,167,84,.22);',
+      'display:flex;gap:6px;align-items:center;transform:translateX(-50%);',
+      'padding:8px;border:1px solid rgba(212,167,84,.22);',
       'border-radius:999px;background:rgba(8,8,12,.82);',
       'box-shadow:0 18px 52px rgba(0,0,0,.46);backdrop-filter:blur(18px);}',
-      '.desktop-dock a{min-width:64px;padding:10px 12px;border-radius:999px;',
-      'color:rgba(238,228,210,.66);text-align:center;text-decoration:none;',
-      'font-size:13px;letter-spacing:.08em;}',
-      '.desktop-dock a.active,.desktop-dock a:hover{color:#100b04;',
-      'background:#f0d78c;}',
+      '.desktop-dock a{position:relative;min-width:46px;padding:7px 9px;',
+      'border:1px solid transparent;border-radius:18px;color:rgba(238,228,210,.56);',
+      'display:grid;place-items:center;gap:2px;text-align:center;text-decoration:none;',
+      'letter-spacing:.06em;transition:background .18s ease,border-color .18s ease,color .18s ease;}',
+      '.desktop-dock a.active,.desktop-dock a:hover{color:#f0d78c;',
+      'border-color:rgba(240,215,140,.32);background:rgba(240,215,140,.1);}',
+      '.desktop-dock .dock-icon{width:22px;height:22px;border-radius:999px;',
+      'display:grid;place-items:center;border:1px solid rgba(238,228,210,.18);',
+      'font-size:12px;font-weight:800;line-height:1;background:rgba(255,255,255,.04);}',
+      '.desktop-dock .dock-label{font-size:10px;line-height:1.15;opacity:.66;}',
+      '.desktop-dock a.active .dock-label,.desktop-dock a:hover .dock-label{opacity:1;}',
+      '.desktop-dock .dock-full-label{position:absolute;left:50%;bottom:calc(100% + 9px);',
+      'padding:6px 10px;border:1px solid rgba(212,167,84,.22);border-radius:999px;',
+      'background:rgba(8,8,12,.92);color:#f0d78c;font-size:12px;white-space:nowrap;',
+      'box-shadow:0 10px 28px rgba(0,0,0,.32);opacity:0;pointer-events:none;',
+      'transform:translate(-50%,5px);transition:opacity .16s ease,transform .16s ease;}',
+      '.desktop-dock a.active .dock-full-label,.desktop-dock a:hover .dock-full-label{',
+      'opacity:1;transform:translate(-50%,0);}',
       '.desktop-titlebar{position:fixed;top:0;left:0;right:0;z-index:100001;',
       'height:44px;display:flex;align-items:center;border-bottom:1px solid rgba(212,167,84,.16);',
       'background:#09090d;color:rgba(238,228,210,.7);-webkit-app-region:drag;}',
@@ -457,24 +479,18 @@
     if (!isDesktopClient() || document.querySelector('.desktop-dock')) {
       return;
     }
-    var items = [
-      ['首页', 'zy.html'],
-      ['官方', 'official.html'],
-      ['角色', 'gfjs.html'],
-      ['概念', 'gfgn.html'],
-      ['二创', 'wjec.html'],
-      ['笑话', 'qyxhhj.html'],
-      ['设置', 'settings.html']
-    ];
-    var current = location.pathname.split('/').pop() || HOME_PAGE;
     var dock = createElement('nav', 'desktop-dock');
     dock.setAttribute('aria-label', '桌面底部导航');
-    items.forEach(function (item) {
-      var link = createElement('a', '', item[0]);
-      link.href = item[1];
-      if (item[1] === current) {
-        link.classList.add('active');
-      }
+    NAV_ITEMS.forEach(function (item) {
+      var link = createElement('a');
+      var icon = createElement('span', 'dock-icon', item.icon);
+      var label = createElement('span', 'dock-label', item.shortLabel);
+      var fullLabel = createElement('span', 'dock-full-label', item.label);
+      link.href = item.href;
+      link.setAttribute('aria-label', item.label);
+      link.appendChild(icon);
+      link.appendChild(label);
+      link.appendChild(fullLabel);
       dock.appendChild(link);
     });
     document.body.appendChild(dock);
@@ -483,6 +499,7 @@
 
   function updateNavigationState() {
     var current = getCurrentPage();
+    document.documentElement.setAttribute('data-current-page', current);
     document.querySelectorAll('.nav-menu a, .desktop-dock a').forEach(function (link) {
       var href = link.getAttribute('href') || '';
       if (!/^[^:#?]+\.html(?:[?#].*)?$/.test(href)) {
@@ -490,6 +507,88 @@
       }
       link.classList.toggle('active', href.split(/[?#]/, 1)[0] === current);
     });
+    syncAndroidNavigationState(current);
+    try {
+      window.dispatchEvent(new CustomEvent('zhushen:navigation-state', {
+        detail: {page: current}
+      }));
+    } catch (error) {}
+  }
+
+  function syncAndroidNavigationState(page) {
+    try {
+      if (!window.Android || typeof window.Android.setActivePage !== 'function') {
+        return;
+      }
+      window.Android.setActivePage(page);
+    } catch (error) {}
+  }
+
+  function closeAppDialog() {
+    var dialog = document.querySelector('.app-dialog-backdrop, #' + DISCLAIMER_ID);
+    if (!dialog) {
+      return false;
+    }
+    dialog.remove();
+    return true;
+  }
+
+  function closeMenuLayer() {
+    var closed = false;
+    document.querySelectorAll('[data-nav-menu].show, .nav-menu.show').forEach(function (menu) {
+      menu.classList.remove('show');
+      closed = true;
+    });
+    var drawer = document.querySelector('.profile-drawer.open, .profile-drawer.is-open');
+    if (drawer) {
+      drawer.classList.remove('open');
+      drawer.classList.remove('is-open');
+      drawer.setAttribute('aria-hidden', 'true');
+      closed = true;
+    }
+    document.querySelectorAll('.profile-drawer-backdrop, .drawer-backdrop').forEach(function (backdrop) {
+      backdrop.remove();
+      closed = true;
+    });
+    return closed;
+  }
+
+  function closeLightboxLayer() {
+    var lightbox = document.querySelector('.lightbox.active');
+    if (!lightbox) {
+      return false;
+    }
+    lightbox.classList.remove('active');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.documentElement.classList.remove('lightbox-open');
+    var image = lightbox.querySelector('img');
+    if (image) {
+      image.removeAttribute('src');
+      image.removeAttribute('alt');
+    }
+    return true;
+  }
+
+  function closeDesktopBrowserLayer() {
+    var browser = document.querySelector('.desktop-browser:not([hidden])');
+    if (!browser) {
+      return false;
+    }
+    browser.hidden = true;
+    return true;
+  }
+
+  function closeTopLayer() {
+    if (closeAppDialog()) {
+      return true;
+    }
+    if (closeMenuLayer()) {
+      return true;
+    }
+    if (closeLightboxLayer()) {
+      return true;
+    }
+    return closeDesktopBrowserLayer();
   }
 
   function installSmoothNavigation() {
@@ -534,6 +633,8 @@
       navigate(location.href, false);
     });
     window.ZhushenNavigate = navigate;
+    window.ZhushenUpdateNavigationState = updateNavigationState;
+    window.ZhushenCloseTopLayer = closeTopLayer;
 
     function navigate(url, pushState) {
       var normalizedUrl = new URL(url, location.href).href;
