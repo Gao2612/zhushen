@@ -98,3 +98,17 @@ gh release view v1.1.1 --json assets
 - 夕岚的“玩家二创一”“玩家二创二”“我的世界”从官方角色页移到二创页的视频区，避免二创内容混入官方角色资料。
 - 角色图集卡片改为“官方图像 / 动图”等资料类型标签，避免每张图重复显示“少女骑士 · 送葬人”“第十三席恶魔”等身份称号。
 - Android 前后台切换新增 `zhushen:pause` / `zhushen:resume` 事件，前端暂停动态背景并在恢复时轻淡入，减少切回应用时的硬顿感。
+
+## 2026-06-23 启动器右侧社交栏简化
+
+- 轻量启动器右侧 rail 只保留 TapTap、QQ 群和 GitHub 三个透明单色 SVG 图标。
+- 删除 rail 上的“设置”和“日志”按钮，避免右侧入口重复承载内部工具。
+- TapTap 与 QQ 群入口不再显示文字标签，改为仅保留图标和悬浮提示。
+- QQ 群信息卡移动到企鹅图标左侧；悬浮可查看，点击可固定或取消固定，点击空白区域可关闭。
+- TapTap 与 GitHub 外链继续沿用现有白名单，无需调整 `launcher-shell/main.js`。
+- 重新打包并同步桌面推荐安装器和 PC 便携版，覆盖 GitHub Release `v1.1.1` 中的安装器、启动器压缩包和更新清单。
+- 对应源码提交：`9fc5cc3 Simplify launcher social rail`。
+- 覆盖资产校验：
+  - `zhushen-installer-1.1.1-win-x64.exe`：`sha256:9282a784b5c6ddb3047eaae4a4b69b49fec66ef3a54536ac9a74687fe355b64a`
+  - `zhushen-launcher-1.1.1-win-x64.zip`：`sha256:f4589c05456a6c6fa64c4f356f6fa2fef15602b5fb9701c698ddc5c7401a24ad`
+  - `zhushen-update-manifest.json`：`sha256:51d231a7ccecd134e46d922b4977cd0f8f4e8e3f8a9d3ec5fd3672336db2442d`
