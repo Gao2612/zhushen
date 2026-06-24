@@ -13,6 +13,25 @@ const pages = [
   { href: 'qyxhhj.html', label: '笑话' }
 ];
 
+const searchSections = [
+  ['全部', '全部'],
+  ['官方', '官方发布'],
+  ['角色', '角色'],
+  ['概念', '概念'],
+  ['二创', '二创'],
+  ['笑话', '笑话']
+];
+
+const favoriteGroups = [
+  '全部收藏',
+  '官方发布',
+  '角色',
+  '概念',
+  '二创',
+  '笑话',
+  '图片'
+];
+
 const characters = [
   {
     key: 'atal',
@@ -496,7 +515,7 @@ const officialPosts = [
   {
     id: 'luo-teacher-goodbye-letter',
     title: 'To 罗老师最可爱的玩家',
-    date: '2024/08',
+    date: '2024/08/02',
     sourceName: '罗老师',
     category: '暂时的终章',
     sourceUrl: '',
@@ -533,7 +552,7 @@ function dateValue(date) {
   const parts = date.split('/').map((part) => Number(part));
   const year = parts[0] || 1970;
   const month = parts[1] || 1;
-  const day = parts[2] || 1;
+  const day = parts[2] || new Date(year, month, 0).getDate();
   return new Date(year, month - 1, day).getTime();
 }
 
@@ -541,7 +560,7 @@ function officialPostsByDate() {
   return officialPosts
     .map((post, index) => ({ post, index }))
     .sort((left, right) => {
-      const dateDiff = dateValue(left.post.date) - dateValue(right.post.date);
+      const dateDiff = dateValue(right.post.date) - dateValue(left.post.date);
       return dateDiff || left.index - right.index;
     })
     .map((entry) => entry.post);
@@ -704,6 +723,11 @@ function nav(active) {
 }
 
 function heroBlock(hero) {
+  const searchFilters = hero.searchScope === 'global'
+    ? `<div class="search-categories" data-search-categories>
+        ${searchSections.map(([label, section], index) => `<button type="button" class="${index === 0 ? 'active' : ''}" data-search-section="${section}">${label}</button>`).join('')}
+      </div>`
+    : '';
   return `<section class="hero-panel">
     <div>
       <p class="eyebrow">${hero.eyebrow}</p>
@@ -715,6 +739,7 @@ function heroBlock(hero) {
         <span>搜索</span>
         <input data-search="${hero.searchScope || 'global'}" type="search" placeholder="搜索角色、作者、资料">
       </label>
+      ${searchFilters}
       <div class="search-results" data-search-results hidden></div>
       <a class="ghost-button" href="settings.html">版权与设置</a>
     </div>
@@ -778,7 +803,23 @@ function homePage() {
       <p>收藏、最近浏览与免责声明偏好仅保存在当前设备。你可以把常看的角色、概念图和二创作品留在这里，方便回溯。</p>
       <button class="wide-button" type="button" data-profile-open>编辑个人档案</button>
     </div>
-    <div class="mini-list" data-favorite-list></div>
+    <div class="personal-archive-panel">
+      <div>
+        <div class="mini-title">
+          <h3>收藏夹</h3>
+          <span>默认分组</span>
+        </div>
+        <div class="favorite-groups" data-favorite-groups></div>
+        <div class="mini-list" data-favorite-list></div>
+      </div>
+      <div>
+        <div class="mini-title">
+          <h3>最近浏览</h3>
+          <span>设置页可关闭记录</span>
+        </div>
+        <div class="mini-list" data-recent-list></div>
+      </div>
+    </div>
   </section>`;
   return htmlPage({
     title: '诸神终应知晓 · 玩家自制史记',
@@ -842,7 +883,10 @@ function officialPostCard(post, index) {
     post.points.join(' '),
     post.media.map((item) => item.label).join(' ')
   ].join(' '))}" data-kind="${post.category}">
-    <div class="official-index">${String(index + 1).padStart(2, '0')}</div>
+    <div class="official-index">
+      <span>${post.date}</span>
+      <small>#${String(index + 1).padStart(2, '0')}</small>
+    </div>
     <div class="official-body">
       <p class="card-meta">${post.date} · ${post.sourceName} · ${post.category}</p>
       <h2>${post.title}</h2>
@@ -1353,6 +1397,22 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   background: transparent;
   font-size: 16px;
 }
+.search-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.search-categories button {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 12px;
+  color: var(--muted);
+  background: rgba(255,255,255,.035);
+}
+.search-categories button.active {
+  color: #100b04;
+  background: var(--gold-soft);
+}
 .search-results {
   display: grid;
   gap: 10px;
@@ -1463,6 +1523,44 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
 }
 .mini-list { display: grid; gap: 8px; }
 .mini-list a { color: var(--muted); border-bottom: 1px solid rgba(255,255,255,.06); padding-bottom: 8px; }
+.personal-archive-panel {
+  display: grid;
+  gap: 22px;
+}
+.mini-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.mini-title h3 {
+  margin: 0;
+  color: var(--gold-soft);
+  font-size: 18px;
+}
+.mini-title span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.favorite-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.favorite-groups button {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 7px 10px;
+  color: var(--muted);
+  background: rgba(255,255,255,.035);
+  font-size: 12px;
+}
+.favorite-groups button.active {
+  color: #100b04;
+  background: var(--gold-soft);
+}
 .dossier { padding: clamp(20px, 4vw, 34px); margin-top: 24px; }
 .dossier blockquote {
   margin: 18px 0 0;
@@ -1479,33 +1577,68 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
 .video-card { position: relative; padding: 12px; border: 1px solid var(--line); border-radius: 18px; background: rgba(0,0,0,.22); }
 .video-card video { width: 100%; border-radius: 14px; background: #000; }
 .official-timeline {
+  position: relative;
   display: grid;
-  gap: 18px;
+  gap: 26px;
   margin-top: 24px;
 }
+.official-timeline::before {
+  content: "";
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  left: 105px;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(240, 215, 140, .48), transparent);
+}
 .official-post {
+  position: relative;
   display: grid;
-  grid-template-columns: 76px 1fr;
-  gap: 18px;
+  grid-template-columns: 128px 1fr;
+  gap: 28px;
+  background: transparent;
+}
+.official-index {
+  position: relative;
+  display: grid;
+  align-content: start;
+  justify-items: end;
+  gap: 7px;
+  padding-top: 22px;
+  color: var(--gold-soft);
+  font-family: Georgia, serif;
+}
+.official-index::after {
+  content: "";
+  position: absolute;
+  top: 29px;
+  right: -39px;
+  width: 13px;
+  height: 13px;
+  border: 2px solid var(--gold-soft);
+  border-radius: 50%;
+  background: #111116;
+  box-shadow: 0 0 0 7px rgba(240, 215, 140, .08);
+}
+.official-index span {
+  font-size: 15px;
+  letter-spacing: .08em;
+  white-space: nowrap;
+}
+.official-index small {
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: .16em;
+}
+.official-body {
+  min-width: 0;
+  padding: 24px;
   border: 1px solid var(--line);
   border-radius: 26px;
   background:
     linear-gradient(135deg, rgba(212, 167, 84, .1), transparent 42%),
     var(--panel);
   box-shadow: 0 18px 50px rgba(0,0,0,.25);
-  overflow: hidden;
-}
-.official-index {
-  display: grid;
-  place-items: center;
-  color: rgba(16, 11, 4, .9);
-  background: var(--gold-soft);
-  font-family: Georgia, serif;
-  font-size: 26px;
-  font-weight: 700;
-}
-.official-body {
-  padding: 24px 24px 24px 0;
 }
 .official-body h2 {
   margin: 8px 0 12px;
@@ -1871,8 +2004,21 @@ html.lightbox-open, html.lightbox-open body { overflow: hidden; }
   .desktop-combo { grid-template-columns: 1fr; }
   .segmented-actions { grid-auto-flow: row; }
   .orientation-options, .video-options, .audio-options { grid-template-columns: 1fr; }
-  .official-post { grid-template-columns: 1fr; }
-  .official-index { min-height: 58px; }
+  .official-timeline::before { left: 18px; }
+  .official-post {
+    grid-template-columns: 1fr;
+    padding-left: 38px;
+  }
+  .official-index {
+    justify-items: start;
+    min-height: 0;
+    padding-top: 0;
+  }
+  .official-index::after {
+    top: 5px;
+    left: -26px;
+    right: auto;
+  }
   .official-body { padding: 22px; }
 }
 @media (max-width: 520px) {
@@ -1893,6 +2039,9 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
 
   var favoritesKey = 'zhushen:favorites:v1';
   var recentKey = 'zhushen:recent:v1';
+  var favoriteGroupKey = 'zhushen:favorite-group:v1';
+  var searchSections = ${JSON.stringify(searchSections)};
+  var favoriteGroups = ${JSON.stringify(favoriteGroups)};
   var globalSearchIndex = ${JSON.stringify(buildSearchIndex())};
 
   function readList(key) {
@@ -1919,19 +2068,70 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
     syncFavorites();
   }
 
+  function favoriteGroupForId(id) {
+    if (id.indexOf('official-media:') === 0 || id.indexOf('image:') === 0 || id.indexOf('lightbox:') === 0) {
+      return '图片';
+    }
+    if (id.indexOf('official:') === 0) {
+      return '官方发布';
+    }
+    if (id.indexOf('character:') === 0) {
+      return '角色';
+    }
+    if (id.indexOf('concept:') === 0) {
+      return '概念';
+    }
+    if (id.indexOf('fanart:') === 0) {
+      return '二创';
+    }
+    if (id.indexOf('joke:') === 0) {
+      return '笑话';
+    }
+    return '全部收藏';
+  }
+
+  function getActiveFavoriteGroup() {
+    var group = localStorage.getItem(favoriteGroupKey) || '全部收藏';
+    return favoriteGroups.indexOf(group) >= 0 ? group : '全部收藏';
+  }
+
+  function setActiveFavoriteGroup(group) {
+    localStorage.setItem(favoriteGroupKey, favoriteGroups.indexOf(group) >= 0 ? group : '全部收藏');
+  }
+
+  function filteredFavorites(list, group) {
+    if (group === '全部收藏') {
+      return list;
+    }
+    return list.filter(function (item) {
+      return favoriteGroupForId(item.id || '') === group;
+    });
+  }
+
   function syncFavorites() {
     var list = readList(favoritesKey);
     var ids = list.map(function (item) { return item.id; });
+    var activeGroup = getActiveFavoriteGroup();
     document.querySelectorAll('[data-favorite]').forEach(function (button) {
       button.classList.toggle('active', ids.indexOf(button.dataset.favorite) >= 0);
       button.textContent = ids.indexOf(button.dataset.favorite) >= 0 ? '已收藏' : '收藏';
     });
+    document.querySelectorAll('[data-favorite-groups]').forEach(function (node) {
+      node.innerHTML = favoriteGroups.map(function (group) {
+        return '<button type="button" class="' + (group === activeGroup ? 'active' : '') + '" data-favorite-group="' + group + '">' + group + '</button>';
+      }).join('');
+    });
     document.querySelectorAll('[data-favorite-list]').forEach(function (node) {
+      var shownList = filteredFavorites(list, activeGroup);
       if (list.length === 0) {
         node.innerHTML = '<p>暂无收藏。点资料卡片里的收藏按钮后，会在这里显示。</p>';
         return;
       }
-      node.innerHTML = list.slice(0, 6).map(function (item) {
+      if (shownList.length === 0) {
+        node.innerHTML = '<p>当前分组暂无收藏。</p>';
+        return;
+      }
+      node.innerHTML = shownList.slice(0, 8).map(function (item) {
         return '<a href="' + item.href + '">' + item.title + '</a>';
       }).join('');
     });
@@ -1941,6 +2141,12 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
     document.addEventListener('click', function (event) {
       var button = event.target.closest('[data-favorite]');
       if (!button) {
+        var groupButton = event.target.closest('[data-favorite-group]');
+        if (!groupButton) {
+          return;
+        }
+        setActiveFavoriteGroup(groupButton.dataset.favoriteGroup);
+        syncFavorites();
         return;
       }
       event.preventDefault();
@@ -1956,43 +2162,70 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
 
   function installSearch() {
     document.querySelectorAll('[data-search]').forEach(function (input) {
-      input.addEventListener('input', function () {
-        var keyword = input.value.trim().toLowerCase();
-        var results = input.closest('.hero-actions')
-          ? input.closest('.hero-actions').querySelector('[data-search-results]')
-          : null;
-        var visibleCount = 0;
-        document.querySelectorAll('[data-search-text]').forEach(function (node) {
-          var text = node.dataset.searchText.toLowerCase();
-          var matched = !keyword || text.indexOf(keyword) >= 0;
-          node.classList.toggle('is-hidden', !matched);
-          if (matched && keyword) {
-            visibleCount += 1;
-          }
+      if (input.dataset.searchReady === 'true') {
+        return;
+      }
+      input.dataset.searchReady = 'true';
+      var actions = input.closest('.hero-actions');
+      if (actions && input.dataset.search === 'global') {
+        actions.querySelectorAll('[data-search-section]').forEach(function (button) {
+          button.addEventListener('click', function () {
+            actions.querySelectorAll('[data-search-section]').forEach(function (item) {
+              item.classList.remove('active');
+            });
+            button.classList.add('active');
+            runSearch(input);
+          });
         });
-        if (!results) {
-          return;
-        }
-        if (!keyword) {
-          results.hidden = true;
-          results.innerHTML = '';
-          return;
-        }
-        if (input.dataset.search === 'global') {
-          renderGlobalSearchResults(results, keyword);
-          return;
-        }
-        results.hidden = false;
-        results.innerHTML = visibleCount > 0
-          ? '<p class="search-empty">当前页面命中 ' + visibleCount + ' 条资料。</p>'
-          : '<p class="search-empty">当前页面没有找到匹配内容。</p>';
+      }
+      input.addEventListener('input', function () {
+        runSearch(input);
       });
     });
   }
 
-  function renderGlobalSearchResults(results, keyword) {
+  function getActiveSearchSection(input) {
+    var actions = input.closest('.hero-actions');
+    var active = actions ? actions.querySelector('[data-search-section].active') : null;
+    return active ? active.dataset.searchSection : '全部';
+  }
+
+  function runSearch(input) {
+    var keyword = input.value.trim().toLowerCase();
+    var results = input.closest('.hero-actions')
+      ? input.closest('.hero-actions').querySelector('[data-search-results]')
+      : null;
+    var visibleCount = 0;
+    document.querySelectorAll('[data-search-text]').forEach(function (node) {
+      var text = node.dataset.searchText.toLowerCase();
+      var matched = !keyword || text.indexOf(keyword) >= 0;
+      node.classList.toggle('is-hidden', !matched);
+      if (matched && keyword) {
+        visibleCount += 1;
+      }
+    });
+    if (!results) {
+      return;
+    }
+    if (!keyword) {
+      results.hidden = true;
+      results.innerHTML = '';
+      return;
+    }
+    if (input.dataset.search === 'global') {
+      renderGlobalSearchResults(results, keyword, getActiveSearchSection(input));
+      return;
+    }
+    results.hidden = false;
+    results.innerHTML = visibleCount > 0
+      ? '<p class="search-empty">当前页面命中 ' + visibleCount + ' 条资料。</p>'
+      : '<p class="search-empty">当前页面没有找到匹配内容。</p>';
+  }
+
+  function renderGlobalSearchResults(results, keyword, section) {
     var hits = globalSearchIndex.filter(function (item) {
-      return item.text.toLowerCase().indexOf(keyword) >= 0;
+      var sectionMatched = section === '全部' || item.section === section;
+      return sectionMatched && item.text.toLowerCase().indexOf(keyword) >= 0;
     }).slice(0, 10);
     results.hidden = false;
     if (hits.length === 0) {
@@ -2006,6 +2239,24 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
         + '<p>' + item.desc + '</p>'
         + '</a>';
     }).join('');
+  }
+
+  function syncRecent() {
+    var enabled = localStorage.getItem('zhushen_recent_history_enabled') !== 'false';
+    var list = readList(recentKey);
+    document.querySelectorAll('[data-recent-list]').forEach(function (node) {
+      if (!enabled) {
+        node.innerHTML = '<p>最近浏览记录已关闭，可在设置页重新开启。</p>';
+        return;
+      }
+      if (list.length === 0) {
+        node.innerHTML = '<p>暂无最近浏览。打开几个档案页面后会显示在这里。</p>';
+        return;
+      }
+      node.innerHTML = list.slice(0, 6).map(function (item) {
+        return '<a href="' + item.href + '">' + item.title + '</a>';
+      }).join('');
+    });
   }
 
   function installFilters() {
@@ -2310,6 +2561,7 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
 
     function setRecentHistoryEnabled(enabled) {
       localStorage.setItem('zhushen_recent_history_enabled', String(enabled));
+      syncRecent();
     }
 
     function syncDisplayHistoryControls() {
@@ -2403,6 +2655,7 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
 
   function recordRecent() {
     if (localStorage.getItem('zhushen_recent_history_enabled') === 'false') {
+      syncRecent();
       return;
     }
     var title = document.title;
@@ -2410,6 +2663,7 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
     var list = readList(recentKey).filter(function (item) { return item.href !== href; });
     list.unshift({title: title, href: href});
     writeList(recentKey, list);
+    syncRecent();
   }
 
   function refreshPage() {
@@ -2418,6 +2672,7 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
     installNativeVideoBridge();
     installSettings();
     syncFavorites();
+    syncRecent();
     recordRecent();
   }
 

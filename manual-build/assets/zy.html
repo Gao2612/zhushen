@@ -34,6 +34,9 @@
         <span>搜索</span>
         <input data-search="global" type="search" placeholder="搜索角色、作者、资料">
       </label>
+      <div class="search-categories" data-search-categories>
+        <button type="button" class="active" data-search-section="全部">全部</button><button type="button" class="" data-search-section="官方发布">官方</button><button type="button" class="" data-search-section="角色">角色</button><button type="button" class="" data-search-section="概念">概念</button><button type="button" class="" data-search-section="二创">二创</button><button type="button" class="" data-search-section="笑话">笑话</button>
+      </div>
       <div class="search-results" data-search-results hidden></div>
       <a class="ghost-button" href="settings.html">版权与设置</a>
     </div>
@@ -117,7 +120,23 @@
       <p>收藏、最近浏览与免责声明偏好仅保存在当前设备。你可以把常看的角色、概念图和二创作品留在这里，方便回溯。</p>
       <button class="wide-button" type="button" data-profile-open>编辑个人档案</button>
     </div>
-    <div class="mini-list" data-favorite-list></div>
+    <div class="personal-archive-panel">
+      <div>
+        <div class="mini-title">
+          <h3>收藏夹</h3>
+          <span>默认分组</span>
+        </div>
+        <div class="favorite-groups" data-favorite-groups></div>
+        <div class="mini-list" data-favorite-list></div>
+      </div>
+      <div>
+        <div class="mini-title">
+          <h3>最近浏览</h3>
+          <span>设置页可关闭记录</span>
+        </div>
+        <div class="mini-list" data-recent-list></div>
+      </div>
+    </div>
   </section>
   </main>
   <footer class="archive-footer">

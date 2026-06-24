@@ -129,6 +129,10 @@ const enhancements = readFileSync(
   join(assetsRoot, 'app-enhancements.js'),
   'utf8'
 );
+const appUi = readFileSync(join(assetsRoot, 'app-ui.js'), 'utf8');
+const appTheme = readFileSync(join(assetsRoot, 'lib', 'app-theme.css'), 'utf8');
+const homePage = readFileSync(join(assetsRoot, 'zy.html'), 'utf8');
+const officialPage = readFileSync(join(assetsRoot, 'official.html'), 'utf8');
 const enhancementRequirements = [
   ['档案抽屉', 'installProfileDrawer()'],
   ['局部切页', 'installSmoothNavigation()'],
@@ -195,6 +199,31 @@ if (!activity.includes('window.ZhushenNavigate')) {
 }
 if (!enhancements.includes('window.ZhushenNavigate = navigate')) {
   recordFailure('前端未暴露 Android 可调用的局部切页 API：window.ZhushenNavigate');
+}
+
+if (!homePage.includes('data-search-section="官方发布"')) {
+  recordFailure('首页全站搜索缺少官方分类筛选');
+}
+if (!appUi.includes('renderGlobalSearchResults(results, keyword, section)')) {
+  recordFailure('全站搜索结果未按 section 分类过滤');
+}
+if (!homePage.includes('data-favorite-groups')) {
+  recordFailure('首页我的档案缺少收藏默认分组入口');
+}
+if (!appUi.includes('favoriteGroupForId(id)')) {
+  recordFailure('收藏夹缺少默认分组归类逻辑');
+}
+if (!homePage.includes('data-recent-list')) {
+  recordFailure('首页我的档案缺少最近浏览列表入口');
+}
+if (!appUi.includes('function syncRecent()')) {
+  recordFailure('最近浏览缺少首页同步渲染逻辑');
+}
+if (!appTheme.includes('.official-timeline::before')) {
+  recordFailure('官方动态缺少左侧时间轴线样式');
+}
+if (!officialPage.includes('<span>2024/08/02</span>')) {
+  recordFailure('官方动态未显示“暂时的终章”的准确日期：2024/08/02');
 }
 
 if (failures.length > 0) {
