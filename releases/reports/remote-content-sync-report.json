@@ -1,39 +1,39 @@
 {
-  "generatedAt": "2026-06-25T08:20:41.353Z",
+  "generatedAt": "2026-06-25T15:35:27.969Z",
   "status": "ready-for-desktop-pilot",
   "manifest": {
-    "generatedAt": "2026-06-25T08:20:41.353Z",
+    "generatedAt": "2026-06-25T15:35:27.969Z",
     "contentVersion": "1.1.1-20260625",
     "compatibleClientVersion": "1.1.1",
     "minClientVersion": "1.1.1",
     "packageFile": "content-bundle.json",
-    "packageSha256": "4dad91118957ffb9ab1b186bb082b61d6ab32afb5f187bbd85e190da95d9bbbd",
+    "packageSha256": "899e558a4f7b659ef703a4a97f575193fdcad738aee1f89f886ac1f91449d881",
     "fileCount": 18,
     "files": [
       {
         "path": "characters.json",
-        "size": 4019,
-        "sha256": "6aedd94f3df3f16ac8e7eddc94fc63344e226a1667689222f5b65b8fe11c7bab"
+        "size": 4146,
+        "sha256": "f6c5d5b3a7d3126f7d79c4ea721bbaf064c86ef2f37907836dda91d7c1e1327c"
       },
       {
         "path": "concepts.json",
-        "size": 3525,
-        "sha256": "e5b19787a5acb73ffebe10e5162c125ccaafa59adb8177d41bdf7d87f872ab8d"
+        "size": 3627,
+        "sha256": "7692c84de91e3792c6ac0d2b88689a85813a30d96d6f00ee3e09c9d496695091"
       },
       {
         "path": "fan-creations.json",
-        "size": 21698,
-        "sha256": "233abfa135503d3ab18fd79721b0b507be7dc6b7abba980886726c00820b2984"
+        "size": 22370,
+        "sha256": "4d98aee87048e81288ff65934d87c4817ca9b2c4e9e1979ef141205e0f362867"
       },
       {
         "path": "jokes.json",
-        "size": 2184,
-        "sha256": "e35db250d98d5dea38a374a506d57ce6a7926a5f573cb96eb28b0ee85579ff17"
+        "size": 2256,
+        "sha256": "70daf3e1b9379e5202bf7a3cf102ee7c6fad7d78e464e1b2322f151b2a97317d"
       },
       {
         "path": "navigation.json",
-        "size": 846,
-        "sha256": "d2e41a2118c600b2181b2540d98014a43f1008c179b7e497e8098b60fc7b7926"
+        "size": 909,
+        "sha256": "16729adb1a5f0269d306425a4e447ebd063282f56a93050ddee9eb92f404f5aa"
       },
       {
         "path": "official-posts/492288870839223557.md",
@@ -97,8 +97,8 @@
       },
       {
         "path": "splash-videos.json",
-        "size": 322,
-        "sha256": "bd15e355ce9354a0f14d6359f1d75d5c9fc32fe263744e2585de8d37d3f6c069"
+        "size": 352,
+        "sha256": "57edd6014ca58e30c1250627d86444ab3f9911b7cab8331a6e5fbc9384ac05c4"
       }
     ]
   },

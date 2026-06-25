@@ -242,6 +242,63 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   font-size: 12px;
 }
 .card-body { padding: 16px; }
+.demo-version-grid {
+  grid-template-columns: minmax(0, 520px);
+}
+.demo-version-card > a {
+  min-height: 260px;
+  display: grid;
+  align-content: stretch;
+}
+.demo-card-visual {
+  min-height: 178px;
+  display: grid;
+  place-items: center;
+  padding: 26px;
+  color: var(--gold-soft);
+  background:
+    radial-gradient(circle at 28% 20%, rgba(244, 214, 128, .18), transparent 34%),
+    linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+  border-bottom: 1px solid rgba(212,167,84,.16);
+}
+.demo-card-visual span {
+  display: grid;
+  place-items: center;
+  width: min(58vw, 210px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(244,214,128,.32);
+  border-radius: 50%;
+  background: rgba(0,0,0,.22);
+  font-size: clamp(42px, 8vw, 72px);
+  font-family: Georgia, serif;
+  letter-spacing: .08em;
+  text-indent: .08em;
+}
+.demo-version-card .card-body {
+  min-height: 118px;
+}
+.demo-plan-grid {
+  margin-top: 28px;
+}
+.demo-checklist {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+.demo-checklist label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid rgba(212,167,84,.14);
+  border-radius: 14px;
+  color: var(--muted);
+  background: rgba(255,255,255,.025);
+}
+.demo-checklist input {
+  accent-color: var(--gold);
+}
 .card-meta { margin-bottom: 8px; color: var(--gold)!important; font-size: 12px; }
 .fav-button, .lightbox-action {
   border: 1px solid var(--line);

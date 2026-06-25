@@ -824,6 +824,111 @@ function settingsPage() {
   });
 }
 
+function ueDemoPage() {
+  const checklist = [
+    'UE5 工程创建完成',
+    '项目目录结构创建完成',
+    'L_v01_Startup 场景创建完成',
+    '灰盒地面创建完成',
+    '占位角色创建完成',
+    '基础相机创建完成',
+    '基础灯光创建完成',
+    'Windows 启动地图配置完成',
+    'Android 启动地图配置完成',
+    'Android 横屏配置完成',
+    'Windows Development 包可运行',
+    'Windows Shipping 包可运行',
+    'Android Development APK 可安装运行',
+    'Android Shipping APK 可安装运行',
+    'Windows 包体大小已记录',
+    'Android 包体大小已记录',
+    'Windows 启动时间已记录',
+    'Android 启动时间已记录',
+    'Windows 帧率已记录',
+    'Android 帧率已记录',
+    'v0.1 构建报告完成'
+  ];
+  const body = `<section class="section-head">
+    <p class="eyebrow">UE5 Demo Roadmap</p>
+    <h2>v0.1 Environment Verification</h2>
+    <p>这一页作为底部 Tab 的独立卡片入口，只展示 UE5 动作 Demo 的第一阶段环境验证状态，不混入现有资料归档。</p>
+  </section>
+  <section class="feature-grid demo-version-grid">
+    <article class="archive-card demo-version-card" data-search-text="UE5 v0.1 Environment Verification Windows Android 横屏 打包 环境验证">
+      <a href="#v01-build-report">
+        <div class="demo-card-visual">
+          <span>UE5</span>
+          <strong>v0.1</strong>
+        </div>
+        <span class="card-kind">环境验证</span>
+      </a>
+      <div class="card-body">
+        <p class="card-meta">Environment Verification</p>
+        <h3>UE5 双端 Demo · v0.1</h3>
+        <p>确认 UE5 项目基础链路可用：Windows 打包、Android 打包、横屏配置、基础场景加载、启动性能和包体统计。</p>
+      </div>
+    </article>
+  </section>
+  <section class="settings-grid demo-plan-grid" id="v01-build-report">
+    <article class="settings-card">
+      <p class="eyebrow">Scope</p>
+      <h2>本阶段只验证环境</h2>
+      <p class="settings-note">不做战斗、不做技能、不做 Boss、不做正式 UI、不做正式角色美术、不做复杂特效、不做资料馆联动。v0.1 只回答一个问题：这个 UE5 项目能不能稳定跑起来并打成包。</p>
+    </article>
+    <article class="settings-card">
+      <p class="eyebrow">Project</p>
+      <h2>工程骨架</h2>
+      <p class="settings-note">仓库内保存 UE5 工程骨架：<code>ue5/ZhushenActionDemo</code>。G 盘工作目录同步到 <code>G:\\ZhushenUE5Demo</code>，方便后续在 Unreal Editor 中打开。</p>
+    </article>
+    <article class="settings-card">
+      <p class="eyebrow">Windows</p>
+      <h2>Windows 打包目标</h2>
+      <p class="settings-note">Shipping、Win64、Pak/IoStore、关闭 Debug Files，输出目录建议为 <code>Builds/Windows/v0.1/</code>。</p>
+    </article>
+    <article class="settings-card">
+      <p class="eyebrow">Android</p>
+      <h2>Android 横屏目标</h2>
+      <p class="settings-note">包名 <code>com.zhushen.demo</code>，应用名“诸神终应知晓 Demo”，横屏运行，Texture Format 优先 ASTC，v0.1 可先将 Game Data 放入 APK。</p>
+    </article>
+  </section>
+  <section class="scroll-panel">
+    <p class="eyebrow">Checklist</p>
+    <h2>v0.1 验收清单</h2>
+    <div class="demo-checklist">
+      ${checklist.map((item) => `<label><input type="checkbox" disabled> <span>${item}</span></label>`).join('')}
+    </div>
+  </section>
+  <section class="split-panel">
+    <div>
+      <p class="eyebrow">Build Report</p>
+      <h2>构建报告位置</h2>
+      <p>当前机器未检测到 UE5、RunUAT、adb、java，因此本次先提交可打开的 UE5 工程骨架、配置和报告模板。实际 Windows exe / Android APK 需要在安装 UE5 与 Android 工具链后执行。</p>
+    </div>
+    <div class="personal-archive-panel">
+      <div>
+        <div class="mini-title">
+          <h3>报告文件</h3>
+          <span>BuildReports</span>
+        </div>
+        <div class="mini-list">
+          <a href="../../ue5/ZhushenActionDemo/BuildReports/v0.1-build-report.md">ue5/ZhushenActionDemo/BuildReports/v0.1-build-report.md</a>
+        </div>
+      </div>
+    </div>
+  </section>`;
+  return htmlPage({
+    title: 'UE5 Demo v0.1 · 诸神终应知晓',
+    active: 'UE5 Demo',
+    hero: {
+      eyebrow: 'Playable Demo Track',
+      title: 'UE5 Demo<br>环境验证',
+      desc: 'Windows 类 LOL 操作、Android 点划式触控与 Windows 触控点划模式的第一阶段工程验证入口。',
+      searchScope: 'page'
+    },
+    body
+  });
+}
+
 function slug(value) {
   return Buffer.from(value).toString('hex');
 }
@@ -834,6 +939,7 @@ writeFileSync(join(assetsRoot, 'gfjs.html'), charactersPage());
 writeFileSync(join(assetsRoot, 'gfgn.html'), conceptsPage());
 writeFileSync(join(assetsRoot, 'wjec.html'), fanArtPage());
 writeFileSync(join(assetsRoot, 'qyxhhj.html'), jokesPage());
+writeFileSync(join(assetsRoot, 'ue-demo.html'), ueDemoPage());
 writeFileSync(join(assetsRoot, 'settings.html'), settingsPage());
 
 writeFileSync(join(assetsRoot, 'lib', 'app-theme.css'), `:root {
@@ -1080,6 +1186,63 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   font-size: 12px;
 }
 .card-body { padding: 16px; }
+.demo-version-grid {
+  grid-template-columns: minmax(0, 520px);
+}
+.demo-version-card > a {
+  min-height: 260px;
+  display: grid;
+  align-content: stretch;
+}
+.demo-card-visual {
+  min-height: 178px;
+  display: grid;
+  place-items: center;
+  padding: 26px;
+  color: var(--gold-soft);
+  background:
+    radial-gradient(circle at 28% 20%, rgba(244, 214, 128, .18), transparent 34%),
+    linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+  border-bottom: 1px solid rgba(212,167,84,.16);
+}
+.demo-card-visual span {
+  display: grid;
+  place-items: center;
+  width: min(58vw, 210px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(244,214,128,.32);
+  border-radius: 50%;
+  background: rgba(0,0,0,.22);
+  font-size: clamp(42px, 8vw, 72px);
+  font-family: Georgia, serif;
+  letter-spacing: .08em;
+  text-indent: .08em;
+}
+.demo-version-card .card-body {
+  min-height: 118px;
+}
+.demo-plan-grid {
+  margin-top: 28px;
+}
+.demo-checklist {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+.demo-checklist label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid rgba(212,167,84,.14);
+  border-radius: 14px;
+  color: var(--muted);
+  background: rgba(255,255,255,.025);
+}
+.demo-checklist input {
+  accent-color: var(--gold);
+}
 .card-meta { margin-bottom: 8px; color: var(--gold)!important; font-size: 12px; }
 .fav-button, .lightbox-action {
   border: 1px solid var(--line);

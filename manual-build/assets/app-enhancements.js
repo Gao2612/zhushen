@@ -15,6 +15,7 @@
     {label: '概念', shortLabel: '概念', icon: '概', href: 'gfgn.html'},
     {label: '二创', shortLabel: '二创', icon: '创', href: 'wjec.html'},
     {label: '笑话', shortLabel: '笑话', icon: '趣', href: 'qyxhhj.html'},
+    {label: 'UE5 Demo', shortLabel: 'Demo', icon: 'UE', href: 'ue-demo.html'},
     {label: '设置', shortLabel: '设置', icon: '设', href: 'settings.html'}
   ];
   var PAGE_BACKGROUNDS = {
@@ -24,6 +25,7 @@
     'gfgn.html': 'zy/诸神终应知晓概念图.jpg',
     'wjec.html': 'zy/玩家二创.jpg',
     'qyxhhj.html': 'zy/群友笑话合集.jpg',
+    'ue-demo.html': 'splash.jpg',
     'settings.html': 'splash.jpg'
   };
 
@@ -605,6 +607,7 @@
       'gfgn.html',
       'wjec.html',
       'qyxhhj.html',
+      'ue-demo.html',
       'settings.html'
     ];
     var curtain = null;

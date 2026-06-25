@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UE5 Demo v0.1 · 诸神终应知晓</title>
+  <link href="lib/font-awesome.css" rel="stylesheet">
+  <link href="lib/app-theme.css" rel="stylesheet">
+</head>
+<body class="">
+  <nav class="archive-nav">
+    <div class="brand">
+      <button class="brand-avatar" type="button" data-profile-open title="个人档案" aria-label="打开个人档案">
+        <img src="logo/logo.png" alt="">
+      </button>
+      <a class="brand-copy" href="zy.html" aria-label="诸神终应知晓首页">
+        <strong>诸神终应知晓</strong><small>玩家自制史记</small>
+      </a>
+    </div>
+    <button class="nav-toggle" data-nav-toggle aria-label="打开导航">☰</button>
+    <ul class="nav-menu" data-nav-menu>
+      <li><a class="" href="zy.html">首页</a></li><li><a class="" href="official.html">官方发布</a></li><li><a class="" href="gfjs.html">角色</a></li><li><a class="" href="gfgn.html">概念</a></li><li><a class="" href="wjec.html">二创</a></li><li><a class="" href="qyxhhj.html">笑话</a></li>
+    </ul>
+  </nav>
+  <main class="app-shell">
+    <section class="hero-panel">
+    <div>
+      <p class="eyebrow">Playable Demo Track</p>
+      <h1>UE5 Demo<br>环境验证</h1>
+      <p class="hero-desc">Windows 类 LOL 操作、Android 点划式触控与 Windows 触控点划模式的第一阶段工程验证入口。</p>
+    </div>
+    <div class="hero-actions">
+      <label class="search-box">
+        <span>搜索</span>
+        <input data-search="page" type="search" placeholder="搜索角色、作者、资料">
+      </label>
+      
+      <div class="search-results" data-search-results hidden></div>
+      <a class="ghost-button" href="settings.html">版权与设置</a>
+    </div>
+  </section>
+    <section class="section-head">
+    <p class="eyebrow">UE5 Demo Roadmap</p>
+    <h2>v0.1 Environment Verification</h2>
+    <p>这一页作为底部 Tab 的独立卡片入口，只展示 UE5 动作 Demo 的第一阶段环境验证状态，不混入现有资料归档。</p>
+  </section>
+  <section class="feature-grid demo-version-grid">
+    <article class="archive-card demo-version-card" data-search-text="UE5 v0.1 Environment Verification Windows Android 横屏 打包 环境验证">
+      <a href="#v01-build-report">
+        <div class="demo-card-visual">
+          <span>UE5</span>
+          <strong>v0.1</strong>
+        </div>
+        <span class="card-kind">环境验证</span>
+      </a>
+      <div class="card-body">
+        <p class="card-meta">Environment Verification</p>
+        <h3>UE5 双端 Demo · v0.1</h3>
+        <p>确认 UE5 项目基础链路可用：Windows 打包、Android 打包、横屏配置、基础场景加载、启动性能和包体统计。</p>
+      </div>
+    </article>
+  </section>
+  <section class="settings-grid demo-plan-grid" id="v01-build-report">
+    <article class="settings-card">
+      <p class="eyebrow">Scope</p>
+      <h2>本阶段只验证环境</h2>
+      <p class="settings-note">不做战斗、不做技能、不做 Boss、不做正式 UI、不做正式角色美术、不做复杂特效、不做资料馆联动。v0.1 只回答一个问题：这个 UE5 项目能不能稳定跑起来并打成包。</p>
+    </article>
+    <article class="settings-card">
+      <p class="eyebrow">Project</p>
+      <h2>工程骨架</h2>
+      <p class="settings-note">仓库内保存 UE5 工程骨架：<code>ue5/ZhushenActionDemo</code>。G 盘工作目录同步到 <code>G:\ZhushenUE5Demo</code>，方便后续在 Unreal Editor 中打开。</p>
+    </article>
+    <article class="settings-card">
+      <p class="eyebrow">Windows</p>
+      <h2>Windows 打包目标</h2>
+      <p class="settings-note">Shipping、Win64、Pak/IoStore、关闭 Debug Files，输出目录建议为 <code>Builds/Windows/v0.1/</code>。</p>
+    </article>
+    <article class="settings-card">
+      <p class="eyebrow">Android</p>
+      <h2>Android 横屏目标</h2>
+      <p class="settings-note">包名 <code>com.zhushen.demo</code>，应用名“诸神终应知晓 Demo”，横屏运行，Texture Format 优先 ASTC，v0.1 可先将 Game Data 放入 APK。</p>
+    </article>
+  </section>
+  <section class="scroll-panel">
+    <p class="eyebrow">Checklist</p>
+    <h2>v0.1 验收清单</h2>
+    <div class="demo-checklist">
+      <label><input type="checkbox" disabled> <span>UE5 工程创建完成</span></label><label><input type="checkbox" disabled> <span>项目目录结构创建完成</span></label><label><input type="checkbox" disabled> <span>L_v01_Startup 场景创建完成</span></label><label><input type="checkbox" disabled> <span>灰盒地面创建完成</span></label><label><input type="checkbox" disabled> <span>占位角色创建完成</span></label><label><input type="checkbox" disabled> <span>基础相机创建完成</span></label><label><input type="checkbox" disabled> <span>基础灯光创建完成</span></label><label><input type="checkbox" disabled> <span>Windows 启动地图配置完成</span></label><label><input type="checkbox" disabled> <span>Android 启动地图配置完成</span></label><label><input type="checkbox" disabled> <span>Android 横屏配置完成</span></label><label><input type="checkbox" disabled> <span>Windows Development 包可运行</span></label><label><input type="checkbox" disabled> <span>Windows Shipping 包可运行</span></label><label><input type="checkbox" disabled> <span>Android Development APK 可安装运行</span></label><label><input type="checkbox" disabled> <span>Android Shipping APK 可安装运行</span></label><label><input type="checkbox" disabled> <span>Windows 包体大小已记录</span></label><label><input type="checkbox" disabled> <span>Android 包体大小已记录</span></label><label><input type="checkbox" disabled> <span>Windows 启动时间已记录</span></label><label><input type="checkbox" disabled> <span>Android 启动时间已记录</span></label><label><input type="checkbox" disabled> <span>Windows 帧率已记录</span></label><label><input type="checkbox" disabled> <span>Android 帧率已记录</span></label><label><input type="checkbox" disabled> <span>v0.1 构建报告完成</span></label>
+    </div>
+  </section>
+  <section class="split-panel">
+    <div>
+      <p class="eyebrow">Build Report</p>
+      <h2>构建报告位置</h2>
+      <p>当前机器未检测到 UE5、RunUAT、adb、java，因此本次先提交可打开的 UE5 工程骨架、配置和报告模板。实际 Windows exe / Android APK 需要在安装 UE5 与 Android 工具链后执行。</p>
+    </div>
+    <div class="personal-archive-panel">
+      <div>
+        <div class="mini-title">
+          <h3>报告文件</h3>
+          <span>BuildReports</span>
+        </div>
+        <div class="mini-list">
+          <a href="../../ue5/ZhushenActionDemo/BuildReports/v0.1-build-report.md">ue5/ZhushenActionDemo/BuildReports/v0.1-build-report.md</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  </main>
+  <footer class="archive-footer">
+    <p>本应用为玩家整理的非商业纪念资料集，不代表官方立场或官方消息。</p>
+    <p>游戏官方内容及相关知识产权归上海魔王圆桌科技有限公司所有；玩家作品权利归各自创作者所有。</p>
+  </footer>
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox-close" data-lightbox-close aria-label="关闭">×</button>
+    <button class="lightbox-action" data-favorite-current>收藏</button>
+    <button class="lightbox-action lightbox-save" data-save-current>保存</button>
+    <img id="lightboxImg" alt="预览">
+    <p id="lightboxCaption"></p>
+  </div>
+  <script src="app-ui.js"></script>
+  <script src="app-enhancements.js"></script>
+</body>
+</html>

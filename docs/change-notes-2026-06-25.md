@@ -95,3 +95,21 @@
 - `releases/reports/account-cloud-sync-plan.md`
 - `releases/update-content/remote-content-manifest.json`
 - `releases/update-content/content-bundle.json`
+
+## UE5 v0.1 环境验证 Demo
+
+- 新增 `ue5/ZhushenActionDemo` 工程骨架，定位为 `v0.1 Environment Verification`，只验证 UE5 项目能否在 Windows 与 Android 跑通基础打包链路。
+- 新增 C++ 占位 GameMode、Pawn 与 HUD：默认角色为极简占位体，HUD 显示 `Zhushen UE5 Demo v0.1`、环境验证说明与 FPS。
+- 新增 Windows / Android 基础配置：Windows 目标 Win64 Shipping，Android 包名 `com.zhushen.demo`，横屏运行，优先 ASTC。
+- 新增 `Tools/check-v01-env.ps1`、`build-v01-windows.ps1`、`build-v01-android.ps1` 与 `CreateV01StartupMap.py`，用于后续在 UE Editor / RunUAT 可用后生成启动地图并执行打包。
+- 新增 `BuildReports/v0.1-build-report.md`，记录当前 JDK、Android Studio、adb、UE5、UnrealEditor、RunUAT、Windows 包、Android 包的验证状态。
+- 客户端底部 Tab 新增独立 `UE5 Demo` 入口，使用单独卡片展示 v0.1 环境验证目标、范围、Windows/Android 验收项和构建报告链接。
+- `.gitignore` 新增 UE5 中间目录、缓存目录和打包产物排除规则，避免提交 `Binaries`、`Intermediate`、`Saved`、`DerivedDataCache`、`Builds` 等大体积或机器相关内容。
+
+## UE5 工具链安装状态
+
+- 已安装并验证 Temurin JDK 17：`G:\Program Files\Eclipse Adoptium\jdk-17\bin\java.exe`。
+- 已安装 Android command-line tools 到 `G:\Android\cmdline-tools\latest`，并安装 Android SDK 到 `G:\Android\Sdk`。
+- 已验证 `adb`：`G:\Android\Sdk\platform-tools\adb.exe`，版本 `37.0.0-14910828`。
+- 已安装 Android 35、build-tools 35.0.0 与 NDK 25.2.9519653 到 G 盘。
+- 已通过 winget 安装 Epic Games Launcher；官方安装器实际落到 `C:\Program Files\Epic Games\Launcher`。UE5 本体仍需在 Epic Launcher 登录后安装 UE 5.4 或 UE 5.5，完成后再执行 `RunUAT` 打包验证。
