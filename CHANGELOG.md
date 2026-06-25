@@ -75,7 +75,7 @@
 - `npm run verify`：通过。
 - `npm run build`：通过，重新生成 Android debug 包。
 - `npm run lint:android`：通过；需显式设置仓库内 `JAVA_HOME` 与 `ANDROID_HOME`。
-- `npm run installer-shell:win`：通过，重新生成推荐安装器与启动器/桌面端打包资源。
+- `npm run installer-shell:win`：产物已生成并核对；本轮命令输出在 15 分钟处超时，但安装器、启动器和桌面端文件已刷新。
 
 ## 收尾执行：体验、报告与资料维护
 
