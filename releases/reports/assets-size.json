@@ -1,0 +1,1255 @@
+{
+  "generatedAt": "2026-06-25T08:20:01.136Z",
+  "summary": {
+    "totalFiles": 209,
+    "totalBytes": 184213433,
+    "totalMB": 175.68,
+    "unreferencedCount": 9,
+    "duplicateHashCount": 0
+  },
+  "largest": [
+    {
+      "path": "official-posts/492294102788866561/player-reaction.mp4",
+      "extension": ".mp4",
+      "kind": "mp4",
+      "size": 60321871,
+      "sizeMB": 57.53,
+      "sha256": "a5025fb51024f89cee733b6fd9af414beaa1f71d6a8961863b8e0bad08fd66e1",
+      "referenced": true
+    },
+    {
+      "path": "official-posts/492288870839223557/pv.mp4",
+      "extension": ".mp4",
+      "kind": "mp4",
+      "size": 26662769,
+      "sizeMB": 25.43,
+      "sha256": "2961eaf848cbcebb672717bfc033d9e04f70d0da937d9dfb4c3654f37648627d",
+      "referenced": true
+    },
+    {
+      "path": "official-posts/544236913331014741/media-15.gif",
+      "extension": ".gif",
+      "kind": "gif",
+      "size": 9458158,
+      "sizeMB": 9.02,
+      "sha256": "934c84f754566592b64e82827991df3d976c78500a506cc4c31e1492fac12bb2",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/初月wy/初月wy夕岚2.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 5088596,
+      "sizeMB": 4.85,
+      "sha256": "37f242892bcdb42adfdb7cf4039dbd20b2fa2b8c9d299e722915cfe109da1b26",
+      "referenced": true
+    },
+    {
+      "path": "官方-角色/视频/夕岚我的世界.mp4",
+      "extension": ".mp4",
+      "kind": "mp4",
+      "size": 3895670,
+      "sizeMB": 3.72,
+      "sha256": "96dedf5e1ce37f1aacca0b89f98a315b78f087c43f7af0a12d937005ac979634",
+      "referenced": true
+    },
+    {
+      "path": "官方-角色/视频/阿塔尔技能特效.mp4",
+      "extension": ".mp4",
+      "kind": "mp4",
+      "size": 3398036,
+      "sizeMB": 3.24,
+      "sha256": "3a67c4d0b8fd954e6de2fbe78c330290122ec2790818984816538211cd976ae9",
+      "referenced": true
+    },
+    {
+      "path": "官方-角色/视频/夕岚玩家二创2.mp4",
+      "extension": ".mp4",
+      "kind": "mp4",
+      "size": 2511627,
+      "sizeMB": 2.4,
+      "sha256": "219a18160e56161b193cc66a31553101ee106c34c6af586fc5868c292c580774",
+      "referenced": true
+    },
+    {
+      "path": "官方-概念/一醉关于游戏定位的补充和设想~.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 2270286,
+      "sizeMB": 2.17,
+      "sha256": "d298cc200cbf7b4124969a2b9df3b4724fcc3e16642def02e9d2f8633659dfc7",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/莲生/莲生夕岚1.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 2218106,
+      "sizeMB": 2.12,
+      "sha256": "67219daea4e0daa00e0a8ed2d4830ce497235efc538bf50715de932c4fd8dbc5",
+      "referenced": true
+    },
+    {
+      "path": "logo/title-wordmark-source.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 2053725,
+      "sizeMB": 1.96,
+      "sha256": "fd88917d1bcfb4b184ff3a712c98787494abb8f75970b7c0d193341fe74e7ef9",
+      "referenced": false
+    },
+    {
+      "path": "官方-角色/视频/夕岚玩家二创1.mp4",
+      "extension": ".mp4",
+      "kind": "mp4",
+      "size": 1902016,
+      "sizeMB": 1.81,
+      "sha256": "6d4abafedf4d3fd305ef40a26924b15b20f20a0b5ec2dd6c498962ef1993a0eb",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/初月wy/初月wy夕岚1.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 1893452,
+      "sizeMB": 1.81,
+      "sha256": "63428ec01c7a5ed6bd8b873d29a61df293564fef868dd83af230f836c4ab4c7c",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年对联1.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 1881912,
+      "sizeMB": 1.79,
+      "sha256": "9b478b7bed1aac0fbe4ca4ddeb8d1af3bb2a97b23ec08f03b71abdc3dcba5c82",
+      "referenced": true
+    },
+    {
+      "path": "官方-角色/视频/阿塔尔.mp4",
+      "extension": ".mp4",
+      "kind": "mp4",
+      "size": 1707484,
+      "sizeMB": 1.63,
+      "sha256": "dfb1cdc16fc0b07a1622a29f0b969c9805d4a823b73c0e1c826857df519b023d",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年8.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 1650982,
+      "sizeMB": 1.57,
+      "sha256": "1031779764cea8b4008d70df7f9f9addbf24380b2d56ad809e4afb76af8ba957",
+      "referenced": true
+    },
+    {
+      "path": "官方-角色/夕岚/夕岚9.gif",
+      "extension": ".gif",
+      "kind": "gif",
+      "size": 1611583,
+      "sizeMB": 1.54,
+      "sha256": "4759d80d1b36428796813c3865aa24199842b12ed373698a344d11f717c5e820",
+      "referenced": true
+    },
+    {
+      "path": "官方-概念/登场角色：拉夏·贝乌斯.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 1609484,
+      "sizeMB": 1.53,
+      "sha256": "f806544abd4e2ef95046c37da72feb068ff85b93621109fc4ffb20cffcc01497",
+      "referenced": true
+    },
+    {
+      "path": "官方-角色/视频/德赫奴技能.mp4",
+      "extension": ".mp4",
+      "kind": "mp4",
+      "size": 1583777,
+      "sizeMB": 1.51,
+      "sha256": "2a4417e90661248a5cddc97677be2ce52a63f8b9ad09f1ed41e47f54b76f0049",
+      "referenced": true
+    },
+    {
+      "path": "官方-角色/视频/德赫奴.mp4",
+      "extension": ".mp4",
+      "kind": "mp4",
+      "size": 1560584,
+      "sizeMB": 1.49,
+      "sha256": "063024da51419a96ad3e5705564e9b319b6361734ebabcf9006919cbde9bf4b1",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年9.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 1534195,
+      "sizeMB": 1.46,
+      "sha256": "05581aa7ec63165328e760bfbc1078d2919b9a113ade575cd57ea19439260a6f",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/莲生/莲生夕岚2.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 1341384,
+      "sizeMB": 1.28,
+      "sha256": "f3f4872b2a29b2ba0ffb540dbd9baa61aec2f673a9e5f6f6fccb88c8ff52c064",
+      "referenced": true
+    },
+    {
+      "path": "官方-角色/拉夏·贝乌斯/拉夏2.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 1251195,
+      "sizeMB": 1.19,
+      "sha256": "96619ad5e80e7156f320429d4e2482336b506aed0ad4c4d40430d5e6a79c046e",
+      "referenced": true
+    },
+    {
+      "path": "官方-概念/官方概念（原官方世界观）/2_官方概念（原官方世界观）.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 1210257,
+      "sizeMB": 1.15,
+      "sha256": "f118c9c414521fc586de4907b32edbc7cbf9df32dfc1996dcd8197c2f62ed43d",
+      "referenced": true
+    },
+    {
+      "path": "official-posts/568559847222545007/media-01.gif",
+      "extension": ".gif",
+      "kind": "gif",
+      "size": 1161041,
+      "sizeMB": 1.11,
+      "sha256": "61d4c65c9336483b897becd87543f072e5c383f15cb38e616b691daaac5c9ab4",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年19.gif",
+      "extension": ".gif",
+      "kind": "gif",
+      "size": 1148807,
+      "sizeMB": 1.1,
+      "sha256": "ab39a25c5f6b17ec0f3805d9fed62d002142c2b08aedbe856006dc4ee5cde556",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年17.gif",
+      "extension": ".gif",
+      "kind": "gif",
+      "size": 1142406,
+      "sizeMB": 1.09,
+      "sha256": "f316ec113346ae00cdbe58eb3f2ffb370432c5de63281271a87e498bfcddfa05",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年20.gif",
+      "extension": ".gif",
+      "kind": "gif",
+      "size": 1062284,
+      "sizeMB": 1.01,
+      "sha256": "1f46b80188123cf4138909df45aaf4c11d86f0b151cd736d419c1245ed386c47",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年16.gif",
+      "extension": ".gif",
+      "kind": "gif",
+      "size": 1051785,
+      "sizeMB": 1,
+      "sha256": "40184fed4575f9ab6a6a851d2c3a79d6044f3faee5cf317b5eed1e2d4c01ffe0",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年18.gif",
+      "extension": ".gif",
+      "kind": "gif",
+      "size": 1043886,
+      "sizeMB": 1,
+      "sha256": "645fad8bf5d4c8a376662368df55b7e08ef474fb57ace51db54db4b76a858437",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年21.gif",
+      "extension": ".gif",
+      "kind": "gif",
+      "size": 1014392,
+      "sizeMB": 0.97,
+      "sha256": "7e87051e797801f0f9c34bc95f8fd6d079136ba011f60f78c6cc2d605f4fef4a",
+      "referenced": true
+    },
+    {
+      "path": "splash.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 994479,
+      "sizeMB": 0.95,
+      "sha256": "cc9b6221ce7ecd1e2d4c1de6d532b6769c27b5c8b1be5275174b2bd87e73bb70",
+      "referenced": false
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚11.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 991772,
+      "sizeMB": 0.95,
+      "sha256": "adbcae0a0afd27c9ab6d5c26c4b840c8e6b95b80f90d9c743e1dbed2dd4565f1",
+      "referenced": true
+    },
+    {
+      "path": "官方-概念/登场角色：德赫奴.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 966542,
+      "sizeMB": 0.92,
+      "sha256": "61d00e8936875c5958c3e8bdf5b90e133993f0c4f19e412122881b3c71e4bf4c",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚9.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 960522,
+      "sizeMB": 0.92,
+      "sha256": "449fedd00b4d0d8071958707bd2288154e1ae2e334b300e49b0003089348c08e",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/范斯梅耶/范斯梅耶拉夏3.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 890949,
+      "sizeMB": 0.85,
+      "sha256": "09c9a242fedaa42a91bf25ca005444a9c11a2f7e11c3cd8dd81e5c6f6b70a514",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚10.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 765909,
+      "sizeMB": 0.73,
+      "sha256": "26e33725ff2e383c8b6ae67e1814f967b36847420e911315702ee693a7796db8",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年22.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 708787,
+      "sizeMB": 0.68,
+      "sha256": "5836aa63565327ce89ce57bd7227c05144d709c313f1304a1c3510e134c90e15",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/jk凯威/jk凯威拉夏1.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 707359,
+      "sizeMB": 0.67,
+      "sha256": "052666c35a1d4e200f96dd64ba58f4c72b8975f5120a305120e709a31ed4d8ec",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/夕岚老公/夕岚老公夕岚2.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 677391,
+      "sizeMB": 0.65,
+      "sha256": "feeedaa5ff290a97dd14c9ad9ba73d7c99b8f87bb730bb2230c32e6fe6f3ca2e",
+      "referenced": true
+    },
+    {
+      "path": "官方-角色/阿塔尔/阿塔尔2.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 674255,
+      "sizeMB": 0.64,
+      "sha256": "105bd9009d5f20407fc73be60e19e9e5d0a0dbaee34cacc466dbac70238219d4",
+      "referenced": true
+    },
+    {
+      "path": "官方-角色/夕岚/夕岚6.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 641542,
+      "sizeMB": 0.61,
+      "sha256": "9ff780286013d8300a42bb99ab0cc81f66069f0ff1b5814e9eb61a240f14d8e5",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年5.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 638605,
+      "sizeMB": 0.61,
+      "sha256": "846aba2cfb35c1f5b57cbe2473ba8c49f27dfe10aae09ce6a75c8b00ed30acb4",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年6.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 633926,
+      "sizeMB": 0.6,
+      "sha256": "e7604ce865df956ff4d32f2ce7912211a89489c569ee5d28f6d35aab302241f5",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年1.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 633293,
+      "sizeMB": 0.6,
+      "sha256": "7d5980bdf72c1f23c3f494ff01fc1fddf175ca01b0390c5df7a0dffcb24fde18",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年3.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 629775,
+      "sizeMB": 0.6,
+      "sha256": "bf2086f95640080605638fcd3544d1d8f281b80aebbbab123670b23894b405a0",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年2.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 628191,
+      "sizeMB": 0.6,
+      "sha256": "557448c7afcce63d7d9270be0552d950e4c85a5b8f01f96958d5de13ed10d7d5",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年7.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 625974,
+      "sizeMB": 0.6,
+      "sha256": "0caf12acdf9ed48be402ed16ea87bd6aa572a8781b6bb987b3a8aeb41a0b895f",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年4.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 623846,
+      "sizeMB": 0.59,
+      "sha256": "554b6730a71e2cf9233f02933dbfde0530612c24ef8c5248c86b2f1dc3ad8e7f",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年13.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 614523,
+      "sizeMB": 0.59,
+      "sha256": "1955d25075e7f4c18d7121bb74eaa4b1326b4112d43c02e8bbd27c6c103db455",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年12.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 611386,
+      "sizeMB": 0.58,
+      "sha256": "373cfc1cb76ceb7548646bcfef02e201eb84cff5217e18483c6f3a4ecf3e79bb",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年14.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 604844,
+      "sizeMB": 0.58,
+      "sha256": "f4be170de613fc148130e8b2c94274684f586c34ba8b3d23483d25bca3f75837",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年15.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 603709,
+      "sizeMB": 0.58,
+      "sha256": "d5680b2f2df93466131a6a31dfbeaf5f951318901461890cbbaba58235a7e09d",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年11.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 597917,
+      "sizeMB": 0.57,
+      "sha256": "49bb6dd3f6ce77007577185309d1cfec782d23d858f6b6c60cf30b086e431d18",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/电子水泥沥灰/电子水泥沥灰夕岚1.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 594480,
+      "sizeMB": 0.57,
+      "sha256": "28ac3fd97d940f73e9b457376f247967e773cd43bd2c9529cc80dddc18877d06",
+      "referenced": true
+    },
+    {
+      "path": "官方-概念/官方概念（原官方世界观）/1_官方概念（原官方世界观）.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 571201,
+      "sizeMB": 0.54,
+      "sha256": "d32da395be308b7f4c9347213ac9b2b9d7b7f740bcd55d15b3f446b7da1bbc4a",
+      "referenced": true
+    },
+    {
+      "path": "官方-概念/官方概念（原官方世界观）/4_官方概念（原官方世界观）.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 544982,
+      "sizeMB": 0.52,
+      "sha256": "b5109803c31d7f950a396eb39f292446d806357697efd735e24e44aae527f513",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚8.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 540462,
+      "sizeMB": 0.52,
+      "sha256": "2d5e4546381dfe650df7092acca9ec20d7cb4b9efa9a94fe17b9fab235738ba7",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/阿钰钰钰/阿钰钰钰拉夏1.gif",
+      "extension": ".gif",
+      "kind": "gif",
+      "size": 495543,
+      "sizeMB": 0.47,
+      "sha256": "efd4964a20054cb8c97a15414323aadb43979365595df1a59469639f79977349",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/阿钰钰钰/阿钰钰钰拉夏2.gif",
+      "extension": ".gif",
+      "kind": "gif",
+      "size": 473409,
+      "sizeMB": 0.45,
+      "sha256": "5025b153fec48134c4c3a601995e5a0e4f13d46dc380721268f21702e123be65",
+      "referenced": true
+    },
+    {
+      "path": "群友笑话合集/7_群友笑话合集.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 453776,
+      "sizeMB": 0.43,
+      "sha256": "d5b4a4d3a263660dfae7df276eb4a4867b9ed590647dac48d48f09fcb1894ac3",
+      "referenced": true
+    },
+    {
+      "path": "群友笑话合集/2_群友笑话合集.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 417634,
+      "sizeMB": 0.4,
+      "sha256": "c9270724349df54b79bebed3a5606a1ece029d2bc22b1ad75a62e050a6ee2652",
+      "referenced": true
+    },
+    {
+      "path": "官方-概念/白国主&拉夏的角色定位.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 400458,
+      "sizeMB": 0.38,
+      "sha256": "5d9bc02bffa88b20b824f644dfd6d7d167767087c0118b2b6e696582981f2748",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/巧枝椅/巧枝椅水墨1.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 360921,
+      "sizeMB": 0.34,
+      "sha256": "3f6291495511787fc5635dc7bff4d39c6149006d1fc94431bdc23d6f30c9cc7c",
+      "referenced": true
+    },
+    {
+      "path": "官方-角色/视频/阿塔尔回睦.mp4",
+      "extension": ".mp4",
+      "kind": "mp4",
+      "size": 351080,
+      "sizeMB": 0.33,
+      "sha256": "d3f9551952102d774c0cafc1f2e54b98e5ed3027af421e83a647571af8931d5d",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚3.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 350110,
+      "sizeMB": 0.33,
+      "sha256": "c968ac7eb9a13b5cda099de652d89cb552a573f950382945227abe773e7065bc",
+      "referenced": true
+    },
+    {
+      "path": "官方-概念/官方概念（原官方世界观）/15_官方概念（原官方世界观）.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 343859,
+      "sizeMB": 0.33,
+      "sha256": "40ef86b69b125e2315a5a029eae6938be07964c2520a1771309f304da623d062",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）11.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 318914,
+      "sizeMB": 0.3,
+      "sha256": "24cd63c61b5bd2dbe30ef80c4f8793665b6dbcd6184ffa1dab7b5339af385113",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/巧枝椅/巧枝椅水墨3.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 305821,
+      "sizeMB": 0.29,
+      "sha256": "71d0b2df0941ce95c324a2950f114c90d63d0275db35bbcea55d3a779a06076e",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/精神病系教主/精神病系教主拉夏3.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 301053,
+      "sizeMB": 0.29,
+      "sha256": "4cc02e9963d4d861341da66d8d59886fed0ebae92b1ad81a2a508f8e2aed6893",
+      "referenced": true
+    },
+    {
+      "path": "官方-概念/官方概念（原官方世界观）/7_官方概念（原官方世界观）.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 270341,
+      "sizeMB": 0.26,
+      "sha256": "289ce2fce5dd5d0a97da22f991020bb85aa3d49f6ef8b532c2dce803b455395a",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）12.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 265084,
+      "sizeMB": 0.25,
+      "sha256": "f5afa57a67e3c3ae71cb69e00f4a8657766f7c30095b0210bb5634803078008a",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）9.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 263755,
+      "sizeMB": 0.25,
+      "sha256": "be769e3f8c969f93df51de789e8712b6174a86688f2c5489fa7bb308c0eb49a7",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/皮皮/皮皮夕岚2.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 263059,
+      "sizeMB": 0.25,
+      "sha256": "ad23843af77a5720b0aad97d5dd8f97e6b543b58b75f490b48f83d3717532e85",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）5.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 261909,
+      "sizeMB": 0.25,
+      "sha256": "2b395bc0074f4181a2384b0699f5dde90b58a7648d043b417da7ca814db7bb7d",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）3.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 261784,
+      "sizeMB": 0.25,
+      "sha256": "52a061ba7239d2485d0e223c4fdf65c039276e431df868b375b00b2fef9421a8",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）2.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 258107,
+      "sizeMB": 0.25,
+      "sha256": "95ec61fd341ec56e042a9b9ad8945fe789d26d752720c7627e3b95c15a04d528",
+      "referenced": true
+    },
+    {
+      "path": "官方-角色/阿塔尔/阿塔尔3.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 251199,
+      "sizeMB": 0.24,
+      "sha256": "46185cec91089cb6bfbd241cb82679199149da8339d1df20500baecd321ba4a4",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）8.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 250064,
+      "sizeMB": 0.24,
+      "sha256": "8b8d1e048ac8f309ff92894457aec7f53604c136ea413281dafb4bcd25ddc87a",
+      "referenced": true
+    },
+    {
+      "path": "群友笑话合集/1_群友笑话合集.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 244794,
+      "sizeMB": 0.23,
+      "sha256": "c84cbec1fe39a9895149a01d50e2a56281cbc103ab651c4a7e217fe768ae9c83",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/范斯梅耶/范斯梅耶拉夏7.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 235904,
+      "sizeMB": 0.22,
+      "sha256": "632132f505731a3679920e6f9b296978eeaa33d7bce749689263909fd8a04ce5",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）1.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 234386,
+      "sizeMB": 0.22,
+      "sha256": "5aeba5be5626be84dd9461a4d87eaef7786deccd6f5da4245a1093b1289f5759",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚1.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 233600,
+      "sizeMB": 0.22,
+      "sha256": "a8b068407a61023cbcf37872be36996d86e67312fa159e8765957ce01eb7d08b",
+      "referenced": true
+    },
+    {
+      "path": "官方-角色/拉夏·贝乌斯/拉夏5.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 221741,
+      "sizeMB": 0.21,
+      "sha256": "a925e85c20ad469aed1dbcf86a315e4e7ec778d8474335a7b9753b3cc7f27ef7",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年对联2.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 216327,
+      "sizeMB": 0.21,
+      "sha256": "d30a56d42da709462cd72f90c9e8e703d3332a95e946a4376e8aab058fd01a5f",
+      "referenced": true
+    },
+    {
+      "path": "官方-角色/梅赛德斯/梅赛德斯2.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 208009,
+      "sizeMB": 0.2,
+      "sha256": "ad6d4874fbefa16745f17d0645a37cdbfcadf0c261d92aa314549d5e5c95e48b",
+      "referenced": true
+    },
+    {
+      "path": "official-posts/544236913331014741/media-07.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 207754,
+      "sizeMB": 0.2,
+      "sha256": "107918af8699c115f59a1f62dcfe68e736746d4438d38737236468511d4fd34c",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚7.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 206978,
+      "sizeMB": 0.2,
+      "sha256": "5a56ba0db41d66e0bcc19124ca0b367392445b1618b09ade138c2c3dc12ee82d",
+      "referenced": true
+    },
+    {
+      "path": "群友笑话合集/14_群友笑话合集.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 191362,
+      "sizeMB": 0.18,
+      "sha256": "8763a136552a533e1b04d4bac37be00a5ec64fbd44b21642976ba712f0b1578e",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/巧枝椅/巧枝椅水墨5.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 191353,
+      "sizeMB": 0.18,
+      "sha256": "f05fefbeddc144dacb42c24230e3aa8e48faefdd8b2b28fa8461c524f91ce367",
+      "referenced": true
+    },
+    {
+      "path": "官方-概念/官方概念（原官方世界观）/14_官方概念（原官方世界观）.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 189249,
+      "sizeMB": 0.18,
+      "sha256": "8563782b6b7e07e3216eb8281ca808bd0851f72422819dc18ee23928fed16408",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚2.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 188069,
+      "sizeMB": 0.18,
+      "sha256": "d3e46698ac26b4182f95deb6c6fec0dd6f6b6d2c5ba4f549220905f8e5157976",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/心理素质叼差/心理素质叼差拉夏4.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 182174,
+      "sizeMB": 0.17,
+      "sha256": "2f6a074bcc7246bd238350834d023bea67205ea4a998990ee0fc1475b4c48c51",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）4.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 180243,
+      "sizeMB": 0.17,
+      "sha256": "5293028262e49ee2c268cf605e7298f165ef1246a962f4596f99ac5a4dc89d49",
+      "referenced": true
+    },
+    {
+      "path": "官方-概念/官方概念（原官方世界观）/9_官方概念（原官方世界观）.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 174604,
+      "sizeMB": 0.17,
+      "sha256": "3a55ae09d3268e0a92081fc819e5b838ae95dd71eda1814105eca41ff0b3cb7a",
+      "referenced": true
+    },
+    {
+      "path": "official-posts/544236913331014741/media-03.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 167585,
+      "sizeMB": 0.16,
+      "sha256": "d71cbb10bd612d7207d47f7c71c25480ae88acaa64585d2f306bc2a76fda3b8d",
+      "referenced": true
+    },
+    {
+      "path": "官方-概念/官方概念（原官方世界观）/11_官方概念（原官方世界观）.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 167361,
+      "sizeMB": 0.16,
+      "sha256": "596d86674fd6facf03ac992f6d6d7976e2a53aa19b63d71e74323ad5e9a036b9",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/心理素质叼差/心理素质叼差拉夏2.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 161819,
+      "sizeMB": 0.15,
+      "sha256": "48664466dd939ed875b800f3372fa8ee54025405a06dc0bb69c982a4319df34c",
+      "referenced": true
+    },
+    {
+      "path": "webfonts/fa-solid-900.woff2",
+      "extension": ".woff2",
+      "kind": "woff2",
+      "size": 158220,
+      "sizeMB": 0.15,
+      "sha256": "aa75998623a391e61c6901794ace832e3ecdd288b56d608f21bea0411acc0b8e",
+      "referenced": false
+    },
+    {
+      "path": "official-posts/544236913331014741/media-02.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 158109,
+      "sizeMB": 0.15,
+      "sha256": "ff75d7595137dfc50be80ade84cfb109579f9535f0c50aa2eaf026c890e889e1",
+      "referenced": true
+    },
+    {
+      "path": "官方-角色/夕岚/夕岚1.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 148897,
+      "sizeMB": 0.14,
+      "sha256": "e89eabc3efa2bc54a0c251c3ccfbf88d88d452e12d981d348acd48c110fa41c7",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/巧枝椅/巧枝椅夕岚1.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 144732,
+      "sizeMB": 0.14,
+      "sha256": "8abfa08b56ed41fb93b8767f6ac97fed6746f7783dab8a2b9cbccd639c147c31",
+      "referenced": true
+    },
+    {
+      "path": "官方-概念/官方概念（原官方世界观）/8_官方概念（原官方世界观）.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 143403,
+      "sizeMB": 0.14,
+      "sha256": "5529e74d52727d87096d049fd1a543bad4b0ba9b599b4644c14cf9299c83b80b",
+      "referenced": true
+    },
+    {
+      "path": "官方-概念/登入界面.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 141529,
+      "sizeMB": 0.13,
+      "sha256": "7e71b01b08dddb6ca7bee70e6244b2a55484df3bfa2ca43df1affc4d7281f7ca",
+      "referenced": true
+    },
+    {
+      "path": "官方-概念/官方概念（原官方世界观）/12_官方概念（原官方世界观）.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 134003,
+      "sizeMB": 0.13,
+      "sha256": "a495c3c02e6d27f07d7f932f4af8622e8a499bd03501a46cf6765431ae3fab3a",
+      "referenced": true
+    },
+    {
+      "path": "官方-概念/官方概念（原官方世界观）/13_官方概念（原官方世界观）.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 133641,
+      "sizeMB": 0.13,
+      "sha256": "3d5750483cd726ae1bfe263b92e9c55e1777bd4b8f1124f4002bce29dc3d4258",
+      "referenced": true
+    },
+    {
+      "path": "official-posts/544236913331014741/media-05.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 130336,
+      "sizeMB": 0.12,
+      "sha256": "459e4d437f1cd9c33f07ea37e379a7992c7e62bf7c25cded5a29cc2327dd65b8",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/hsj/hsj拉夏1.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 128437,
+      "sizeMB": 0.12,
+      "sha256": "512b9df8d46b6ce3563d7ec9fed59bf76ef422d607224733d3a93dd78b0b4b95",
+      "referenced": true
+    },
+    {
+      "path": "official-posts/544236913331014741/media-06.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 126828,
+      "sizeMB": 0.12,
+      "sha256": "642dbe9e3949dcd7aaf52fb1120607d8e8accd0ec3f7fbc910d90525ad778d91",
+      "referenced": true
+    },
+    {
+      "path": "官方-角色/阿塔尔/阿塔尔5.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 123130,
+      "sizeMB": 0.12,
+      "sha256": "6306f3cc1323c9feb0dd2ae2a7865b3108d05d83866dba41822639b826c215ae",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚6.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 122283,
+      "sizeMB": 0.12,
+      "sha256": "631b8ea0c03f2282e2f26f1df3f111592f0487524f7878e9ffaaf39641e09d67",
+      "referenced": true
+    },
+    {
+      "path": "官方-角色/阿塔尔/阿塔尔1 .jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 122097,
+      "sizeMB": 0.12,
+      "sha256": "7e09f62ed216838aa57bb2e10f5da532cbddfce671ce4963390d9e0fbfd835e9",
+      "referenced": true
+    },
+    {
+      "path": "official-posts/544236913331014741/media-11.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 121703,
+      "sizeMB": 0.12,
+      "sha256": "e9111542ba8b00a12e43e181d38560f8668c183395036fada6901a585e9ff085",
+      "referenced": true
+    },
+    {
+      "path": "official-posts/544236913331014741/media-10.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 121293,
+      "sizeMB": 0.12,
+      "sha256": "6e8017a1104291f488127b15f899757cec44da5e400a8718309d74047635023b",
+      "referenced": true
+    },
+    {
+      "path": "official-posts/525136274135190081/media-03.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 119367,
+      "sizeMB": 0.11,
+      "sha256": "49b6a9d1761e731ed494fa897b0e3d34ffdfdd8d5465443a859c8ad01969e786",
+      "referenced": true
+    },
+    {
+      "path": "webfonts/fa-brands-400.woff2",
+      "extension": ".woff2",
+      "kind": "woff2",
+      "size": 118684,
+      "sizeMB": 0.11,
+      "sha256": "d7236a19bf23cbb2027280e8f51dc99d6c45976a2ed60de73382b034b18a2b68",
+      "referenced": false
+    },
+    {
+      "path": "玩家-二创图/心理素质叼差/心理素质叼差拉夏3.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 118549,
+      "sizeMB": 0.11,
+      "sha256": "d1261a0047ddd17e0b4951a8523a9f155e73f2b47eca43c71ac84efb7b82df8b",
+      "referenced": true
+    },
+    {
+      "path": "玩家-二创图/jk凯威/jk凯威阿塔尔1.jpeg",
+      "extension": ".jpeg",
+      "kind": "jpeg",
+      "size": 116662,
+      "sizeMB": 0.11,
+      "sha256": "30445c25d4b36d65c9e62856f87c46c4b63a402adce45aadf531cd9e5bd9ec1c",
+      "referenced": true
+    },
+    {
+      "path": "official-posts/544236913331014741/media-01.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 115487,
+      "sizeMB": 0.11,
+      "sha256": "f1a08ccd3fa4530d0110b7369d05a5458f0ac647b00fc783777bc3f6c9bd92c6",
+      "referenced": true
+    },
+    {
+      "path": "official-posts/544236913331014741/media-04.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 114960,
+      "sizeMB": 0.11,
+      "sha256": "6cc84b1dfce189a8bf3231052b37eff785f48f28b70484629b2967f1a2f3d3fe",
+      "referenced": true
+    },
+    {
+      "path": "official-posts/514519781039145122/media-09.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 113371,
+      "sizeMB": 0.11,
+      "sha256": "0a7ea87fc029283d7b96a74d1555888152c4469acd62166c2c90015f55d28a4c",
+      "referenced": true
+    }
+  ],
+  "byExtension": [
+    {
+      "key": ".mp4",
+      "count": 10,
+      "bytes": 103894914
+    },
+    {
+      "key": ".png",
+      "count": 48,
+      "bytes": 33058502
+    },
+    {
+      "key": ".gif",
+      "count": 11,
+      "bytes": 19663294
+    },
+    {
+      "key": ".jpeg",
+      "count": 81,
+      "bytes": 14528269
+    },
+    {
+      "key": ".jpg",
+      "count": 55,
+      "bytes": 12761282
+    },
+    {
+      "key": ".woff2",
+      "count": 4,
+      "bytes": 307172
+    }
+  ],
+  "byDirectory": [
+    {
+      "key": "official-posts",
+      "count": 40,
+      "bytes": 100833707
+    },
+    {
+      "key": "玩家-二创图",
+      "count": 90,
+      "bytes": 45368344
+    },
+    {
+      "key": "官方-角色",
+      "count": 32,
+      "bytes": 22954968
+    },
+    {
+      "key": "官方-概念",
+      "count": 20,
+      "bytes": 9568583
+    },
+    {
+      "key": "logo",
+      "count": 4,
+      "bytes": 2171397
+    },
+    {
+      "key": "群友笑话合集",
+      "count": 14,
+      "bytes": 1848951
+    },
+    {
+      "key": "splash.jpg",
+      "count": 1,
+      "bytes": 994479
+    },
+    {
+      "key": "webfonts",
+      "count": 4,
+      "bytes": 307172
+    },
+    {
+      "key": "zy",
+      "count": 4,
+      "bytes": 165832
+    }
+  ],
+  "unreferenced": [
+    {
+      "path": "logo/title-wordmark-source.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 2053725,
+      "sizeMB": 1.96,
+      "sha256": "fd88917d1bcfb4b184ff3a712c98787494abb8f75970b7c0d193341fe74e7ef9",
+      "referenced": false
+    },
+    {
+      "path": "splash.jpg",
+      "extension": ".jpg",
+      "kind": "jpg",
+      "size": 994479,
+      "sizeMB": 0.95,
+      "sha256": "cc9b6221ce7ecd1e2d4c1de6d532b6769c27b5c8b1be5275174b2bd87e73bb70",
+      "referenced": false
+    },
+    {
+      "path": "webfonts/fa-solid-900.woff2",
+      "extension": ".woff2",
+      "kind": "woff2",
+      "size": 158220,
+      "sizeMB": 0.15,
+      "sha256": "aa75998623a391e61c6901794ace832e3ecdd288b56d608f21bea0411acc0b8e",
+      "referenced": false
+    },
+    {
+      "path": "webfonts/fa-brands-400.woff2",
+      "extension": ".woff2",
+      "kind": "woff2",
+      "size": 118684,
+      "sizeMB": 0.11,
+      "sha256": "d7236a19bf23cbb2027280e8f51dc99d6c45976a2ed60de73382b034b18a2b68",
+      "referenced": false
+    },
+    {
+      "path": "logo/title-wordmark.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 53980,
+      "sizeMB": 0.05,
+      "sha256": "02c1c085f2f1c9e664e298fd3b3fb90b7010f3581c0419bc221335cac23787fe",
+      "referenced": false
+    },
+    {
+      "path": "logo/title-wordmark-ink.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 53970,
+      "sizeMB": 0.05,
+      "sha256": "f5bffcadf2d88a693eab7f19e55041511964182ee8cb190a7d320ddfcd22e858",
+      "referenced": false
+    },
+    {
+      "path": "webfonts/fa-regular-400.woff2",
+      "extension": ".woff2",
+      "kind": "woff2",
+      "size": 25472,
+      "sizeMB": 0.02,
+      "sha256": "e3456d1283b9d75337a773dfd147bf908fd02c01b4bf48576d8603a69b13cbe5",
+      "referenced": false
+    },
+    {
+      "path": "logo/logo.png",
+      "extension": ".png",
+      "kind": "png",
+      "size": 9722,
+      "sizeMB": 0.01,
+      "sha256": "4d2ffc9c6c8173a4cd4f8438c48b68a225afe293fc9bf08fa3a363a6321296bc",
+      "referenced": false
+    },
+    {
+      "path": "webfonts/fa-v4compatibility.woff2",
+      "extension": ".woff2",
+      "kind": "woff2",
+      "size": 4796,
+      "sizeMB": 0,
+      "sha256": "0ce9033c69dc714f5f45ef9bf17d55e4c46bcdfad6799a4e92b38e7781bf86bd",
+      "referenced": false
+    }
+  ],
+  "duplicates": []
+}

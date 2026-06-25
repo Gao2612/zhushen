@@ -1,0 +1,110 @@
+{
+  "generatedAt": "2026-06-25T08:20:41.353Z",
+  "status": "ready-for-desktop-pilot",
+  "manifest": {
+    "generatedAt": "2026-06-25T08:20:41.353Z",
+    "contentVersion": "1.1.1-20260625",
+    "compatibleClientVersion": "1.1.1",
+    "minClientVersion": "1.1.1",
+    "packageFile": "content-bundle.json",
+    "packageSha256": "4dad91118957ffb9ab1b186bb082b61d6ab32afb5f187bbd85e190da95d9bbbd",
+    "fileCount": 18,
+    "files": [
+      {
+        "path": "characters.json",
+        "size": 4019,
+        "sha256": "6aedd94f3df3f16ac8e7eddc94fc63344e226a1667689222f5b65b8fe11c7bab"
+      },
+      {
+        "path": "concepts.json",
+        "size": 3525,
+        "sha256": "e5b19787a5acb73ffebe10e5162c125ccaafa59adb8177d41bdf7d87f872ab8d"
+      },
+      {
+        "path": "fan-creations.json",
+        "size": 21698,
+        "sha256": "233abfa135503d3ab18fd79721b0b507be7dc6b7abba980886726c00820b2984"
+      },
+      {
+        "path": "jokes.json",
+        "size": 2184,
+        "sha256": "e35db250d98d5dea38a374a506d57ce6a7926a5f573cb96eb28b0ee85579ff17"
+      },
+      {
+        "path": "navigation.json",
+        "size": 846,
+        "sha256": "d2e41a2118c600b2181b2540d98014a43f1008c179b7e497e8098b60fc7b7926"
+      },
+      {
+        "path": "official-posts/492288870839223557.md",
+        "size": 373,
+        "sha256": "ddd0c860e116829df7dd54688b688079231cf4612355d8ea2ca776cddf7986d9"
+      },
+      {
+        "path": "official-posts/492294102788866561.md",
+        "size": 341,
+        "sha256": "1e8f3878575b820dd8701bc5b91f2c4ee97a1f632b5d8a53ffec61a104d99e8f"
+      },
+      {
+        "path": "official-posts/499956228982573909.md",
+        "size": 295,
+        "sha256": "c68610e545fd51d9fe38d05905cb7ec2d3b096e564e52d3ac171dea34df960fa"
+      },
+      {
+        "path": "official-posts/514519781039145122.md",
+        "size": 350,
+        "sha256": "e34a6726bcd61b228e9bece447c2145aa3e9ad03c5e2e591ccb8046942642717"
+      },
+      {
+        "path": "official-posts/525136274135190081.md",
+        "size": 316,
+        "sha256": "c0c91e89ee34b365ccb52b999329f1a005923b149844a945ff49b766f6e5c12e"
+      },
+      {
+        "path": "official-posts/534736525926074207.md",
+        "size": 303,
+        "sha256": "f808648770e1c29461177b6840dcd34753d2c244a23a4d19d0640d0c5689ffa2"
+      },
+      {
+        "path": "official-posts/544236913331014741.md",
+        "size": 348,
+        "sha256": "405941e9c1351df8e4fbd740520338dd44c4f1111c498f4fbec3a883eecd68c9"
+      },
+      {
+        "path": "official-posts/568559847222545007.md",
+        "size": 315,
+        "sha256": "9a4b44d6b1fd339c56b439942043a57e880defe3d71e0b34e0e673b642a3caee"
+      },
+      {
+        "path": "official-posts/luo-teacher-goodbye-letter.md",
+        "size": 1476,
+        "sha256": "17d762ce4293a682d9a2a17351b57d1f7267d6569a87f9ddf3bf7d30a1acb866"
+      },
+      {
+        "path": "official-posts/offline-tech-test-recruit.md",
+        "size": 786,
+        "sha256": "5711efd8ddbf803515b6a3d95535dea866c74699501a49da4bc0629524725a98"
+      },
+      {
+        "path": "official-posts.json",
+        "size": 14223,
+        "sha256": "2006380d30760fe55129ec960c37018603ae0170b404149610888d124d72c92c"
+      },
+      {
+        "path": "resource-manifest.json",
+        "size": 66235,
+        "sha256": "f3e58ec851cfb8564f19ea6e369d1bb44b03499b98c3b95fc1d7a1f8a2b07087"
+      },
+      {
+        "path": "splash-videos.json",
+        "size": 322,
+        "sha256": "bd15e355ce9354a0f14d6359f1d75d5c9fc32fe263744e2585de8d37d3f6c069"
+      }
+    ]
+  },
+  "notes": [
+    "内容包不包含可执行脚本。",
+    "桌面端可下载、校验、缓存和回滚。",
+    "Android 第一阶段只提示，不静默覆盖内置内容。"
+  ]
+}

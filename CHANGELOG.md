@@ -44,8 +44,8 @@
 
 ## 延后事项
 
-- 横屏专属布局本期不做，仅保留现有横竖屏基础能力。
-- 后续需要分别针对首页、官方动态、角色详情和图片预览设计横屏专属布局后再落地。
+- 真实账号登录和云端同步本期不做，先保留为独立设计报告。
+- 远程内容同步仅做桌面端内容包试点，Android 端暂不静默覆盖内置资料。
 
 ## 收尾优化闭环
 
@@ -66,7 +66,7 @@
 ## 体积治理与交付
 
 - 新增 `scripts/optimize-media.js`，使用项目内 `ffmpeg-static` 压缩大体积 MP4，原文件备份到 `releases/original-media-backup/2026-06-25/`。
-- 本次压缩 4 个最大视频资源，合计从约 209 MB 降到约 93 MB，节省约 111 MB。
+- 本次评估 4 个视频资源，实际替换 1 个视频；合计从约 93.13 MB 降到约 87.85 MB，节省约 5.28 MB。
 - 新增 `releases/resource-reports/resource-report-2026-06-25.json` 和 `media-optimization-2026-06-25.json`，记录资源体积排行与压缩前后数据。
 - 重新生成 Android debug 包、Windows 桌面端、推荐安装器和 PC 便携 zip，并同步桌面交付文件夹。
 
@@ -76,6 +76,29 @@
 - `npm run build`：通过，重新生成 Android debug 包。
 - `npm run lint:android`：通过；需显式设置仓库内 `JAVA_HOME` 与 `ANDROID_HOME`。
 - `npm run installer-shell:win`：通过，重新生成推荐安装器与启动器/桌面端打包资源。
+
+## 收尾执行：体验、报告与资料维护
+
+- 新增横屏专属 CSS：首页、官方动态、角色页和图片预览在手机横屏与小高度窗口下改为更紧凑的双栏或多栏浏览。
+- 收藏夹升级为 `schemaVersion: 2`，支持备注、标签和置顶；旧收藏会自动补齐新字段。
+- 桌面设置页新增本地资料编辑草稿入口，可读取角色、概念、二创、笑话和官方动态的 JSON 条目。
+- 资料草稿应用仅允许维护仓库环境执行，应用前写草稿，应用时生成页面并跑项目校验，失败会恢复备份。
+- 新增 `scripts/inspect-content-health.js`，输出内容健康检查 JSON/HTML 报告，缺失资源会阻断 `npm run verify`。
+- 新增 `scripts/inspect-assets-size.js`，输出资源体积、扩展名分布、目录分布、疑似未引用资源和重复哈希报告。
+- 新增 `scripts/generate-release-report.js`，生成发布前检查面板，集中展示版本、构建、资源、报告和发布资产状态。
+- 新增 `scripts/generate-remote-content-package.js`，生成远程内容包和 manifest；内容包仅包含 JSON 与 Markdown，不包含可执行脚本。
+- 远程内容同步报告补充桌面端下载、校验、缓存、应用和回滚链路；Android 端保持提示更新策略。
+- 账号登录和云端同步新增简要计划报告，明确本轮未实现账号体系，只保留后续数据边界、登录态、冲突合并和隐私设计。
+
+## 本轮新增报告
+
+- `releases/reports/content-health.html`
+- `releases/reports/assets-size.html`
+- `releases/reports/release-check.html`
+- `releases/reports/remote-content-sync-report.md`
+- `releases/reports/account-cloud-sync-plan.md`
+- `releases/update-content/remote-content-manifest.json`
+- `releases/update-content/content-bundle.json`
 
 ## 2026-06-24
 

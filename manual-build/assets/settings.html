@@ -164,6 +164,44 @@
       <p class="settings-note">快捷键：F11 全屏/退出全屏，Esc 退出全屏，Ctrl+F 搜索，Alt+左/右前进后退。</p>
       <p class="settings-note" data-desktop-status>桌面功能：读取中</p>
     </article>
+    <article class="settings-card desktop-settings-card" data-desktop-content-editor hidden>
+      <p class="eyebrow">Content Editor</p>
+      <h2>资料编辑草稿</h2>
+      <p class="settings-note">维护环境可编辑本地 content 草稿，应用时会重新生成页面并运行校验；已安装客户端仅显示不可写提示。</p>
+      <div class="editor-grid">
+        <label>
+          <span>资料集</span>
+          <select data-content-editor-dataset></select>
+        </label>
+        <label>
+          <span>条目</span>
+          <select data-content-editor-entry></select>
+        </label>
+      </div>
+      <textarea class="editor-json" data-content-editor-json spellcheck="false" placeholder="选择条目后显示 JSON 草稿"></textarea>
+      <div class="desktop-options">
+        <button class="wide-button" data-content-editor-refresh>读取资料</button>
+        <button class="wide-button" data-content-editor-save>保存草稿</button>
+        <button class="wide-button" data-content-editor-apply>应用并校验</button>
+      </div>
+      <p class="settings-note" data-content-editor-status>资料编辑：等待读取</p>
+    </article>
+    <article class="settings-card desktop-settings-card" data-remote-content-card hidden>
+      <p class="eyebrow">Remote Content</p>
+      <h2>远程内容同步试点</h2>
+      <p class="settings-note">内容包只允许 JSON 与 Markdown。桌面端可下载、校验、缓存、应用和回滚；Android 暂不静默覆盖内置资料。</p>
+      <label class="profile-field">
+        <span>manifest 地址（留空使用本地生成包）</span>
+        <input data-remote-content-url placeholder="https://github.com/Gao2612/zhushen/releases/latest/download/remote-content-manifest.json">
+      </label>
+      <div class="desktop-options">
+        <button class="wide-button" data-remote-content-check>检查内容包</button>
+        <button class="wide-button" data-remote-content-download>下载并校验</button>
+        <button class="wide-button" data-remote-content-apply>应用内容包</button>
+        <button class="wide-button danger-button" data-remote-content-rollback>回滚</button>
+      </div>
+      <p class="settings-note" data-remote-content-status>远程内容：等待操作</p>
+    </article>
     <article class="settings-card">
       <p class="eyebrow">Actions</p>
       <h2>本地操作</h2>

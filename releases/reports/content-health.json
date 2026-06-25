@@ -1,0 +1,1635 @@
+{
+  "generatedAt": "2026-06-25T08:21:41.854Z",
+  "strictMode": true,
+  "summary": {
+    "errors": 0,
+    "warnings": 269,
+    "infos": 1,
+    "assets": 390
+  },
+  "errors": [],
+  "warnings": [
+    {
+      "level": "warning",
+      "file": "characters.json",
+      "path": "$[0].images[0]",
+      "message": "资源重复引用：官方-角色/阿塔尔/阿塔尔1 .jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "characters.json",
+      "path": "$[1].tags[2]",
+      "message": "文本包含需人工确认的标记：待考证"
+    },
+    {
+      "level": "warning",
+      "file": "characters.json",
+      "path": "$[1].images[0]",
+      "message": "资源重复引用：官方-角色/德赫奴/德赫奴1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "characters.json",
+      "path": "$[2].images[0]",
+      "message": "资源重复引用：官方-角色/拉夏·贝乌斯/拉夏1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "characters.json",
+      "path": "$[2].videos",
+      "message": "数组为空，请确认是否符合预期"
+    },
+    {
+      "level": "warning",
+      "file": "characters.json",
+      "path": "$[3].tags[1]",
+      "message": "文本包含需人工确认的标记：待补充"
+    },
+    {
+      "level": "warning",
+      "file": "characters.json",
+      "path": "$[3].images[0]",
+      "message": "资源重复引用：官方-角色/梅赛德斯/梅赛德斯1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "characters.json",
+      "path": "$[3].videos",
+      "message": "数组为空，请确认是否符合预期"
+    },
+    {
+      "level": "warning",
+      "file": "characters.json",
+      "path": "$[4].images[0]",
+      "message": "资源重复引用：官方-角色/夕岚/夕岚1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "characters.json",
+      "path": "$[4].videos",
+      "message": "数组为空，请确认是否符合预期"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[0].entries[0].src",
+      "message": "资源重复引用：玩家-二创图/阿钰钰钰/阿钰钰钰拉夏1.gif"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[0].entries[1].src",
+      "message": "资源重复引用：玩家-二创图/阿钰钰钰/阿钰钰钰拉夏2.gif"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[0].entries[2].src",
+      "message": "资源重复引用：玩家-二创图/阿钰钰钰/阿钰钰钰夕岚1.png"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[1].entries[0].src",
+      "message": "资源重复引用：玩家-二创图/初月wy/初月wy夕岚1.png"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[1].entries[1].src",
+      "message": "资源重复引用：玩家-二创图/初月wy/初月wy夕岚2.png"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[2].entries[0].src",
+      "message": "资源重复引用：玩家-二创图/电子水泥沥灰/电子水泥沥灰夕岚1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[3].entries[0].src",
+      "message": "资源重复引用：玩家-二创图/范斯梅耶/范斯梅耶拉夏1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[3].entries[1].src",
+      "message": "资源重复引用：玩家-二创图/范斯梅耶/范斯梅耶拉夏2.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[3].entries[2].src",
+      "message": "资源重复引用：玩家-二创图/范斯梅耶/范斯梅耶拉夏3.png"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[3].entries[3].src",
+      "message": "资源重复引用：玩家-二创图/范斯梅耶/范斯梅耶拉夏4.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[3].entries[4].src",
+      "message": "资源重复引用：玩家-二创图/范斯梅耶/范斯梅耶拉夏5.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[3].entries[5].src",
+      "message": "资源重复引用：玩家-二创图/范斯梅耶/范斯梅耶拉夏6.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[3].entries[6].src",
+      "message": "资源重复引用：玩家-二创图/范斯梅耶/范斯梅耶拉夏7.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[4].entries[0].src",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[4].entries[1].src",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）2.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[4].entries[2].src",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）3.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[4].entries[3].src",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）4.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[4].entries[4].src",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）5.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[4].entries[5].src",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）6.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[4].entries[6].src",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）7.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[4].entries[7].src",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）8.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[4].entries[8].src",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）9.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[4].entries[9].src",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）11.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[4].entries[10].src",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）12.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[4].entries[11].src",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）13.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[5].entries[0].src",
+      "message": "资源重复引用：玩家-二创图/精神病系教主/精神病系教主拉夏1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[5].entries[1].src",
+      "message": "资源重复引用：玩家-二创图/精神病系教主/精神病系教主拉夏2.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[5].entries[2].src",
+      "message": "资源重复引用：玩家-二创图/精神病系教主/精神病系教主拉夏3.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[6].entries[0].src",
+      "message": "资源重复引用：玩家-二创图/莲生/莲生夕岚1.png"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[6].entries[1].src",
+      "message": "资源重复引用：玩家-二创图/莲生/莲生夕岚2.png"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[7].entries[0].src",
+      "message": "资源重复引用：玩家-二创图/皮皮/皮皮阿塔尔1.png"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[7].entries[1].src",
+      "message": "资源重复引用：玩家-二创图/皮皮/皮皮德赫奴1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[7].entries[2].src",
+      "message": "资源重复引用：玩家-二创图/皮皮/皮皮夕岚1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[7].entries[3].src",
+      "message": "资源重复引用：玩家-二创图/皮皮/皮皮夕岚2.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[7].entries[4].src",
+      "message": "资源重复引用：玩家-二创图/皮皮/皮皮夕岚3.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[7].entries[5].src",
+      "message": "资源重复引用：玩家-二创图/皮皮/皮皮夕岚4.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[8].entries[0].src",
+      "message": "资源重复引用：玩家-二创图/巧枝椅/巧枝椅水墨1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[8].entries[1].src",
+      "message": "资源重复引用：玩家-二创图/巧枝椅/巧枝椅水墨2.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[8].entries[2].src",
+      "message": "资源重复引用：玩家-二创图/巧枝椅/巧枝椅水墨3.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[8].entries[3].src",
+      "message": "资源重复引用：玩家-二创图/巧枝椅/巧枝椅水墨4.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[8].entries[4].src",
+      "message": "资源重复引用：玩家-二创图/巧枝椅/巧枝椅水墨5.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[8].entries[5].src",
+      "message": "资源重复引用：玩家-二创图/巧枝椅/巧枝椅水墨6.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[8].entries[6].src",
+      "message": "资源重复引用：玩家-二创图/巧枝椅/巧枝椅夕岚1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[8].entries[7].src",
+      "message": "资源重复引用：玩家-二创图/巧枝椅/巧枝椅夕岚2.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[9].entries[0].src",
+      "message": "资源重复引用：玩家-二创图/夕岚老公/夕岚老公夕岚1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[9].entries[1].src",
+      "message": "资源重复引用：玩家-二创图/夕岚老公/夕岚老公夕岚2.png"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[10].entries[0].src",
+      "message": "资源重复引用：玩家-二创图/心理素质叼差/心理素质叼差阿塔尔1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[10].entries[1].src",
+      "message": "资源重复引用：玩家-二创图/心理素质叼差/心理素质叼差拉夏1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[10].entries[2].src",
+      "message": "资源重复引用：玩家-二创图/心理素质叼差/心理素质叼差拉夏2.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[10].entries[3].src",
+      "message": "资源重复引用：玩家-二创图/心理素质叼差/心理素质叼差拉夏3.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[10].entries[4].src",
+      "message": "资源重复引用：玩家-二创图/心理素质叼差/心理素质叼差拉夏4.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[10].entries[5].src",
+      "message": "资源重复引用：玩家-二创图/心理素质叼差/心理素质叼差梅赛德斯1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[10].entries[6].src",
+      "message": "资源重复引用：玩家-二创图/心理素质叼差/心理素质叼差夕岚1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[10].entries[7].src",
+      "message": "资源重复引用：玩家-二创图/心理素质叼差/心理素质叼差夕岚2.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[11].base",
+      "message": "文本包含需人工确认的标记：待补充"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[11].entries[0].src",
+      "message": "文本包含需人工确认的标记：待补充"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[11].entries[0].src",
+      "message": "资源重复引用：玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[11].entries[1].src",
+      "message": "文本包含需人工确认的标记：待补充"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[11].entries[1].src",
+      "message": "资源重复引用：玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚2.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[11].entries[2].src",
+      "message": "文本包含需人工确认的标记：待补充"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[11].entries[2].src",
+      "message": "资源重复引用：玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚3.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[11].entries[3].src",
+      "message": "文本包含需人工确认的标记：待补充"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[11].entries[3].src",
+      "message": "资源重复引用：玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚4.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[11].entries[4].src",
+      "message": "文本包含需人工确认的标记：待补充"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[11].entries[4].src",
+      "message": "资源重复引用：玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚6.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[11].entries[5].src",
+      "message": "文本包含需人工确认的标记：待补充"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[11].entries[5].src",
+      "message": "资源重复引用：玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚7.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[11].entries[6].src",
+      "message": "文本包含需人工确认的标记：待补充"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[11].entries[6].src",
+      "message": "资源重复引用：玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚8.png"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[11].entries[7].src",
+      "message": "文本包含需人工确认的标记：待补充"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[11].entries[7].src",
+      "message": "资源重复引用：玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚9.png"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[11].entries[8].src",
+      "message": "文本包含需人工确认的标记：待补充"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[11].entries[8].src",
+      "message": "资源重复引用：玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚10.png"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[11].entries[9].src",
+      "message": "文本包含需人工确认的标记：待补充"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[11].entries[9].src",
+      "message": "资源重复引用：玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚11.png"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[12].entries[0].src",
+      "message": "资源重复引用：玩家-二创图/hsj/hsj拉夏1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[13].entries[0].src",
+      "message": "资源重复引用：玩家-二创图/jk凯威/jk凯威阿塔尔1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "fan-creations.json",
+      "path": "$.artists[13].entries[1].src",
+      "message": "资源重复引用：玩家-二创图/jk凯威/jk凯威拉夏1.png"
+    },
+    {
+      "level": "warning",
+      "file": "official-posts.json",
+      "path": "$[0].media",
+      "message": "数组为空，请确认是否符合预期"
+    },
+    {
+      "level": "warning",
+      "file": "official-posts.json",
+      "path": "$[1].media[0].src",
+      "message": "资源体积超过 25 MB：official-posts/492288870839223557/pv.mp4"
+    },
+    {
+      "level": "warning",
+      "file": "official-posts.json",
+      "path": "$[2].media[0].src",
+      "message": "资源体积超过 25 MB：official-posts/492294102788866561/player-reaction.mp4"
+    },
+    {
+      "level": "warning",
+      "file": "official-posts.json",
+      "path": "$[2].media[2].src",
+      "message": "资源重复引用：official-posts/492294102788866561/media-02.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "official-posts.json",
+      "path": "$[9].media",
+      "message": "数组为空，请确认是否符合预期"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/492288870839223557/cover.jpg\"]",
+      "message": "资源重复引用：official-posts/492288870839223557/cover.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/492288870839223557/media-01.jpg\"]",
+      "message": "资源重复引用：official-posts/492288870839223557/media-01.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/492288870839223557/media-02.jpg\"]",
+      "message": "资源重复引用：official-posts/492288870839223557/media-02.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/492288870839223557/pv.mp4\"]",
+      "message": "资源体积超过 25 MB：official-posts/492288870839223557/pv.mp4"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/492288870839223557/pv.mp4\"]",
+      "message": "资源重复引用：official-posts/492288870839223557/pv.mp4"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/492294102788866561/media-01.jpg\"]",
+      "message": "资源重复引用：official-posts/492294102788866561/media-01.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/492294102788866561/media-02.jpg\"]",
+      "message": "资源重复引用：official-posts/492294102788866561/media-02.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/492294102788866561/player-reaction.mp4\"]",
+      "message": "资源体积超过 25 MB：official-posts/492294102788866561/player-reaction.mp4"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/492294102788866561/player-reaction.mp4\"]",
+      "message": "资源重复引用：official-posts/492294102788866561/player-reaction.mp4"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/499956228982573909/media-01.jpg\"]",
+      "message": "资源重复引用：official-posts/499956228982573909/media-01.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/499956228982573909/media-02.jpg\"]",
+      "message": "资源重复引用：official-posts/499956228982573909/media-02.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/514519781039145122/media-01.jpg\"]",
+      "message": "资源重复引用：official-posts/514519781039145122/media-01.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/514519781039145122/media-02.jpg\"]",
+      "message": "资源重复引用：official-posts/514519781039145122/media-02.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/514519781039145122/media-03.jpg\"]",
+      "message": "资源重复引用：official-posts/514519781039145122/media-03.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/514519781039145122/media-04.jpg\"]",
+      "message": "资源重复引用：official-posts/514519781039145122/media-04.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/514519781039145122/media-05.jpg\"]",
+      "message": "资源重复引用：official-posts/514519781039145122/media-05.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/514519781039145122/media-06.jpg\"]",
+      "message": "资源重复引用：official-posts/514519781039145122/media-06.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/514519781039145122/media-07.jpg\"]",
+      "message": "资源重复引用：official-posts/514519781039145122/media-07.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/514519781039145122/media-08.jpg\"]",
+      "message": "资源重复引用：official-posts/514519781039145122/media-08.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/514519781039145122/media-09.jpg\"]",
+      "message": "资源重复引用：official-posts/514519781039145122/media-09.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/514519781039145122/media-10.jpg\"]",
+      "message": "资源重复引用：official-posts/514519781039145122/media-10.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/525136274135190081/media-01.jpg\"]",
+      "message": "资源重复引用：official-posts/525136274135190081/media-01.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/525136274135190081/media-02.jpg\"]",
+      "message": "资源重复引用：official-posts/525136274135190081/media-02.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/525136274135190081/media-03.jpg\"]",
+      "message": "资源重复引用：official-posts/525136274135190081/media-03.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/534736525926074207/media-01.jpg\"]",
+      "message": "资源重复引用：official-posts/534736525926074207/media-01.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/544236913331014741/media-01.jpg\"]",
+      "message": "资源重复引用：official-posts/544236913331014741/media-01.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/544236913331014741/media-02.jpg\"]",
+      "message": "资源重复引用：official-posts/544236913331014741/media-02.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/544236913331014741/media-03.jpg\"]",
+      "message": "资源重复引用：official-posts/544236913331014741/media-03.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/544236913331014741/media-04.jpg\"]",
+      "message": "资源重复引用：official-posts/544236913331014741/media-04.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/544236913331014741/media-05.jpg\"]",
+      "message": "资源重复引用：official-posts/544236913331014741/media-05.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/544236913331014741/media-06.jpg\"]",
+      "message": "资源重复引用：official-posts/544236913331014741/media-06.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/544236913331014741/media-07.jpg\"]",
+      "message": "资源重复引用：official-posts/544236913331014741/media-07.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/544236913331014741/media-08.jpg\"]",
+      "message": "资源重复引用：official-posts/544236913331014741/media-08.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/544236913331014741/media-09.jpg\"]",
+      "message": "资源重复引用：official-posts/544236913331014741/media-09.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/544236913331014741/media-10.jpg\"]",
+      "message": "资源重复引用：official-posts/544236913331014741/media-10.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/544236913331014741/media-11.jpg\"]",
+      "message": "资源重复引用：official-posts/544236913331014741/media-11.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/544236913331014741/media-12.jpg\"]",
+      "message": "资源重复引用：official-posts/544236913331014741/media-12.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/544236913331014741/media-13.jpg\"]",
+      "message": "资源重复引用：official-posts/544236913331014741/media-13.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/544236913331014741/media-14.jpg\"]",
+      "message": "资源重复引用：official-posts/544236913331014741/media-14.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/544236913331014741/media-15.gif\"]",
+      "message": "资源重复引用：official-posts/544236913331014741/media-15.gif"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/568559847222545007/media-01.gif\"]",
+      "message": "资源重复引用：official-posts/568559847222545007/media-01.gif"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"official-posts/568559847222545007/media-02.jpg\"]",
+      "message": "资源重复引用：official-posts/568559847222545007/media-02.jpg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/hsj/hsj拉夏1.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/hsj/hsj拉夏1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/jk凯威/jk凯威拉夏1.png\"]",
+      "message": "资源重复引用：玩家-二创图/jk凯威/jk凯威拉夏1.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/jk凯威/jk凯威阿塔尔1.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/jk凯威/jk凯威阿塔尔1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）1.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）11.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）11.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）12.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）12.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）13.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）13.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）2.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）2.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）3.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）3.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）4.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）4.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）5.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）5.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）6.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）6.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）7.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）7.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）8.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）8.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）9.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）9.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/初月wy/初月wy夕岚1.png\"]",
+      "message": "资源重复引用：玩家-二创图/初月wy/初月wy夕岚1.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/初月wy/初月wy夕岚2.png\"]",
+      "message": "资源重复引用：玩家-二创图/初月wy/初月wy夕岚2.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/夕岚老公/夕岚老公夕岚1.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/夕岚老公/夕岚老公夕岚1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/夕岚老公/夕岚老公夕岚2.png\"]",
+      "message": "资源重复引用：玩家-二创图/夕岚老公/夕岚老公夕岚2.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/巧枝椅/巧枝椅夕岚1.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/巧枝椅/巧枝椅夕岚1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/巧枝椅/巧枝椅夕岚2.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/巧枝椅/巧枝椅夕岚2.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/巧枝椅/巧枝椅水墨1.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/巧枝椅/巧枝椅水墨1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/巧枝椅/巧枝椅水墨2.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/巧枝椅/巧枝椅水墨2.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/巧枝椅/巧枝椅水墨3.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/巧枝椅/巧枝椅水墨3.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/巧枝椅/巧枝椅水墨4.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/巧枝椅/巧枝椅水墨4.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/巧枝椅/巧枝椅水墨5.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/巧枝椅/巧枝椅水墨5.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/巧枝椅/巧枝椅水墨6.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/巧枝椅/巧枝椅水墨6.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/心理素质叼差/心理素质叼差夕岚1.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/心理素质叼差/心理素质叼差夕岚1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/心理素质叼差/心理素质叼差夕岚2.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/心理素质叼差/心理素质叼差夕岚2.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/心理素质叼差/心理素质叼差拉夏1.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/心理素质叼差/心理素质叼差拉夏1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/心理素质叼差/心理素质叼差拉夏2.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/心理素质叼差/心理素质叼差拉夏2.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/心理素质叼差/心理素质叼差拉夏3.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/心理素质叼差/心理素质叼差拉夏3.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/心理素质叼差/心理素质叼差拉夏4.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/心理素质叼差/心理素质叼差拉夏4.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/心理素质叼差/心理素质叼差梅赛德斯1.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/心理素质叼差/心理素质叼差梅赛德斯1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/心理素质叼差/心理素质叼差阿塔尔1.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/心理素质叼差/心理素质叼差阿塔尔1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/电子水泥沥灰/电子水泥沥灰夕岚1.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/电子水泥沥灰/电子水泥沥灰夕岚1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/皮皮/皮皮夕岚1.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/皮皮/皮皮夕岚1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/皮皮/皮皮夕岚2.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/皮皮/皮皮夕岚2.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/皮皮/皮皮夕岚3.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/皮皮/皮皮夕岚3.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/皮皮/皮皮夕岚4.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/皮皮/皮皮夕岚4.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/皮皮/皮皮德赫奴1.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/皮皮/皮皮德赫奴1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/皮皮/皮皮阿塔尔1.png\"]",
+      "message": "资源重复引用：玩家-二创图/皮皮/皮皮阿塔尔1.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/精神病系教主/精神病系教主拉夏1.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/精神病系教主/精神病系教主拉夏1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/精神病系教主/精神病系教主拉夏2.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/精神病系教主/精神病系教主拉夏2.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/精神病系教主/精神病系教主拉夏3.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/精神病系教主/精神病系教主拉夏3.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/范斯梅耶/范斯梅耶拉夏1.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/范斯梅耶/范斯梅耶拉夏1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/范斯梅耶/范斯梅耶拉夏2.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/范斯梅耶/范斯梅耶拉夏2.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/范斯梅耶/范斯梅耶拉夏3.png\"]",
+      "message": "资源重复引用：玩家-二创图/范斯梅耶/范斯梅耶拉夏3.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/范斯梅耶/范斯梅耶拉夏4.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/范斯梅耶/范斯梅耶拉夏4.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/范斯梅耶/范斯梅耶拉夏5.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/范斯梅耶/范斯梅耶拉夏5.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/范斯梅耶/范斯梅耶拉夏6.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/范斯梅耶/范斯梅耶拉夏6.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/范斯梅耶/范斯梅耶拉夏7.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/范斯梅耶/范斯梅耶拉夏7.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/莲生/莲生夕岚1.png\"]",
+      "message": "资源重复引用：玩家-二创图/莲生/莲生夕岚1.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/莲生/莲生夕岚2.png\"]",
+      "message": "资源重复引用：玩家-二创图/莲生/莲生夕岚2.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/阿钰钰钰/阿钰钰钰夕岚1.png\"]",
+      "message": "资源重复引用：玩家-二创图/阿钰钰钰/阿钰钰钰夕岚1.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/阿钰钰钰/阿钰钰钰拉夏1.gif\"]",
+      "message": "资源重复引用：玩家-二创图/阿钰钰钰/阿钰钰钰拉夏1.gif"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/阿钰钰钰/阿钰钰钰拉夏2.gif\"]",
+      "message": "资源重复引用：玩家-二创图/阿钰钰钰/阿钰钰钰拉夏2.gif"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚1.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚10.png\"]",
+      "message": "资源重复引用：玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚10.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚11.png\"]",
+      "message": "资源重复引用：玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚11.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚2.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚2.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚3.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚3.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚4.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚4.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚6.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚6.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚7.jpeg\"]",
+      "message": "资源重复引用：玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚7.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚8.png\"]",
+      "message": "资源重复引用：玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚8.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚9.png\"]",
+      "message": "资源重复引用：玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚9.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/夕岚/夕岚1.jpeg\"]",
+      "message": "资源重复引用：官方-角色/夕岚/夕岚1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/夕岚/夕岚2.jpeg\"]",
+      "message": "资源重复引用：官方-角色/夕岚/夕岚2.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/夕岚/夕岚3.jpeg\"]",
+      "message": "资源重复引用：官方-角色/夕岚/夕岚3.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/夕岚/夕岚4.jpeg\"]",
+      "message": "资源重复引用：官方-角色/夕岚/夕岚4.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/夕岚/夕岚5.png\"]",
+      "message": "资源重复引用：官方-角色/夕岚/夕岚5.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/夕岚/夕岚6.png\"]",
+      "message": "资源重复引用：官方-角色/夕岚/夕岚6.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/夕岚/夕岚7.jpeg\"]",
+      "message": "资源重复引用：官方-角色/夕岚/夕岚7.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/夕岚/夕岚8.jpeg\"]",
+      "message": "资源重复引用：官方-角色/夕岚/夕岚8.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/夕岚/夕岚9.gif\"]",
+      "message": "资源重复引用：官方-角色/夕岚/夕岚9.gif"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/德赫奴/德赫奴1.jpeg\"]",
+      "message": "资源重复引用：官方-角色/德赫奴/德赫奴1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/德赫奴/德赫奴2.jpeg\"]",
+      "message": "资源重复引用：官方-角色/德赫奴/德赫奴2.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/德赫奴/德赫奴3.png\"]",
+      "message": "资源重复引用：官方-角色/德赫奴/德赫奴3.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/拉夏·贝乌斯/拉夏1.jpeg\"]",
+      "message": "资源重复引用：官方-角色/拉夏·贝乌斯/拉夏1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/拉夏·贝乌斯/拉夏2.png\"]",
+      "message": "资源重复引用：官方-角色/拉夏·贝乌斯/拉夏2.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/拉夏·贝乌斯/拉夏3.jpeg\"]",
+      "message": "资源重复引用：官方-角色/拉夏·贝乌斯/拉夏3.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/拉夏·贝乌斯/拉夏4.jpeg\"]",
+      "message": "资源重复引用：官方-角色/拉夏·贝乌斯/拉夏4.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/拉夏·贝乌斯/拉夏5.jpeg\"]",
+      "message": "资源重复引用：官方-角色/拉夏·贝乌斯/拉夏5.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/梅赛德斯/梅赛德斯1.jpeg\"]",
+      "message": "资源重复引用：官方-角色/梅赛德斯/梅赛德斯1.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/梅赛德斯/梅赛德斯2.png\"]",
+      "message": "资源重复引用：官方-角色/梅赛德斯/梅赛德斯2.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/视频/夕岚我的世界.mp4\"]",
+      "message": "资源重复引用：官方-角色/视频/夕岚我的世界.mp4"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/视频/夕岚玩家二创1.mp4\"]",
+      "message": "资源重复引用：官方-角色/视频/夕岚玩家二创1.mp4"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/视频/夕岚玩家二创2.mp4\"]",
+      "message": "资源重复引用：官方-角色/视频/夕岚玩家二创2.mp4"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/视频/德赫奴.mp4\"]",
+      "message": "资源重复引用：官方-角色/视频/德赫奴.mp4"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/视频/德赫奴技能.mp4\"]",
+      "message": "资源重复引用：官方-角色/视频/德赫奴技能.mp4"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/视频/阿塔尔.mp4\"]",
+      "message": "资源重复引用：官方-角色/视频/阿塔尔.mp4"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/视频/阿塔尔回睦.mp4\"]",
+      "message": "资源重复引用：官方-角色/视频/阿塔尔回睦.mp4"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/视频/阿塔尔技能特效.mp4\"]",
+      "message": "资源重复引用：官方-角色/视频/阿塔尔技能特效.mp4"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/阿塔尔/阿塔尔1 .jpeg\"]",
+      "message": "资源重复引用：官方-角色/阿塔尔/阿塔尔1 .jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/阿塔尔/阿塔尔2.png\"]",
+      "message": "资源重复引用：官方-角色/阿塔尔/阿塔尔2.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/阿塔尔/阿塔尔3.png\"]",
+      "message": "资源重复引用：官方-角色/阿塔尔/阿塔尔3.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/阿塔尔/阿塔尔4.jpeg\"]",
+      "message": "资源重复引用：官方-角色/阿塔尔/阿塔尔4.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-角色/阿塔尔/阿塔尔5.jpeg\"]",
+      "message": "资源重复引用：官方-角色/阿塔尔/阿塔尔5.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-概念/一醉关于游戏定位的补充和设想~.jpeg\"]",
+      "message": "资源重复引用：官方-概念/一醉关于游戏定位的补充和设想~.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-概念/登入界面.jpeg\"]",
+      "message": "资源重复引用：官方-概念/登入界面.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-概念/登场角色：德赫奴.png\"]",
+      "message": "资源重复引用：官方-概念/登场角色：德赫奴.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-概念/登场角色：拉夏·贝乌斯.png\"]",
+      "message": "资源重复引用：官方-概念/登场角色：拉夏·贝乌斯.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-概念/白国主&拉夏的角色定位.png\"]",
+      "message": "资源重复引用：官方-概念/白国主&拉夏的角色定位.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-概念/官方概念（原官方世界观）/10_官方概念（原官方世界观）.png\"]",
+      "message": "资源重复引用：官方-概念/官方概念（原官方世界观）/10_官方概念（原官方世界观）.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-概念/官方概念（原官方世界观）/11_官方概念（原官方世界观）.png\"]",
+      "message": "资源重复引用：官方-概念/官方概念（原官方世界观）/11_官方概念（原官方世界观）.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-概念/官方概念（原官方世界观）/12_官方概念（原官方世界观）.png\"]",
+      "message": "资源重复引用：官方-概念/官方概念（原官方世界观）/12_官方概念（原官方世界观）.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-概念/官方概念（原官方世界观）/13_官方概念（原官方世界观）.png\"]",
+      "message": "资源重复引用：官方-概念/官方概念（原官方世界观）/13_官方概念（原官方世界观）.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-概念/官方概念（原官方世界观）/14_官方概念（原官方世界观）.png\"]",
+      "message": "资源重复引用：官方-概念/官方概念（原官方世界观）/14_官方概念（原官方世界观）.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-概念/官方概念（原官方世界观）/15_官方概念（原官方世界观）.png\"]",
+      "message": "资源重复引用：官方-概念/官方概念（原官方世界观）/15_官方概念（原官方世界观）.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-概念/官方概念（原官方世界观）/1_官方概念（原官方世界观）.jpeg\"]",
+      "message": "资源重复引用：官方-概念/官方概念（原官方世界观）/1_官方概念（原官方世界观）.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-概念/官方概念（原官方世界观）/2_官方概念（原官方世界观）.jpeg\"]",
+      "message": "资源重复引用：官方-概念/官方概念（原官方世界观）/2_官方概念（原官方世界观）.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-概念/官方概念（原官方世界观）/3_官方概念（原官方世界观）.jpeg\"]",
+      "message": "资源重复引用：官方-概念/官方概念（原官方世界观）/3_官方概念（原官方世界观）.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-概念/官方概念（原官方世界观）/4_官方概念（原官方世界观）.png\"]",
+      "message": "资源重复引用：官方-概念/官方概念（原官方世界观）/4_官方概念（原官方世界观）.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-概念/官方概念（原官方世界观）/5_官方概念（原官方世界观）.jpeg\"]",
+      "message": "资源重复引用：官方-概念/官方概念（原官方世界观）/5_官方概念（原官方世界观）.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-概念/官方概念（原官方世界观）/6_官方概念（原官方世界观）.png\"]",
+      "message": "资源重复引用：官方-概念/官方概念（原官方世界观）/6_官方概念（原官方世界观）.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-概念/官方概念（原官方世界观）/7_官方概念（原官方世界观）.jpeg\"]",
+      "message": "资源重复引用：官方-概念/官方概念（原官方世界观）/7_官方概念（原官方世界观）.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-概念/官方概念（原官方世界观）/8_官方概念（原官方世界观）.png\"]",
+      "message": "资源重复引用：官方-概念/官方概念（原官方世界观）/8_官方概念（原官方世界观）.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"官方-概念/官方概念（原官方世界观）/9_官方概念（原官方世界观）.png\"]",
+      "message": "资源重复引用：官方-概念/官方概念（原官方世界观）/9_官方概念（原官方世界观）.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"群友笑话合集/10_群友笑话合集.png\"]",
+      "message": "资源重复引用：群友笑话合集/10_群友笑话合集.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"群友笑话合集/11_群友笑话合集.png\"]",
+      "message": "资源重复引用：群友笑话合集/11_群友笑话合集.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"群友笑话合集/12_群友笑话合集.png\"]",
+      "message": "资源重复引用：群友笑话合集/12_群友笑话合集.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"群友笑话合集/13_群友笑话合集.jpeg\"]",
+      "message": "资源重复引用：群友笑话合集/13_群友笑话合集.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"群友笑话合集/14_群友笑话合集.jpeg\"]",
+      "message": "资源重复引用：群友笑话合集/14_群友笑话合集.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"群友笑话合集/1_群友笑话合集.png\"]",
+      "message": "资源重复引用：群友笑话合集/1_群友笑话合集.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"群友笑话合集/2_群友笑话合集.png\"]",
+      "message": "资源重复引用：群友笑话合集/2_群友笑话合集.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"群友笑话合集/3_群友笑话合集.jpeg\"]",
+      "message": "资源重复引用：群友笑话合集/3_群友笑话合集.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"群友笑话合集/4_群友笑话合集.jpeg\"]",
+      "message": "资源重复引用：群友笑话合集/4_群友笑话合集.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"群友笑话合集/5_群友笑话合集.jpeg\"]",
+      "message": "资源重复引用：群友笑话合集/5_群友笑话合集.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"群友笑话合集/6_群友笑话合集.jpeg\"]",
+      "message": "资源重复引用：群友笑话合集/6_群友笑话合集.jpeg"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"群友笑话合集/7_群友笑话合集.png\"]",
+      "message": "资源重复引用：群友笑话合集/7_群友笑话合集.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"群友笑话合集/8_群友笑话合集.png\"]",
+      "message": "资源重复引用：群友笑话合集/8_群友笑话合集.png"
+    },
+    {
+      "level": "warning",
+      "file": "resource-manifest.json",
+      "path": "$.assets[\"群友笑话合集/9_群友笑话合集.png\"]",
+      "message": "资源重复引用：群友笑话合集/9_群友笑话合集.png"
+    },
+    {
+      "level": "warning",
+      "file": "manual-build/assets",
+      "path": "202fb62936e4",
+      "message": "发现重复哈希资源：thumbs/玩家-二创图/阿钰钰钰/阿钰钰钰拉夏1.webp、thumbs/玩家-二创图/阿钰钰钰/阿钰钰钰拉夏2.webp"
+    }
+  ],
+  "infos": [
+    {
+      "level": "info",
+      "file": "content",
+      "path": "$",
+      "message": "已扫描 390 个唯一资源引用"
+    }
+  ]
+}

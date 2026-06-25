@@ -20,15 +20,80 @@
     localStorage.setItem(key, JSON.stringify(list.slice(0, 80)));
   }
 
+  function normalizeFavorite(item) {
+    var source = item && typeof item === 'object' ? item : {};
+    return {
+      schemaVersion: 2,
+      id: String(source.id || ''),
+      title: String(source.title || '收藏'),
+      href: String(source.href || 'zy.html'),
+      note: String(source.note || ''),
+      tags: Array.isArray(source.tags) ? source.tags.filter(Boolean).map(String).slice(0, 8) : [],
+      pinned: source.pinned === true,
+      createdAt: source.createdAt || source.updatedAt || new Date().toISOString(),
+      updatedAt: source.updatedAt || new Date().toISOString()
+    };
+  }
+
+  function readFavorites() {
+    var migrated = false;
+    var list = readList(favoritesKey).map(function (item) {
+      var normalized = normalizeFavorite(item);
+      if (!item || item.schemaVersion !== normalized.schemaVersion) {
+        migrated = true;
+      }
+      return normalized;
+    }).filter(function (item) {
+      return item.id;
+    });
+    list.sort(function (a, b) {
+      if (a.pinned !== b.pinned) {
+        return a.pinned ? -1 : 1;
+      }
+      return String(b.updatedAt).localeCompare(String(a.updatedAt));
+    });
+    if (migrated) {
+      writeList(favoritesKey, list);
+    }
+    return list;
+  }
+
+  function writeFavorites(list) {
+    writeList(favoritesKey, list.map(normalizeFavorite));
+  }
+
+  function escapeHtml(value) {
+    return String(value || '').replace(/[&<>"']/g, function (char) {
+      return {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[char];
+    });
+  }
+
+  function findFavorite(id) {
+    return readFavorites().find(function (item) {
+      return item.id === id;
+    });
+  }
+
   function toggleFavorite(id, title, href) {
-    var list = readList(favoritesKey);
+    var list = readFavorites();
     var index = list.findIndex(function (item) { return item.id === id; });
     if (index >= 0) {
       list.splice(index, 1);
     } else {
-      list.unshift({id: id, title: title, href: href});
+      list.unshift(normalizeFavorite({
+        id: id,
+        title: title,
+        href: href,
+        updatedAt: new Date().toISOString()
+      }));
     }
-    writeList(favoritesKey, list);
+    writeFavorites(list);
     syncFavorites();
   }
 
@@ -72,8 +137,17 @@
     });
   }
 
+  function renderFavoriteTags(tags) {
+    if (!tags || tags.length === 0) {
+      return '';
+    }
+    return '<span class="favorite-tags">' + tags.map(function (tag) {
+      return '<em>' + escapeHtml(tag) + '</em>';
+    }).join('') + '</span>';
+  }
+
   function syncFavorites() {
-    var list = readList(favoritesKey);
+    var list = readFavorites();
     var ids = list.map(function (item) { return item.id; });
     var activeGroup = getActiveFavoriteGroup();
     document.querySelectorAll('[data-favorite]').forEach(function (button) {
@@ -96,15 +170,74 @@
         return;
       }
       node.innerHTML = shownList.slice(0, 8).map(function (item) {
-        return '<a href="' + item.href + '">' + item.title + '</a>';
+        return '<article class="favorite-row">'
+          + '<a href="' + escapeHtml(item.href) + '">' + escapeHtml(item.title) + '</a>'
+          + renderFavoriteTags(item.tags)
+          + (item.note ? '<p>' + escapeHtml(item.note) + '</p>' : '')
+          + '<div class="favorite-row-actions">'
+          + '<button type="button" data-favorite-edit="' + escapeHtml(item.id) + '">备注</button>'
+          + '<button type="button" data-favorite-pin="' + escapeHtml(item.id) + '">' + (item.pinned ? '取消置顶' : '置顶') + '</button>'
+          + '</div></article>';
       }).join('');
     });
+  }
+
+  function editFavorite(id) {
+    var list = readFavorites();
+    var index = list.findIndex(function (item) { return item.id === id; });
+    if (index < 0) {
+      return;
+    }
+    var current = list[index];
+    var note = window.prompt('收藏备注', current.note || '');
+    if (note === null) {
+      return;
+    }
+    var tagInput = window.prompt('收藏标签，用逗号分隔', current.tags.join(','));
+    if (tagInput === null) {
+      return;
+    }
+    list[index] = normalizeFavorite({
+      ...current,
+      note: note.trim(),
+      tags: tagInput.split(/[,，]/).map(function (tag) { return tag.trim(); }).filter(Boolean),
+      updatedAt: new Date().toISOString()
+    });
+    writeFavorites(list);
+    syncFavorites();
+  }
+
+  function toggleFavoritePin(id) {
+    var list = readFavorites();
+    var index = list.findIndex(function (item) { return item.id === id; });
+    if (index < 0) {
+      return;
+    }
+    list[index] = normalizeFavorite({
+      ...list[index],
+      pinned: !list[index].pinned,
+      updatedAt: new Date().toISOString()
+    });
+    writeFavorites(list);
+    syncFavorites();
   }
 
   function installFavorites() {
     document.addEventListener('click', function (event) {
       var button = event.target.closest('[data-favorite]');
       if (!button) {
+        var editButton = event.target.closest('[data-favorite-edit]');
+        if (editButton) {
+          event.preventDefault();
+          editFavorite(editButton.dataset.favoriteEdit);
+          return;
+        }
+        var pinButton = event.target.closest('[data-favorite-pin]');
+        if (pinButton) {
+          event.preventDefault();
+          toggleFavoritePin(pinButton.dataset.favoritePin);
+          return;
+        }
         var groupButton = event.target.closest('[data-favorite-group]');
         if (!groupButton) {
           return;

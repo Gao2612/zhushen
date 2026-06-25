@@ -1,15 +1,21 @@
 const { app, BrowserWindow, dialog, ipcMain, shell } = require('electron');
 const {
   appendFileSync,
+  copyFileSync,
   existsSync,
   mkdirSync,
   readFileSync,
   writeFileSync
 } = require('fs');
-const { spawn } = require('child_process');
-const { dirname, join } = require('path');
+const { spawn, spawnSync } = require('child_process');
+const { createHash } = require('crypto');
+const { dirname, join, resolve } = require('path');
+const { get } = require('https');
 
 const assetRoot = join(__dirname, '..', 'manual-build', 'assets');
+const projectRoot = resolve(__dirname, '..');
+const contentRoot = join(projectRoot, 'content');
+const updateContentRoot = join(projectRoot, 'releases', 'update-content');
 const appIcon = app.isPackaged
   ? join(
       process.resourcesPath,
@@ -120,6 +126,342 @@ const getErrorDetail = (error) => {
     return '';
   }
   return error.stack || error.message || String(error);
+};
+
+const hashText = (text) => {
+  return createHash('sha256').update(String(text)).digest('hex');
+};
+
+const hashFile = (path) => {
+  return hashText(readFileSync(path, 'utf8'));
+};
+
+const readJsonFile = (path) => {
+  return JSON.parse(readFileSync(path, 'utf8'));
+};
+
+const writeJsonFile = (path, data) => {
+  mkdirSync(dirname(path), { recursive: true });
+  writeFileSync(path, JSON.stringify(data, null, 2) + '\n', 'utf8');
+};
+
+const runProjectCommand = (command, args) => {
+  const result = spawnSync(command, args, {
+    cwd: projectRoot,
+    encoding: 'utf8',
+    shell: false,
+    windowsHide: true
+  });
+  return {
+    ok: result.status === 0,
+    status: result.status,
+    stdout: result.stdout || '',
+    stderr: result.stderr || ''
+  };
+};
+
+const resolveNodeBinary = () => {
+  return process.env.npm_node_execpath || process.env.NODE_BINARY || 'node';
+};
+
+const canEditSourceContent = () => {
+  return !app.isPackaged && existsSync(contentRoot) && existsSync(join(projectRoot, 'scripts', 'generate-ui.js'));
+};
+
+const getDraftRoot = () => {
+  return join(app.getPath('userData'), 'drafts');
+};
+
+const getRemoteContentRoot = () => {
+  return join(app.getPath('userData'), 'remote-content');
+};
+
+const contentFiles = {
+  characters: 'characters.json',
+  concepts: 'concepts.json',
+  jokes: 'jokes.json',
+  officialPosts: 'official-posts.json',
+  fanCreations: 'fan-creations.json'
+};
+
+const contentLabels = {
+  characters: '角色',
+  concepts: '概念',
+  jokes: '笑话',
+  officialPosts: '官方动态',
+  fanCreations: '二创'
+};
+
+const getContentFilePath = (dataset) => {
+  const file = contentFiles[dataset];
+  if (!file) {
+    throw new Error(`未知资料集：${dataset}`);
+  }
+  return join(contentRoot, file);
+};
+
+const summarizeContentItem = (dataset, item, index) => {
+  if (dataset === 'fanCreations') {
+    return {
+      index,
+      title: item.name || item.title || `二创分组 ${index + 1}`,
+      desc: item.base || '',
+      raw: item
+    };
+  }
+  return {
+    index,
+    title: item.name || item.title || item.id || `条目 ${index + 1}`,
+    desc: item.desc || item.summary || item.tag || item.category || '',
+    raw: item
+  };
+};
+
+const loadEditableContent = () => {
+  const result = {};
+  for (const [dataset, file] of Object.entries(contentFiles)) {
+    const path = join(contentRoot, file);
+    if (!existsSync(path)) {
+      result[dataset] = {
+        label: contentLabels[dataset],
+        available: false,
+        items: []
+      };
+      continue;
+    }
+    const data = readJsonFile(path);
+    const list = Array.isArray(data)
+      ? data
+      : dataset === 'fanCreations' && Array.isArray(data.artists)
+        ? data.artists
+        : [];
+    result[dataset] = {
+      label: contentLabels[dataset],
+      available: true,
+      items: list.map((item, index) => summarizeContentItem(dataset, item, index))
+    };
+  }
+  return result;
+};
+
+const saveContentDraft = (payload) => {
+  if (!payload || !payload.dataset) {
+    throw new Error('草稿缺少资料集标识');
+  }
+  const draft = {
+    schemaVersion: 1,
+    dataset: payload.dataset,
+    index: Number(payload.index),
+    item: payload.item,
+    savedAt: new Date().toISOString()
+  };
+  const draftPath = join(getDraftRoot(), `${payload.dataset}-${draft.index}.json`);
+  writeJsonFile(draftPath, draft);
+  return { saved: true, path: draftPath, draft };
+};
+
+const applyContentDraft = (payload) => {
+  if (!canEditSourceContent()) {
+    throw new Error('当前客户端无法直接写入 content 源数据；请在维护仓库环境中使用资料编辑。');
+  }
+  const draft = payload && payload.item ? payload : readJsonFile(payload.path);
+  const dataset = draft.dataset;
+  const index = Number(draft.index);
+  const filePath = getContentFilePath(dataset);
+  const backupPath = join(
+    getDraftRoot(),
+    'backups',
+    `${dataset}-${Date.now()}.json`
+  );
+  mkdirSync(dirname(backupPath), { recursive: true });
+  copyFileSync(filePath, backupPath);
+  const data = readJsonFile(filePath);
+  if (dataset === 'fanCreations') {
+    if (!data || !Array.isArray(data.artists) || !data.artists[index]) {
+      throw new Error(`二创分组索引不存在：${index}`);
+    }
+    data.artists[index] = draft.item;
+  } else {
+    if (!Array.isArray(data) || !data[index]) {
+      throw new Error(`资料条目索引不存在：${index}`);
+    }
+    data[index] = draft.item;
+  }
+  writeJsonFile(filePath, data);
+  const nodeBinary = resolveNodeBinary();
+  const generateResult = runProjectCommand(nodeBinary, [join(projectRoot, 'scripts', 'generate-ui.js')]);
+  const verifyResult = generateResult.ok
+    ? runProjectCommand(nodeBinary, [join(projectRoot, 'scripts', 'verify-project.js')])
+    : generateResult;
+  if (!verifyResult.ok) {
+    copyFileSync(backupPath, filePath);
+    runProjectCommand(nodeBinary, [join(projectRoot, 'scripts', 'generate-ui.js')]);
+    throw new Error(
+      `应用草稿失败，已恢复备份。\n${verifyResult.stderr || verifyResult.stdout}`
+    );
+  }
+  return {
+    applied: true,
+    dataset,
+    index,
+    backupPath,
+    generated: generateResult.stdout,
+    verified: verifyResult.stdout
+  };
+};
+
+const downloadText = (url) => {
+  return new Promise((resolveDownload, rejectDownload) => {
+    get(url, (response) => {
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        rejectDownload(new Error(`下载失败：${response.statusCode} ${url}`));
+        response.resume();
+        return;
+      }
+      let body = '';
+      response.setEncoding('utf8');
+      response.on('data', (chunk) => {
+        body += chunk;
+      });
+      response.on('end', () => resolveDownload(body));
+    }).on('error', rejectDownload);
+  });
+};
+
+const readManifestFromPayload = async (payload) => {
+  if (payload && payload.manifestUrl) {
+    return JSON.parse(await downloadText(payload.manifestUrl));
+  }
+  const localManifest = join(updateContentRoot, 'remote-content-manifest.json');
+  if (!existsSync(localManifest)) {
+    throw new Error('本地远程内容 manifest 不存在，请先运行 npm run content:package');
+  }
+  return readJsonFile(localManifest);
+};
+
+const readBundleForManifest = async (manifest, payload) => {
+  if (payload && payload.bundleUrl) {
+    return await downloadText(payload.bundleUrl);
+  }
+  if (payload && payload.manifestUrl) {
+    const bundleUrl = new URL(manifest.packageFile || 'content-bundle.json', payload.manifestUrl).href;
+    return await downloadText(bundleUrl);
+  }
+  const localBundle = join(updateContentRoot, manifest.packageFile || 'content-bundle.json');
+  if (!existsSync(localBundle)) {
+    throw new Error(`内容包不存在：${localBundle}`);
+  }
+  return readFileSync(localBundle, 'utf8');
+};
+
+const verifyContentBundle = (manifest, bundleText) => {
+  const expectedPackageHash = manifest.packageSha256;
+  const actualPackageHash = hashText(bundleText);
+  if (expectedPackageHash && expectedPackageHash !== actualPackageHash) {
+    throw new Error(`内容包 hash 不一致：${actualPackageHash}`);
+  }
+  const bundle = JSON.parse(bundleText);
+  const manifestFiles = new Map(
+    (manifest.files || []).map((file) => [file.path, file])
+  );
+  for (const file of bundle.files || []) {
+    const expected = manifestFiles.get(file.path);
+    if (!expected) {
+      throw new Error(`内容包包含 manifest 未声明文件：${file.path}`);
+    }
+    if (expected.sha256 !== hashText(file.content)) {
+      throw new Error(`内容文件 hash 不一致：${file.path}`);
+    }
+    if (!/\\.(json|md)$/i.test(file.path)) {
+      throw new Error(`内容包包含不允许的文件类型：${file.path}`);
+    }
+  }
+  return bundle;
+};
+
+const cacheRemoteContent = (manifest, bundleText) => {
+  const version = manifest.contentVersion || `content-${Date.now()}`;
+  const targetRoot = join(getRemoteContentRoot(), 'cache', version);
+  mkdirSync(targetRoot, { recursive: true });
+  writeJsonFile(join(targetRoot, 'remote-content-manifest.json'), manifest);
+  writeFileSync(join(targetRoot, manifest.packageFile || 'content-bundle.json'), bundleText, 'utf8');
+  return targetRoot;
+};
+
+const getRemoteContentStatePath = () => {
+  return join(getRemoteContentRoot(), 'state.json');
+};
+
+const readRemoteContentState = () => {
+  try {
+    return readJsonFile(getRemoteContentStatePath());
+  } catch (error) {
+    return {
+      schemaVersion: 1,
+      activeVersion: null,
+      previousVersion: null,
+      updatedAt: null
+    };
+  }
+};
+
+const writeRemoteContentState = (state) => {
+  const nextState = {
+    schemaVersion: 1,
+    activeVersion: state.activeVersion || null,
+    previousVersion: state.previousVersion || null,
+    updatedAt: new Date().toISOString()
+  };
+  writeJsonFile(getRemoteContentStatePath(), nextState);
+  return nextState;
+};
+
+const applyRemoteContent = (manifest, bundle) => {
+  const state = readRemoteContentState();
+  if (canEditSourceContent()) {
+    const backupRoot = join(getRemoteContentRoot(), 'backups', `${Date.now()}`);
+    mkdirSync(backupRoot, { recursive: true });
+    for (const file of bundle.files || []) {
+      const targetPath = join(contentRoot, file.path);
+      if (!targetPath.startsWith(contentRoot)) {
+        throw new Error(`远程内容路径越界：${file.path}`);
+      }
+      if (existsSync(targetPath)) {
+        const backupPath = join(backupRoot, file.path);
+        mkdirSync(dirname(backupPath), { recursive: true });
+        copyFileSync(targetPath, backupPath);
+      }
+      mkdirSync(dirname(targetPath), { recursive: true });
+      writeFileSync(targetPath, file.content, 'utf8');
+    }
+    const nodeBinary = resolveNodeBinary();
+    const generateResult = runProjectCommand(nodeBinary, [join(projectRoot, 'scripts', 'generate-ui.js')]);
+    const verifyResult = generateResult.ok
+      ? runProjectCommand(nodeBinary, [join(projectRoot, 'scripts', 'verify-project.js')])
+      : generateResult;
+    if (!verifyResult.ok) {
+      const restoreFiles = (directory) => {
+        for (const entry of require('fs').readdirSync(directory, { withFileTypes: true })) {
+          const sourcePath = join(directory, entry.name);
+          const relativePath = sourcePath.slice(backupRoot.length + 1);
+          const targetPath = join(contentRoot, relativePath);
+          if (entry.isDirectory()) {
+            restoreFiles(sourcePath);
+            continue;
+          }
+          mkdirSync(dirname(targetPath), { recursive: true });
+          copyFileSync(sourcePath, targetPath);
+        }
+      };
+      restoreFiles(backupRoot);
+      runProjectCommand(nodeBinary, [join(projectRoot, 'scripts', 'generate-ui.js')]);
+      throw new Error(`远程内容应用失败，已回滚。\n${verifyResult.stderr || verifyResult.stdout}`);
+    }
+  }
+  return writeRemoteContentState({
+    activeVersion: manifest.contentVersion,
+    previousVersion: state.activeVersion
+  });
 };
 
 const isInternalUrl = (url) => {
@@ -551,6 +893,78 @@ const registerDesktopIpc = () => {
     runPowerShellScriptDetached(createSelfUninstallScript());
     app.quit();
     return { started: true };
+  });
+
+  ipcMain.handle('desktop:list-content', () => {
+    return {
+      editable: canEditSourceContent(),
+      datasets: canEditSourceContent() ? loadEditableContent() : {},
+      message: canEditSourceContent()
+        ? '当前环境支持写回 content 源数据'
+        : '当前客户端只能浏览内容，不能直接写回 content 源数据'
+    };
+  });
+
+  ipcMain.handle('desktop:save-content-draft', (event, payload) => {
+    return saveContentDraft(payload);
+  });
+
+  ipcMain.handle('desktop:apply-content-draft', (event, payload) => {
+    return applyContentDraft(payload);
+  });
+
+  ipcMain.handle('desktop:check-remote-content', async (event, payload) => {
+    const manifest = await readManifestFromPayload(payload);
+    return {
+      manifest,
+      state: readRemoteContentState(),
+      cached: existsSync(join(getRemoteContentRoot(), 'cache', manifest.contentVersion || ''))
+    };
+  });
+
+  ipcMain.handle('desktop:download-remote-content', async (event, payload) => {
+    const manifest = await readManifestFromPayload(payload);
+    const bundleText = await readBundleForManifest(manifest, payload);
+    const bundle = verifyContentBundle(manifest, bundleText);
+    const cachePath = cacheRemoteContent(manifest, bundleText);
+    return {
+      downloaded: true,
+      contentVersion: manifest.contentVersion,
+      cachePath,
+      fileCount: bundle.files.length
+    };
+  });
+
+  ipcMain.handle('desktop:apply-remote-content', async (event, payload) => {
+    const manifest = await readManifestFromPayload(payload);
+    const bundleText = await readBundleForManifest(manifest, payload);
+    const bundle = verifyContentBundle(manifest, bundleText);
+    cacheRemoteContent(manifest, bundleText);
+    const state = applyRemoteContent(manifest, bundle);
+    return {
+      applied: true,
+      state,
+      editableSource: canEditSourceContent()
+    };
+  });
+
+  ipcMain.handle('desktop:rollback-remote-content', () => {
+    const state = readRemoteContentState();
+    if (!state.previousVersion) {
+      return {
+        rolledBack: false,
+        reason: '没有可回滚的远程内容版本',
+        state
+      };
+    }
+    const nextState = writeRemoteContentState({
+      activeVersion: state.previousVersion,
+      previousVersion: state.activeVersion
+    });
+    return {
+      rolledBack: true,
+      state: nextState
+    };
   });
 };
 

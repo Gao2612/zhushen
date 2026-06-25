@@ -1123,10 +1123,32 @@
     var importButton = document.querySelector('[data-desktop-import]');
     var uninstallButton = document.querySelector('[data-desktop-uninstall]');
     var status = document.querySelector('[data-desktop-status]');
+    var editorCard = document.querySelector('[data-desktop-content-editor]');
+    var editorDataset = document.querySelector('[data-content-editor-dataset]');
+    var editorEntry = document.querySelector('[data-content-editor-entry]');
+    var editorJson = document.querySelector('[data-content-editor-json]');
+    var editorRefresh = document.querySelector('[data-content-editor-refresh]');
+    var editorSave = document.querySelector('[data-content-editor-save]');
+    var editorApply = document.querySelector('[data-content-editor-apply]');
+    var editorStatus = document.querySelector('[data-content-editor-status]');
+    var remoteCard = document.querySelector('[data-remote-content-card]');
+    var remoteUrl = document.querySelector('[data-remote-content-url]');
+    var remoteCheck = document.querySelector('[data-remote-content-check]');
+    var remoteDownload = document.querySelector('[data-remote-content-download]');
+    var remoteApply = document.querySelector('[data-remote-content-apply]');
+    var remoteRollback = document.querySelector('[data-remote-content-rollback]');
+    var remoteStatus = document.querySelector('[data-remote-content-status]');
+    var editorState = {datasets: {}};
     if (!card) {
       return;
     }
     card.hidden = false;
+    if (editorCard) {
+      editorCard.hidden = false;
+    }
+    if (remoteCard) {
+      remoteCard.hidden = false;
+    }
     if (alwaysOnTopButton) {
       alwaysOnTopButton.addEventListener('click', function () {
         var current = alwaysOnTopButton.dataset.enabled === 'true';
@@ -1195,6 +1217,9 @@
         });
       });
     }
+    installContentEditorControls();
+    installRemoteContentControls();
+
     function updateAlwaysOnTopButton(enabled) {
       if (!alwaysOnTopButton) {
         return;
@@ -1234,7 +1259,8 @@
       }
       return {
         app: 'zhushen-archive',
-        version: 1,
+        schemaVersion: 2,
+        version: 2,
         exportedAt: new Date().toISOString(),
         localStorage: values
       };
@@ -1247,6 +1273,188 @@
       Object.keys(data.localStorage).forEach(function (key) {
         localStorage.setItem(key, String(data.localStorage[key]));
       });
+    }
+
+    function setEditorStatus(message) {
+      if (editorStatus) {
+        editorStatus.textContent = '资料编辑：' + message;
+      }
+    }
+
+    function getSelectedEditorItem() {
+      var dataset = editorDataset ? editorDataset.value : '';
+      var index = editorEntry ? Number(editorEntry.value) : 0;
+      var group = editorState.datasets[dataset];
+      if (!group || !group.items || !group.items[index]) {
+        return null;
+      }
+      return {dataset: dataset, index: index, item: group.items[index].raw};
+    }
+
+    function syncEditorEntries() {
+      if (!editorDataset || !editorEntry || !editorJson) {
+        return;
+      }
+      var dataset = editorDataset.value;
+      var group = editorState.datasets[dataset];
+      editorEntry.innerHTML = '';
+      if (!group || !group.items || group.items.length === 0) {
+        editorJson.value = '';
+        setEditorStatus(group && group.available === false ? '当前环境不可写' : '没有可编辑条目');
+        return;
+      }
+      group.items.forEach(function (item) {
+        var option = document.createElement('option');
+        option.value = String(item.index);
+        option.textContent = item.title;
+        editorEntry.appendChild(option);
+      });
+      syncEditorJson();
+    }
+
+    function syncEditorJson() {
+      if (!editorJson) {
+        return;
+      }
+      var selected = getSelectedEditorItem();
+      editorJson.value = selected ? JSON.stringify(selected.item, null, 2) : '';
+    }
+
+    function loadEditorData() {
+      if (!window.ZhushenDesktop.listContent) {
+        setEditorStatus('当前桌面壳不支持资料编辑');
+        return;
+      }
+      window.ZhushenDesktop.listContent().then(function (result) {
+        editorState.datasets = result.datasets || {};
+        if (editorDataset) {
+          editorDataset.innerHTML = '';
+          Object.keys(editorState.datasets).forEach(function (dataset) {
+            var group = editorState.datasets[dataset];
+            var option = document.createElement('option');
+            option.value = dataset;
+            option.textContent = group.label || dataset;
+            editorDataset.appendChild(option);
+          });
+        }
+        syncEditorEntries();
+        setEditorStatus(result.message || '已读取资料');
+      }).catch(function (error) {
+        setEditorStatus(error.message || String(error));
+      });
+    }
+
+    function installContentEditorControls() {
+      if (!editorCard) {
+        return;
+      }
+      if (editorDataset) {
+        editorDataset.addEventListener('change', syncEditorEntries);
+      }
+      if (editorEntry) {
+        editorEntry.addEventListener('change', syncEditorJson);
+      }
+      if (editorRefresh) {
+        editorRefresh.addEventListener('click', loadEditorData);
+      }
+      if (editorSave) {
+        editorSave.addEventListener('click', function () {
+          var selected = getSelectedEditorItem();
+          if (!selected || !editorJson) {
+            setEditorStatus('请先选择资料条目');
+            return;
+          }
+          try {
+            selected.item = JSON.parse(editorJson.value);
+          } catch (error) {
+            setEditorStatus('JSON 格式错误：' + error.message);
+            return;
+          }
+          window.ZhushenDesktop.saveContentDraft(selected).then(function () {
+            setEditorStatus('草稿已保存');
+          }).catch(function (error) {
+            setEditorStatus(error.message || String(error));
+          });
+        });
+      }
+      if (editorApply) {
+        editorApply.addEventListener('click', function () {
+          var selected = getSelectedEditorItem();
+          if (!selected || !editorJson) {
+            setEditorStatus('请先选择资料条目');
+            return;
+          }
+          try {
+            selected.item = JSON.parse(editorJson.value);
+          } catch (error) {
+            setEditorStatus('JSON 格式错误：' + error.message);
+            return;
+          }
+          setEditorStatus('正在应用并校验...');
+          window.ZhushenDesktop.applyContentDraft(selected).then(function () {
+            setEditorStatus('已应用，页面已重新生成');
+          }).catch(function (error) {
+            setEditorStatus(error.message || String(error));
+          });
+        });
+      }
+      loadEditorData();
+    }
+
+    function remotePayload() {
+      var url = remoteUrl && remoteUrl.value ? remoteUrl.value.trim() : '';
+      return url ? {manifestUrl: url} : {};
+    }
+
+    function setRemoteStatus(message) {
+      if (remoteStatus) {
+        remoteStatus.textContent = '远程内容：' + message;
+      }
+    }
+
+    function installRemoteContentControls() {
+      if (!remoteCard) {
+        return;
+      }
+      if (remoteCheck) {
+        remoteCheck.addEventListener('click', function () {
+          setRemoteStatus('正在检查...');
+          window.ZhushenDesktop.checkRemoteContent(remotePayload()).then(function (result) {
+            setRemoteStatus('发现内容包 ' + (result.manifest.contentVersion || '未命名版本'));
+          }).catch(function (error) {
+            setRemoteStatus(error.message || String(error));
+          });
+        });
+      }
+      if (remoteDownload) {
+        remoteDownload.addEventListener('click', function () {
+          setRemoteStatus('正在下载并校验...');
+          window.ZhushenDesktop.downloadRemoteContent(remotePayload()).then(function (result) {
+            setRemoteStatus('已缓存 ' + result.contentVersion + '，文件 ' + result.fileCount + ' 个');
+          }).catch(function (error) {
+            setRemoteStatus(error.message || String(error));
+          });
+        });
+      }
+      if (remoteApply) {
+        remoteApply.addEventListener('click', function () {
+          setRemoteStatus('正在应用...');
+          window.ZhushenDesktop.applyRemoteContent(remotePayload()).then(function (result) {
+            setRemoteStatus(result.editableSource ? '已应用并校验' : '已切换缓存状态，重启后继续使用内置页面');
+          }).catch(function (error) {
+            setRemoteStatus(error.message || String(error));
+          });
+        });
+      }
+      if (remoteRollback) {
+        remoteRollback.addEventListener('click', function () {
+          window.ZhushenDesktop.rollbackRemoteContent().then(function (result) {
+            setRemoteStatus(result.rolledBack ? '已回滚到上一内容版本' : result.reason);
+          }).catch(function (error) {
+            setRemoteStatus(error.message || String(error));
+          });
+        });
+      }
     }
   }
 

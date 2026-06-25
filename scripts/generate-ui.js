@@ -765,6 +765,44 @@ function settingsPage() {
       <p class="settings-note">快捷键：F11 全屏/退出全屏，Esc 退出全屏，Ctrl+F 搜索，Alt+左/右前进后退。</p>
       <p class="settings-note" data-desktop-status>桌面功能：读取中</p>
     </article>
+    <article class="settings-card desktop-settings-card" data-desktop-content-editor hidden>
+      <p class="eyebrow">Content Editor</p>
+      <h2>资料编辑草稿</h2>
+      <p class="settings-note">维护环境可编辑本地 content 草稿，应用时会重新生成页面并运行校验；已安装客户端仅显示不可写提示。</p>
+      <div class="editor-grid">
+        <label>
+          <span>资料集</span>
+          <select data-content-editor-dataset></select>
+        </label>
+        <label>
+          <span>条目</span>
+          <select data-content-editor-entry></select>
+        </label>
+      </div>
+      <textarea class="editor-json" data-content-editor-json spellcheck="false" placeholder="选择条目后显示 JSON 草稿"></textarea>
+      <div class="desktop-options">
+        <button class="wide-button" data-content-editor-refresh>读取资料</button>
+        <button class="wide-button" data-content-editor-save>保存草稿</button>
+        <button class="wide-button" data-content-editor-apply>应用并校验</button>
+      </div>
+      <p class="settings-note" data-content-editor-status>资料编辑：等待读取</p>
+    </article>
+    <article class="settings-card desktop-settings-card" data-remote-content-card hidden>
+      <p class="eyebrow">Remote Content</p>
+      <h2>远程内容同步试点</h2>
+      <p class="settings-note">内容包只允许 JSON 与 Markdown。桌面端可下载、校验、缓存、应用和回滚；Android 暂不静默覆盖内置资料。</p>
+      <label class="profile-field">
+        <span>manifest 地址（留空使用本地生成包）</span>
+        <input data-remote-content-url placeholder="https://github.com/Gao2612/zhushen/releases/latest/download/remote-content-manifest.json">
+      </label>
+      <div class="desktop-options">
+        <button class="wide-button" data-remote-content-check>检查内容包</button>
+        <button class="wide-button" data-remote-content-download>下载并校验</button>
+        <button class="wide-button" data-remote-content-apply>应用内容包</button>
+        <button class="wide-button danger-button" data-remote-content-rollback>回滚</button>
+      </div>
+      <p class="settings-note" data-remote-content-status>远程内容：等待操作</p>
+    </article>
     <article class="settings-card">
       <p class="eyebrow">Actions</p>
       <h2>本地操作</h2>
@@ -1060,6 +1098,50 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
 }
 .mini-list { display: grid; gap: 8px; }
 .mini-list a { color: var(--muted); border-bottom: 1px solid rgba(255,255,255,.06); padding-bottom: 8px; }
+.favorite-row {
+  display: grid;
+  gap: 7px;
+  padding: 10px;
+  border: 1px solid rgba(212,167,84,.12);
+  border-radius: 14px;
+  background: rgba(255,255,255,.028);
+}
+.favorite-row a {
+  border-bottom: 0;
+  padding-bottom: 0;
+  color: var(--gold-soft);
+}
+.favorite-row p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+.favorite-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.favorite-tags em {
+  border: 1px solid rgba(212,167,84,.16);
+  border-radius: 999px;
+  padding: 2px 7px;
+  color: var(--gold);
+  font-style: normal;
+  font-size: 11px;
+}
+.favorite-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.favorite-row-actions button {
+  border: 1px solid rgba(212,167,84,.16);
+  border-radius: 999px;
+  padding: 4px 9px;
+  color: var(--muted);
+  background: rgba(255,255,255,.035);
+}
 .personal-archive-panel {
   display: grid;
   gap: 22px;
@@ -1434,6 +1516,38 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   font-size: 13px;
   letter-spacing: .08em;
 }
+.editor-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+.editor-grid label {
+  display: grid;
+  gap: 8px;
+  color: var(--gold);
+  font-size: 13px;
+}
+.editor-grid select,
+.editor-json {
+  width: 100%;
+  border: 1px solid rgba(212,167,84,.18);
+  border-radius: 14px;
+  color: var(--text);
+  background: rgba(255,255,255,.045);
+}
+.editor-grid select {
+  min-height: 44px;
+  padding: 0 12px;
+}
+.editor-json {
+  min-height: 260px;
+  margin-top: 14px;
+  padding: 14px;
+  font: 12px Consolas, "Microsoft YaHei", monospace;
+  line-height: 1.6;
+  resize: vertical;
+}
 .segmented-actions {
   display: grid;
   grid-auto-flow: column;
@@ -1451,6 +1565,15 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
 .segmented-actions button:hover {
   color: #100b04;
   background: var(--gold-soft);
+}
+.desktop-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+.desktop-options .wide-button {
+  margin-top: 0;
 }
 .range-control {
   display: grid;
@@ -1566,6 +1689,99 @@ html.lightbox-open, html.lightbox-open body { overflow: hidden; }
   }
   .official-body { padding: 22px; }
 }
+@media (orientation: landscape) and (max-height: 620px) {
+  .archive-nav {
+    padding: 10px clamp(14px, 3vw, 28px);
+  }
+  .brand-avatar {
+    width: 36px;
+    height: 36px;
+  }
+  .brand-copy small {
+    display: none;
+  }
+  .app-shell {
+    width: min(1280px, calc(100% - 24px));
+    padding: 16px 0 72px;
+  }
+  .hero-panel {
+    grid-template-columns: minmax(0, 1.25fr) minmax(280px, .75fr);
+    gap: 18px;
+    min-height: calc(100vh - 126px);
+    padding: clamp(20px, 4vw, 38px);
+    align-items: center;
+  }
+  .hero-panel h1 {
+    font-size: clamp(34px, 6vw, 58px);
+  }
+  .stats-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 14px;
+  }
+  .stats-grid div {
+    padding: 16px;
+  }
+  .feature-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .official-timeline {
+    display: grid;
+    grid-template-columns: minmax(150px, .32fr) minmax(0, 1fr);
+    gap: 18px;
+  }
+  .official-timeline::before {
+    left: min(142px, 22vw);
+  }
+  .official-post {
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(130px, .3fr) minmax(0, 1fr);
+    min-height: 0;
+  }
+  .official-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(220px, .75fr);
+    gap: 18px;
+    align-items: start;
+  }
+  .official-body > .official-media-grid {
+    margin-top: 0;
+  }
+  .character-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .character-card, .archive-card {
+    min-height: 0;
+  }
+  .lightbox {
+    align-items: center;
+    justify-content: center;
+    padding: 10px 74px;
+  }
+  .lightbox img {
+    max-width: calc(100vw - 160px);
+    max-height: calc(100vh - 28px);
+  }
+  .lightbox-close {
+    right: 18px;
+    top: 18px;
+  }
+  .lightbox-action {
+    left: 18px;
+    top: 18px;
+  }
+  .lightbox-save {
+    left: 18px;
+    top: 72px;
+  }
+  #lightboxCaption {
+    left: auto;
+    right: 18px;
+    bottom: 18px;
+    max-width: 38vw;
+    text-align: right;
+  }
+}
 @media (max-width: 520px) {
   .app-shell { width: calc(100% - 24px); padding-top: 24px; }
   .hero-panel { padding: 26px 22px; border-radius: 24px; overflow: hidden; }
@@ -1601,15 +1817,80 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
     localStorage.setItem(key, JSON.stringify(list.slice(0, 80)));
   }
 
+  function normalizeFavorite(item) {
+    var source = item && typeof item === 'object' ? item : {};
+    return {
+      schemaVersion: 2,
+      id: String(source.id || ''),
+      title: String(source.title || '收藏'),
+      href: String(source.href || 'zy.html'),
+      note: String(source.note || ''),
+      tags: Array.isArray(source.tags) ? source.tags.filter(Boolean).map(String).slice(0, 8) : [],
+      pinned: source.pinned === true,
+      createdAt: source.createdAt || source.updatedAt || new Date().toISOString(),
+      updatedAt: source.updatedAt || new Date().toISOString()
+    };
+  }
+
+  function readFavorites() {
+    var migrated = false;
+    var list = readList(favoritesKey).map(function (item) {
+      var normalized = normalizeFavorite(item);
+      if (!item || item.schemaVersion !== normalized.schemaVersion) {
+        migrated = true;
+      }
+      return normalized;
+    }).filter(function (item) {
+      return item.id;
+    });
+    list.sort(function (a, b) {
+      if (a.pinned !== b.pinned) {
+        return a.pinned ? -1 : 1;
+      }
+      return String(b.updatedAt).localeCompare(String(a.updatedAt));
+    });
+    if (migrated) {
+      writeList(favoritesKey, list);
+    }
+    return list;
+  }
+
+  function writeFavorites(list) {
+    writeList(favoritesKey, list.map(normalizeFavorite));
+  }
+
+  function escapeHtml(value) {
+    return String(value || '').replace(/[&<>"']/g, function (char) {
+      return {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[char];
+    });
+  }
+
+  function findFavorite(id) {
+    return readFavorites().find(function (item) {
+      return item.id === id;
+    });
+  }
+
   function toggleFavorite(id, title, href) {
-    var list = readList(favoritesKey);
+    var list = readFavorites();
     var index = list.findIndex(function (item) { return item.id === id; });
     if (index >= 0) {
       list.splice(index, 1);
     } else {
-      list.unshift({id: id, title: title, href: href});
+      list.unshift(normalizeFavorite({
+        id: id,
+        title: title,
+        href: href,
+        updatedAt: new Date().toISOString()
+      }));
     }
-    writeList(favoritesKey, list);
+    writeFavorites(list);
     syncFavorites();
   }
 
@@ -1653,8 +1934,17 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
     });
   }
 
+  function renderFavoriteTags(tags) {
+    if (!tags || tags.length === 0) {
+      return '';
+    }
+    return '<span class="favorite-tags">' + tags.map(function (tag) {
+      return '<em>' + escapeHtml(tag) + '</em>';
+    }).join('') + '</span>';
+  }
+
   function syncFavorites() {
-    var list = readList(favoritesKey);
+    var list = readFavorites();
     var ids = list.map(function (item) { return item.id; });
     var activeGroup = getActiveFavoriteGroup();
     document.querySelectorAll('[data-favorite]').forEach(function (button) {
@@ -1677,15 +1967,74 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
         return;
       }
       node.innerHTML = shownList.slice(0, 8).map(function (item) {
-        return '<a href="' + item.href + '">' + item.title + '</a>';
+        return '<article class="favorite-row">'
+          + '<a href="' + escapeHtml(item.href) + '">' + escapeHtml(item.title) + '</a>'
+          + renderFavoriteTags(item.tags)
+          + (item.note ? '<p>' + escapeHtml(item.note) + '</p>' : '')
+          + '<div class="favorite-row-actions">'
+          + '<button type="button" data-favorite-edit="' + escapeHtml(item.id) + '">备注</button>'
+          + '<button type="button" data-favorite-pin="' + escapeHtml(item.id) + '">' + (item.pinned ? '取消置顶' : '置顶') + '</button>'
+          + '</div></article>';
       }).join('');
     });
+  }
+
+  function editFavorite(id) {
+    var list = readFavorites();
+    var index = list.findIndex(function (item) { return item.id === id; });
+    if (index < 0) {
+      return;
+    }
+    var current = list[index];
+    var note = window.prompt('收藏备注', current.note || '');
+    if (note === null) {
+      return;
+    }
+    var tagInput = window.prompt('收藏标签，用逗号分隔', current.tags.join(','));
+    if (tagInput === null) {
+      return;
+    }
+    list[index] = normalizeFavorite({
+      ...current,
+      note: note.trim(),
+      tags: tagInput.split(/[,，]/).map(function (tag) { return tag.trim(); }).filter(Boolean),
+      updatedAt: new Date().toISOString()
+    });
+    writeFavorites(list);
+    syncFavorites();
+  }
+
+  function toggleFavoritePin(id) {
+    var list = readFavorites();
+    var index = list.findIndex(function (item) { return item.id === id; });
+    if (index < 0) {
+      return;
+    }
+    list[index] = normalizeFavorite({
+      ...list[index],
+      pinned: !list[index].pinned,
+      updatedAt: new Date().toISOString()
+    });
+    writeFavorites(list);
+    syncFavorites();
   }
 
   function installFavorites() {
     document.addEventListener('click', function (event) {
       var button = event.target.closest('[data-favorite]');
       if (!button) {
+        var editButton = event.target.closest('[data-favorite-edit]');
+        if (editButton) {
+          event.preventDefault();
+          editFavorite(editButton.dataset.favoriteEdit);
+          return;
+        }
+        var pinButton = event.target.closest('[data-favorite-pin]');
+        if (pinButton) {
+          event.preventDefault();
+          toggleFavoritePin(pinButton.dataset.favoritePin);
+          return;
+        }
         var groupButton = event.target.closest('[data-favorite-group]');
         if (!groupButton) {
           return;

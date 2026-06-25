@@ -1,8 +1,8 @@
 {
   "name": "zhushen-game",
   "version": "1.1.1",
-  "buildTime": "2026-06-25T03:49:05.750Z",
-  "branch": "main",
-  "commit": "6a5522e",
+  "buildTime": "2026-06-25T08:20:41.666Z",
+  "branch": "codex/upload-demo-plans",
+  "commit": "30a316d",
   "target": "local"
 }

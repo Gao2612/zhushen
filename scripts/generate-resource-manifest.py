@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import date
 from hashlib import sha256
 from json import dumps
 from pathlib import Path
@@ -144,7 +145,7 @@ def write_outputs(records: list[AssetRecord]) -> None:
     REPORT_ROOT.mkdir(parents=True, exist_ok=True)
     assets = {record.path: record_to_json(record) for record in records}
     manifest = {
-        "generatedAt": "2026-06-25",
+        "generatedAt": date.today().isoformat(),
         "thumbnailPolicy": {
             "format": "webp",
             "maxWidth": 520,
@@ -170,7 +171,7 @@ def write_outputs(records: list[AssetRecord]) -> None:
         dumps(manifest, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
-    (REPORT_ROOT / "resource-report-2026-06-25.json").write_text(
+    (REPORT_ROOT / f"resource-report-{manifest['generatedAt']}.json").write_text(
         dumps(report, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )

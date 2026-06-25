@@ -1,0 +1,171 @@
+{
+  "generatedAt": "2026-06-25T08:20:05.234Z",
+  "package": {
+    "name": "zhushen-game",
+    "version": "1.1.1"
+  },
+  "git": {
+    "branch": "codex/upload-demo-plans",
+    "commit": "30a316d",
+    "dirty": true
+  },
+  "buildInfo": {
+    "name": "zhushen-game",
+    "version": "1.1.1",
+    "buildTime": "2026-06-25T07:55:31.561Z",
+    "branch": "codex/upload-demo-plans",
+    "commit": "30a316d",
+    "target": "local"
+  },
+  "statuses": [
+    {
+      "label": "内容健康检查",
+      "state": "ok",
+      "detail": "0 个错误，269 个警告"
+    },
+    {
+      "label": "资源体积报告",
+      "state": "ok",
+      "detail": "175.68 MB，209 个媒体资源"
+    },
+    {
+      "label": "构建信息",
+      "state": "ok",
+      "detail": "1.1.1 / 30a316d"
+    },
+    {
+      "label": "自动更新 manifest",
+      "state": "ok",
+      "detail": "目标版本 1.1.1"
+    },
+    {
+      "label": "发布资产完整性",
+      "state": "ok",
+      "detail": "13/13 个资产存在"
+    },
+    {
+      "label": "Debug 签名提示",
+      "state": "warn",
+      "detail": "当前包含 debug APK，正式分发前应使用 release 签名包"
+    }
+  ],
+  "assets": [
+    {
+      "label": "Android 调试包",
+      "path": "E:\\zhushen\\releases\\android-debug.apk",
+      "type": "apk",
+      "exists": true,
+      "size": 319975521,
+      "sizeMB": 305.15,
+      "sha256": "70bcd3c38fe019ea056e088191bb1c11b2fc5e3194ce7412ea4080bc1f0fa0c6"
+    },
+    {
+      "label": "根目录 Android 调试包",
+      "path": "E:\\zhushen\\app-debug.apk",
+      "type": "apk",
+      "exists": true,
+      "size": 319975521,
+      "sizeMB": 305.15,
+      "sha256": "70bcd3c38fe019ea056e088191bb1c11b2fc5e3194ce7412ea4080bc1f0fa0c6"
+    },
+    {
+      "label": "Windows 安装器",
+      "path": "E:\\zhushen\\releases\\installer-shell\\zhushen-installer-1.1.1-win-x64.exe",
+      "type": "exe",
+      "exists": true,
+      "size": 518328821,
+      "sizeMB": 494.32,
+      "sha256": "9c67ffc841215f3c1c84cdeedda1731c3a510cb7b588348fa08fe16f85058ccf"
+    },
+    {
+      "label": "桌面便携包",
+      "path": "E:\\zhushen\\releases\\pc\\zhushen-pc-client-v1.1.1.zip",
+      "type": "zip",
+      "exists": true,
+      "size": 196928750,
+      "sizeMB": 187.81,
+      "sha256": "6fa5a56c85705f9dba67725b9291e1befb8e379c626850bd2944bccca91c63f1"
+    },
+    {
+      "label": "自动更新 manifest",
+      "path": "E:\\zhushen\\releases\\update-current\\zhushen-update-manifest.json",
+      "type": "json",
+      "exists": true,
+      "size": 14360,
+      "sizeMB": 0.01,
+      "sha256": "1227d1edd057eb688df9a2c438a58c8aa9c8a57ee0ab4e788166b540cdf0a459"
+    },
+    {
+      "label": "自动更新 app.asar",
+      "path": "E:\\zhushen\\releases\\update-current\\zhushen-app.asar",
+      "type": "asar",
+      "exists": true,
+      "size": 185525312,
+      "sizeMB": 176.93,
+      "sha256": "fe0e5b209dbefb56eb636c8b5d5f189cae904798e7c79f1725a81611c0f4c2b9"
+    },
+    {
+      "label": "自动更新客户端 exe",
+      "path": "E:\\zhushen\\releases\\update-current\\zhushen-archive.exe",
+      "type": "exe",
+      "exists": true,
+      "size": 232443392,
+      "sizeMB": 221.68,
+      "sha256": "a53a0848df157d07fb0cfa7e5dff8652995378d43477de4a621b2753c8d1ec81"
+    },
+    {
+      "label": "远程内容 manifest",
+      "path": "E:\\zhushen\\releases\\update-content\\remote-content-manifest.json",
+      "type": "json",
+      "exists": true,
+      "size": 3227,
+      "sizeMB": 0,
+      "sha256": "357f93cc6c58283613f0c8b6f863821d03e70a11a34bb243c4b43bda94fe0792"
+    },
+    {
+      "label": "远程内容包",
+      "path": "E:\\zhushen\\releases\\update-content\\content-bundle.json",
+      "type": "json",
+      "exists": true,
+      "size": 133935,
+      "sizeMB": 0.13,
+      "sha256": "6380ed0ef579ba99900462e9c019d54487293148c892f2b8ed80083f47402de2"
+    },
+    {
+      "label": "内容健康报告",
+      "path": "E:\\zhushen\\releases\\reports\\content-health.html",
+      "type": "html",
+      "exists": true,
+      "size": 55257,
+      "sizeMB": 0.05,
+      "sha256": "ce6f8c4c8c0775238fa70fb3b40fbcad34c615004bda31ddcc73ab59a1e79728"
+    },
+    {
+      "label": "资源体积报告",
+      "path": "E:\\zhushen\\releases\\reports\\assets-size.html",
+      "type": "html",
+      "exists": true,
+      "size": 15287,
+      "sizeMB": 0.01,
+      "sha256": "ede98ab45d9cf5c73412ee265725af21139105b8428e154ebefb1ddee1ffa6c9"
+    },
+    {
+      "label": "远程内容同步报告",
+      "path": "E:\\zhushen\\releases\\reports\\remote-content-sync-report.md",
+      "type": "md",
+      "exists": true,
+      "size": 770,
+      "sizeMB": 0,
+      "sha256": "072444eba7057e5a91855393ae179b87fcfa2dd8e9d9ed2baa93ffc60681578f"
+    },
+    {
+      "label": "账号云端计划简报",
+      "path": "E:\\zhushen\\releases\\reports\\account-cloud-sync-plan.md",
+      "type": "md",
+      "exists": true,
+      "size": 624,
+      "sizeMB": 0,
+      "sha256": "1e637d8e650701079b676e320d24080907e2c662e00278f0087fd6db4bd11ecf"
+    }
+  ]
+}

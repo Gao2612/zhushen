@@ -131,6 +131,16 @@ for (const contentFile of requiredContentFiles) {
 }
 
 const generator = readFileSync(join(root, 'scripts', 'generate-ui.js'), 'utf8');
+for (const scriptFile of [
+  'inspect-content-health.js',
+  'inspect-assets-size.js',
+  'generate-release-report.js',
+  'generate-remote-content-package.js'
+]) {
+  if (!existsSync(join(root, 'scripts', scriptFile))) {
+    recordFailure(`缺少后续功能脚本：scripts/${scriptFile}`);
+  }
+}
 if (!generator.includes("readRequiredJson('characters.json')")) {
   recordFailure('生成脚本未从 content/characters.json 读取角色源数据');
 }
@@ -310,8 +320,26 @@ if (!appUi.includes('function syncRecent()')) {
 if (!appTheme.includes('.official-timeline::before')) {
   recordFailure('官方动态缺少左侧时间轴线样式');
 }
+if (!appTheme.includes('@media (orientation: landscape)')) {
+  recordFailure('缺少横屏专属布局媒体查询');
+}
+if (!appTheme.includes('.editor-json')) {
+  recordFailure('设置页缺少桌面资料编辑器样式');
+}
 if (!officialPage.includes('<span>2024/08/02</span>')) {
   recordFailure('官方动态未显示“暂时的终章”的准确日期：2024/08/02');
+}
+if (!appUi.includes('schemaVersion: 2') || !appUi.includes('data-favorite-edit')) {
+  recordFailure('收藏未升级为备注、标签、置顶结构');
+}
+if (!desktopMain.includes('desktop:list-content') || !desktopPreload.includes('listContent')) {
+  recordFailure('桌面端资料编辑 IPC 未暴露');
+}
+if (!desktopMain.includes('desktop:download-remote-content') || !desktopPreload.includes('downloadRemoteContent')) {
+  recordFailure('桌面端远程内容同步 IPC 未暴露');
+}
+if (!desktopMain.includes('verifyContentBundle')) {
+  recordFailure('远程内容同步缺少内容包校验逻辑');
 }
 
 if (failures.length > 0) {

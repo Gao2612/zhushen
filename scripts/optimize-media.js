@@ -1,12 +1,13 @@
-const { copyFileSync, existsSync, mkdirSync, renameSync, statSync, writeFileSync } = require('fs');
+const { copyFileSync, existsSync, mkdirSync, renameSync, statSync, unlinkSync, writeFileSync } = require('fs');
 const { dirname, join, relative, resolve } = require('path');
 const { spawnSync } = require('child_process');
 const ffmpegPath = require('ffmpeg-static');
 
 const root = resolve(__dirname, '..');
 const assetsRoot = join(root, 'manual-build', 'assets');
-const backupRoot = join(root, 'releases', 'original-media-backup', '2026-06-25');
-const reportPath = join(root, 'releases', 'resource-reports', 'media-optimization-2026-06-25.json');
+const today = new Date().toISOString().slice(0, 10);
+const backupRoot = join(root, 'releases', 'original-media-backup', today);
+const reportPath = join(root, 'releases', 'resource-reports', `media-optimization-${today}.json`);
 const candidates = [
   'official-posts/492288870839223557/pv.mp4',
   'official-posts/492294102788866561/player-reaction.mp4',
@@ -70,6 +71,7 @@ function optimizeVideo(relativePath) {
   }
   const after = sizeOf(tempPath);
   if (after >= before * 0.95) {
+    unlinkSync(tempPath);
     return {
       path: relativePath,
       skipped: true,
@@ -93,7 +95,7 @@ function main() {
   ensureDir(dirname(reportPath));
   const results = candidates.map(optimizeVideo);
   const report = {
-    generatedAt: '2026-06-25',
+    generatedAt: today,
     totalBefore: results.reduce((sum, item) => sum + item.before, 0),
     totalAfter: results.reduce((sum, item) => sum + item.after, 0),
     totalSaved: results.reduce((sum, item) => sum + Math.max(0, item.before - item.after), 0),
