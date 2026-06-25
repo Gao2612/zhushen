@@ -136,7 +136,7 @@
       align-self: end;
       display: grid;
       gap: 14px;
-      width: min(420px, 100%);
+      width: min(388px, 100%);
       padding: 22px;
       border: 1px solid rgba(240,215,140,.16);
       border-radius: 14px;
@@ -146,6 +146,14 @@
       box-shadow: 0 28px 92px rgba(0,0,0,.52);
       backdrop-filter: blur(22px);
       transform: translateY(-24px);
+    }
+    @media (min-width: 1280px) {
+      main {
+        padding-right: 42px;
+      }
+      .panel {
+        justify-self: end;
+      }
     }
     .panel-head {
       display: flex;
@@ -512,14 +520,15 @@
     .quick-links {
       position: fixed;
       left: 48px;
-      right: 48px;
+      right: 118px;
       bottom: 20px;
-      z-index: 3;
-      display: none;
+      z-index: 5;
+      display: flex;
       gap: 18px;
       align-items: center;
       color: rgba(247,234,212,.58);
       font-size: 12px;
+      overflow: hidden;
     }
     .quick-links a,
     .quick-links button {
@@ -535,6 +544,11 @@
     .quick-links button:hover {
       color: #f0d78c;
       background: transparent;
+    }
+    .quick-links button[data-active="true"] {
+      color: #f2d47e;
+      border-color: rgba(242,212,126,.52);
+      background: rgba(242,212,126,.08);
     }
     .qq-card {
       position: fixed;
@@ -675,6 +689,7 @@
     const qqCard = document.createElement('div');
     const spaceNode = document.createElement('div');
     const updateNode = document.createElement('div');
+    const clientVersionNode = document.createElement('div');
     const settingsButton = document.createElement('button');
     const shortcutButton = document.createElement('button');
     const checkUpdateButton = document.createElement('button');
@@ -686,6 +701,7 @@
 
     spaceNode.className = 'space-info';
     updateNode.className = 'update-info';
+    clientVersionNode.className = 'update-info';
     settingsButton.id = 'launcherSettings';
     shortcutButton.id = 'createShortcut';
     checkUpdateButton.id = 'checkUpdate';
@@ -709,6 +725,7 @@
     qqCard.hidden = true;
     pathBox.appendChild(spaceNode);
     pathBox.appendChild(updateNode);
+    pathBox.appendChild(clientVersionNode);
     document.body.appendChild(qqCard);
     managePanel.appendChild(settingsButton);
     managePanel.appendChild(shortcutButton);
@@ -808,6 +825,38 @@
 
     function renderQuickLinks() {
       quickLinks.innerHTML = '';
+      const links = [
+        ['\u5b98\u7f51', 'https://github.com/Gao2612/zhushen'],
+        ['TapTap', 'https://www.taptap.cn/app/513986'],
+        ['QQ\u7fa4', 'qq'],
+        ['\u53cd\u9988', 'https://github.com/Gao2612/zhushen/issues'],
+        ['\u8bbe\u7f6e', 'settings']
+      ];
+      links.forEach(([label, target]) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = label;
+        if (target === 'qq') {
+          button.addEventListener('mouseenter', showQQCard);
+          button.addEventListener('mouseleave', scheduleHideQQCard);
+          button.addEventListener('click', (event) => {
+            event.stopPropagation();
+            qqCardPinned = true;
+            qqCard.hidden = false;
+          });
+        } else if (target === 'settings') {
+          button.dataset.active = 'true';
+          button.addEventListener('click', () => {
+            setManageOpen(true);
+            setStatus('\u8bbe\u7f6e\u3001\u65e5\u5fd7\u548c\u4fee\u590d\u529f\u80fd\u5df2\u6536\u7eb3\u5728\u53f3\u4e0b\u9f7f\u8f6e\u83dc\u5355\u3002');
+          });
+        } else {
+          button.addEventListener('click', () => {
+            window.ZhushenInstaller.openExternal(target);
+          });
+        }
+        quickLinks.appendChild(button);
+      });
       qqCard.innerHTML = '';
       const qqTitle = document.createElement('strong');
       const qqPrimary = document.createElement('span');
@@ -824,6 +873,8 @@
     let installed = false;
     let busy = false;
     let updateAvailable = false;
+    let checkingUpdate = false;
+    let updateChecked = false;
     let qqCardPinned = false;
     let qqHideTimer = null;
 
@@ -865,13 +916,75 @@
       setBusy(false);
     };
 
+    const setUpdateState = (state, detail) => {
+      updateNode.classList.toggle('ready', state === 'available' || state === 'latest');
+      if (state === 'idle') {
+        updateNode.textContent = '\u66f4\u65b0\u72b6\u6001\uff1a\u672a\u68c0\u67e5\u3002';
+      }
+      if (state === 'checking') {
+        updateNode.textContent = '\u66f4\u65b0\u72b6\u6001\uff1a\u6b63\u5728\u68c0\u67e5\u8fdc\u7aef\u7248\u672c...';
+      }
+      if (state === 'latest') {
+        updateNode.textContent = '\u66f4\u65b0\u72b6\u6001\uff1a\u5df2\u662f\u6700\u65b0\u3002';
+      }
+      if (state === 'available') {
+        updateNode.textContent = '\u66f4\u65b0\u72b6\u6001\uff1a\u53d1\u73b0\u65b0\u7248\u672c\u3002';
+      }
+      if (state === 'failed') {
+        updateNode.textContent = '\u66f4\u65b0\u72b6\u6001\uff1a\u68c0\u67e5\u5931\u8d25\u3002'
+          + (detail ? ' ' + detail : '');
+      }
+    };
+
+    const runUpdateCheck = async (source) => {
+      if (checkingUpdate) {
+        setStatus('\u66f4\u65b0\u68c0\u67e5\u6b63\u5728\u8fdb\u884c\uff0c\u8bf7\u7a0d\u5019\u3002');
+        return false;
+      }
+      checkingUpdate = true;
+      checkUpdateButton.disabled = true;
+      setUpdateState('checking');
+      if (source === 'manual') {
+        setStatus('\u6b63\u5728\u68c0\u67e5\u66f4\u65b0...');
+      }
+      const result = await window.ZhushenInstaller.checkUpdate();
+      checkingUpdate = false;
+      updateChecked = true;
+      checkUpdateButton.disabled = false;
+      updateAvailable = !!(result && result.available);
+      updateButton.hidden = !updateAvailable;
+      document.body.classList.toggle('has-update', updateAvailable);
+      if (result && result.error) {
+        const detail = [result.error, result.manifestUrl]
+          .filter(Boolean)
+          .join(' · ');
+        setUpdateState('failed', detail);
+        launcherSummaryNode.textContent = '\u66f4\u65b0\u68c0\u67e5\u5931\u8d25\uff0c\u53ef\u4ece\u9f7f\u8f6e\u83dc\u5355\u91cd\u8bd5\u3002';
+        syncButtons();
+        return false;
+      }
+      if (updateAvailable) {
+        setUpdateState('available');
+        launcherSummaryNode.textContent = '\u53d1\u73b0\u66f4\u65b0\uff0c\u4e3b\u6309\u94ae\u5df2\u5207\u6362\u4e3a\u66f4\u65b0\u6e38\u620f\u3002';
+      } else {
+        setUpdateState('latest');
+        launcherSummaryNode.textContent = installed
+          ? '\u5df2\u662f\u6700\u65b0\u7248\u672c\uff0c\u53ef\u76f4\u63a5\u542f\u52a8\u3002'
+          : '\u672a\u5b89\u88c5\u672c\u5730\u5ba2\u6237\u7aef\uff0c\u53ef\u70b9\u51fb\u4e3b\u6309\u94ae\u5b89\u88c5\u3002';
+      }
+      syncButtons();
+      return updateAvailable;
+    };
+
     async function refresh() {
       const status = await window.ZhushenInstaller.getStatus();
       installed = status.installed;
       document.body.classList.toggle('is-installed', installed);
       document.body.classList.toggle('has-update', updateAvailable);
       panelTitle.textContent = installed ? '\u8bf8\u795e\u7ec8\u5e94\u77e5\u6653' : '\u6e38\u620f\u5b89\u88c5';
-      launcherVersionNode.textContent = '\u7248\u672c v' + (status.version || '1.1.1');
+      launcherVersionNode.textContent = '\u542f\u52a8\u5668 v' + (status.launcherVersion || '1.1.1');
+      clientVersionNode.textContent = '\u76ee\u6807\u5ba2\u6237\u7aef v'
+        + (status.clientVersion || '1.1.1');
       closeAfterLaunchInput.checked = status.closeAfterLaunch !== false;
       pathNode.textContent = status.installDir;
       if (status.space) {
@@ -884,14 +997,11 @@
         updateNode.textContent = '\u68c0\u6d4b\u5230 '
           + status.healthProblems + ' \u4e2a\u6587\u4ef6\u9700\u8981\u4fee\u590d\u3002';
         updateNode.classList.add('ready');
-      } else if (!updateAvailable) {
+      } else if (!updateAvailable && !updateChecked) {
         launcherSummaryNode.textContent = installed
           ? '\u51c6\u5907\u5c31\u7eea\uff0c\u70b9\u51fb\u4e3b\u6309\u94ae\u8fdb\u5165\u8d44\u6599\u9986\u3002'
           : '\u9009\u62e9\u5b89\u88c5\u4f4d\u7f6e\u540e\u5373\u53ef\u5199\u5165\u684c\u9762\u5ba2\u6237\u7aef\u3002';
-        updateNode.textContent = installed
-          ? '\u5df2\u662f\u6700\u65b0\u7248\u672c\u3002'
-          : '\u5c1a\u672a\u5b89\u88c5\u3002';
-        updateNode.classList.remove('ready');
+        setUpdateState('idle');
       }
       setProgress(installed ? 100 : 0);
       setStatus(installed
@@ -999,25 +1109,7 @@
 
     checkUpdateButton.addEventListener('click', async () => {
       setManageOpen(false);
-      setStatus('\u6b63\u5728\u68c0\u67e5\u66f4\u65b0...');
-      const result = await window.ZhushenInstaller.checkUpdate();
-      updateAvailable = !!(result && result.available);
-      updateButton.hidden = !updateAvailable;
-      document.body.classList.toggle('has-update', updateAvailable);
-      if (result && result.error) {
-        updateNode.textContent = '\u66f4\u65b0\u68c0\u67e5\u5931\u8d25\uff1a' + result.error;
-        launcherSummaryNode.textContent = '\u66f4\u65b0\u68c0\u67e5\u5931\u8d25\uff0c\u53ef\u7a0d\u540e\u91cd\u8bd5\u3002';
-      } else if (updateAvailable) {
-        updateNode.textContent = '\u53d1\u73b0\u65b0\u7248\u672c\u3002';
-        launcherSummaryNode.textContent = '\u53d1\u73b0\u66f4\u65b0\uff0c\u4e3b\u6309\u94ae\u5df2\u5207\u6362\u4e3a\u66f4\u65b0\u6e38\u620f\u3002';
-        updateNode.classList.add('ready');
-      } else {
-        updateNode.textContent = '\u5df2\u662f\u6700\u65b0\u7248\u672c\u3002';
-        launcherSummaryNode.textContent = '\u5df2\u662f\u6700\u65b0\u7248\u672c\uff0c\u53ef\u76f4\u63a5\u542f\u52a8\u3002';
-        updateNode.classList.remove('ready');
-      }
-      syncButtons();
-      setBusy(false);
+      await runUpdateCheck('manual');
     });
 
     updateButton.addEventListener('click', async () => {
@@ -1094,7 +1186,7 @@
 
     renderNotice();
     renderQuickLinks();
-    refresh();
+    refresh().then(() => runUpdateCheck('auto'));
   </script>
 </body>
 </html>

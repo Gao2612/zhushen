@@ -35,3 +35,33 @@
 
 - 横屏专属布局本期不做，仅保留现有横竖屏基础能力。
 - 后续需要分别针对首页、官方动态、角色详情和图片预览设计横屏专属布局后再落地。
+
+## 收尾优化闭环
+
+- 启动器打开后会自动检查远端版本；手动检查更新复用同一套逻辑，并增加检查中、已最新、发现更新和检查失败状态。
+- 启动器底部补齐官网、TapTap、QQ群、反馈和设置五个入口；右侧竖排入口继续保留为快捷社交/更新入口。
+- 启动器状态区区分启动器版本和目标客户端版本；安装器状态区区分安装器版本和将安装的客户端版本。
+- 清理桌面端普通用户可触达的窗口缩放快捷键与 IPC，保留 F11、Esc、Ctrl+F 和 Alt+左/右等有效快捷键。
+- 桌面背景音乐新增真实 audio 音量淡入淡出，开启、关闭和恢复时不再直接突兀切断。
+
+## 内容源与资源系统
+
+- 官方动态正文迁移到 `content/official-posts/*.md`；`content/official-posts.json` 只保留元数据、要点、媒体和 Markdown 路径。
+- `scripts/generate-ui.js` 移除旧 fallback 数据读取，缺少必需 JSON 或 Markdown 时会直接构建失败。
+- 新增 `scripts/generate-resource-manifest.py`，生成 `content/resource-manifest.json`、图片缩略图和资源体积报告。
+- 页面卡片和官方动态图片列表改为加载 WebP 缩略图，点击预览时仍打开原图。
+- 官方动态和二创列表保留分批加载，并改为滚动接近底部后自动加载下一批，减少首屏压力。
+
+## 体积治理与交付
+
+- 新增 `scripts/optimize-media.js`，使用项目内 `ffmpeg-static` 压缩大体积 MP4，原文件备份到 `releases/original-media-backup/2026-06-25/`。
+- 本次压缩 4 个最大视频资源，合计从约 209 MB 降到约 93 MB，节省约 111 MB。
+- 新增 `releases/resource-reports/resource-report-2026-06-25.json` 和 `media-optimization-2026-06-25.json`，记录资源体积排行与压缩前后数据。
+- 重新生成 Android debug 包、Windows 桌面端、推荐安装器和 PC 便携 zip，并同步桌面交付文件夹。
+
+## 验证
+
+- `npm run verify`：通过。
+- `npm run build`：通过，重新生成 Android debug 包。
+- `npm run lint:android`：通过；需显式设置仓库内 `JAVA_HOME` 与 `ANDROID_HOME`。
+- `npm run installer-shell:win`：通过，重新生成推荐安装器与启动器/桌面端打包资源。

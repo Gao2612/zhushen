@@ -1,0 +1,486 @@
+{
+  "generatedAt": "2026-06-25",
+  "totalBytes": 183136634,
+  "largest": [
+    {
+      "path": "official-posts/492294102788866561/player-reaction.mp4",
+      "kind": "video",
+      "size": 60321871,
+      "sizeMB": 57.53
+    },
+    {
+      "path": "official-posts/492288870839223557/pv.mp4",
+      "kind": "video",
+      "size": 29059018,
+      "sizeMB": 27.71
+    },
+    {
+      "path": "official-posts/544236913331014741/media-15.gif",
+      "kind": "image",
+      "size": 9458158,
+      "sizeMB": 9.02
+    },
+    {
+      "path": "玩家-二创图/初月wy/初月wy夕岚2.png",
+      "kind": "image",
+      "size": 5088596,
+      "sizeMB": 4.85
+    },
+    {
+      "path": "官方-角色/视频/夕岚我的世界.mp4",
+      "kind": "video",
+      "size": 3895670,
+      "sizeMB": 3.72
+    },
+    {
+      "path": "官方-角色/视频/阿塔尔技能特效.mp4",
+      "kind": "video",
+      "size": 3398036,
+      "sizeMB": 3.24
+    },
+    {
+      "path": "官方-角色/视频/夕岚玩家二创2.mp4",
+      "kind": "video",
+      "size": 2511627,
+      "sizeMB": 2.4
+    },
+    {
+      "path": "官方-概念/一醉关于游戏定位的补充和设想~.jpeg",
+      "kind": "image",
+      "size": 2270286,
+      "sizeMB": 2.17
+    },
+    {
+      "path": "玩家-二创图/莲生/莲生夕岚1.png",
+      "kind": "image",
+      "size": 2218106,
+      "sizeMB": 2.12
+    },
+    {
+      "path": "官方-角色/视频/夕岚玩家二创1.mp4",
+      "kind": "video",
+      "size": 1902016,
+      "sizeMB": 1.81
+    },
+    {
+      "path": "玩家-二创图/初月wy/初月wy夕岚1.png",
+      "kind": "image",
+      "size": 1893452,
+      "sizeMB": 1.81
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年对联1.png",
+      "kind": "image",
+      "size": 1881912,
+      "sizeMB": 1.79
+    },
+    {
+      "path": "官方-角色/视频/阿塔尔.mp4",
+      "kind": "video",
+      "size": 1707484,
+      "sizeMB": 1.63
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年8.png",
+      "kind": "image",
+      "size": 1650982,
+      "sizeMB": 1.57
+    },
+    {
+      "path": "官方-角色/夕岚/夕岚9.gif",
+      "kind": "image",
+      "size": 1611583,
+      "sizeMB": 1.54
+    },
+    {
+      "path": "官方-概念/登场角色：拉夏·贝乌斯.png",
+      "kind": "image",
+      "size": 1609484,
+      "sizeMB": 1.53
+    },
+    {
+      "path": "官方-角色/视频/德赫奴技能.mp4",
+      "kind": "video",
+      "size": 1583777,
+      "sizeMB": 1.51
+    },
+    {
+      "path": "官方-角色/视频/德赫奴.mp4",
+      "kind": "video",
+      "size": 1560584,
+      "sizeMB": 1.49
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年9.png",
+      "kind": "image",
+      "size": 1534195,
+      "sizeMB": 1.46
+    },
+    {
+      "path": "玩家-二创图/莲生/莲生夕岚2.png",
+      "kind": "image",
+      "size": 1341384,
+      "sizeMB": 1.28
+    },
+    {
+      "path": "官方-角色/拉夏·贝乌斯/拉夏2.png",
+      "kind": "image",
+      "size": 1251195,
+      "sizeMB": 1.19
+    },
+    {
+      "path": "官方-概念/官方概念（原官方世界观）/2_官方概念（原官方世界观）.jpeg",
+      "kind": "image",
+      "size": 1210257,
+      "sizeMB": 1.15
+    },
+    {
+      "path": "official-posts/568559847222545007/media-01.gif",
+      "kind": "image",
+      "size": 1161041,
+      "sizeMB": 1.11
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年19.gif",
+      "kind": "image",
+      "size": 1148807,
+      "sizeMB": 1.1
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年17.gif",
+      "kind": "image",
+      "size": 1142406,
+      "sizeMB": 1.09
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年20.gif",
+      "kind": "image",
+      "size": 1062284,
+      "sizeMB": 1.01
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年16.gif",
+      "kind": "image",
+      "size": 1051785,
+      "sizeMB": 1.0
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年18.gif",
+      "kind": "image",
+      "size": 1043886,
+      "sizeMB": 1.0
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年21.gif",
+      "kind": "image",
+      "size": 1014392,
+      "sizeMB": 0.97
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚11.png",
+      "kind": "image",
+      "size": 991772,
+      "sizeMB": 0.95
+    },
+    {
+      "path": "官方-概念/登场角色：德赫奴.png",
+      "kind": "image",
+      "size": 966542,
+      "sizeMB": 0.92
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚9.png",
+      "kind": "image",
+      "size": 960522,
+      "sizeMB": 0.92
+    },
+    {
+      "path": "玩家-二创图/范斯梅耶/范斯梅耶拉夏3.png",
+      "kind": "image",
+      "size": 890949,
+      "sizeMB": 0.85
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚10.png",
+      "kind": "image",
+      "size": 765909,
+      "sizeMB": 0.73
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年22.jpg",
+      "kind": "image",
+      "size": 708787,
+      "sizeMB": 0.68
+    },
+    {
+      "path": "玩家-二创图/jk凯威/jk凯威拉夏1.png",
+      "kind": "image",
+      "size": 707359,
+      "sizeMB": 0.67
+    },
+    {
+      "path": "玩家-二创图/夕岚老公/夕岚老公夕岚2.png",
+      "kind": "image",
+      "size": 677391,
+      "sizeMB": 0.65
+    },
+    {
+      "path": "官方-角色/阿塔尔/阿塔尔2.png",
+      "kind": "image",
+      "size": 674255,
+      "sizeMB": 0.64
+    },
+    {
+      "path": "官方-角色/夕岚/夕岚6.png",
+      "kind": "image",
+      "size": 641542,
+      "sizeMB": 0.61
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年5.jpg",
+      "kind": "image",
+      "size": 638605,
+      "sizeMB": 0.61
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年6.jpg",
+      "kind": "image",
+      "size": 633926,
+      "sizeMB": 0.6
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年1.jpg",
+      "kind": "image",
+      "size": 633293,
+      "sizeMB": 0.6
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年3.jpg",
+      "kind": "image",
+      "size": 629775,
+      "sizeMB": 0.6
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年2.jpg",
+      "kind": "image",
+      "size": 628191,
+      "sizeMB": 0.6
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年7.jpg",
+      "kind": "image",
+      "size": 625974,
+      "sizeMB": 0.6
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年4.jpg",
+      "kind": "image",
+      "size": 623846,
+      "sizeMB": 0.59
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年13.jpg",
+      "kind": "image",
+      "size": 614523,
+      "sizeMB": 0.59
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年12.jpg",
+      "kind": "image",
+      "size": 611386,
+      "sizeMB": 0.58
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年14.jpg",
+      "kind": "image",
+      "size": 604844,
+      "sizeMB": 0.58
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年15.jpg",
+      "kind": "image",
+      "size": 603709,
+      "sizeMB": 0.58
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/2025新年档/新年11.jpg",
+      "kind": "image",
+      "size": 597917,
+      "sizeMB": 0.57
+    },
+    {
+      "path": "玩家-二创图/电子水泥沥灰/电子水泥沥灰夕岚1.jpeg",
+      "kind": "image",
+      "size": 594480,
+      "sizeMB": 0.57
+    },
+    {
+      "path": "官方-概念/官方概念（原官方世界观）/1_官方概念（原官方世界观）.jpeg",
+      "kind": "image",
+      "size": 571201,
+      "sizeMB": 0.54
+    },
+    {
+      "path": "官方-概念/官方概念（原官方世界观）/4_官方概念（原官方世界观）.png",
+      "kind": "image",
+      "size": 544982,
+      "sizeMB": 0.52
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚8.png",
+      "kind": "image",
+      "size": 540462,
+      "sizeMB": 0.52
+    },
+    {
+      "path": "玩家-二创图/阿钰钰钰/阿钰钰钰拉夏1.gif",
+      "kind": "image",
+      "size": 495543,
+      "sizeMB": 0.47
+    },
+    {
+      "path": "玩家-二创图/阿钰钰钰/阿钰钰钰拉夏2.gif",
+      "kind": "image",
+      "size": 473409,
+      "sizeMB": 0.45
+    },
+    {
+      "path": "群友笑话合集/7_群友笑话合集.png",
+      "kind": "image",
+      "size": 453776,
+      "sizeMB": 0.43
+    },
+    {
+      "path": "群友笑话合集/2_群友笑话合集.png",
+      "kind": "image",
+      "size": 417634,
+      "sizeMB": 0.4
+    },
+    {
+      "path": "官方-概念/白国主&拉夏的角色定位.png",
+      "kind": "image",
+      "size": 400458,
+      "sizeMB": 0.38
+    },
+    {
+      "path": "玩家-二创图/巧枝椅/巧枝椅水墨1.jpeg",
+      "kind": "image",
+      "size": 360921,
+      "sizeMB": 0.34
+    },
+    {
+      "path": "官方-角色/视频/阿塔尔回睦.mp4",
+      "kind": "video",
+      "size": 351080,
+      "sizeMB": 0.33
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚3.jpeg",
+      "kind": "image",
+      "size": 350110,
+      "sizeMB": 0.33
+    },
+    {
+      "path": "官方-概念/官方概念（原官方世界观）/15_官方概念（原官方世界观）.png",
+      "kind": "image",
+      "size": 343859,
+      "sizeMB": 0.33
+    },
+    {
+      "path": "玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）11.jpeg",
+      "kind": "image",
+      "size": 318914,
+      "sizeMB": 0.3
+    },
+    {
+      "path": "玩家-二创图/巧枝椅/巧枝椅水墨3.jpeg",
+      "kind": "image",
+      "size": 305821,
+      "sizeMB": 0.29
+    },
+    {
+      "path": "玩家-二创图/精神病系教主/精神病系教主拉夏3.jpeg",
+      "kind": "image",
+      "size": 301053,
+      "sizeMB": 0.29
+    },
+    {
+      "path": "官方-概念/官方概念（原官方世界观）/7_官方概念（原官方世界观）.jpeg",
+      "kind": "image",
+      "size": 270341,
+      "sizeMB": 0.26
+    },
+    {
+      "path": "玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）12.jpeg",
+      "kind": "image",
+      "size": 265084,
+      "sizeMB": 0.25
+    },
+    {
+      "path": "玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）9.jpeg",
+      "kind": "image",
+      "size": 263755,
+      "sizeMB": 0.25
+    },
+    {
+      "path": "玩家-二创图/皮皮/皮皮夕岚2.jpeg",
+      "kind": "image",
+      "size": 263059,
+      "sizeMB": 0.25
+    },
+    {
+      "path": "玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）5.jpeg",
+      "kind": "image",
+      "size": 261909,
+      "sizeMB": 0.25
+    },
+    {
+      "path": "玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）3.jpeg",
+      "kind": "image",
+      "size": 261784,
+      "sizeMB": 0.25
+    },
+    {
+      "path": "玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）2.jpeg",
+      "kind": "image",
+      "size": 258107,
+      "sizeMB": 0.25
+    },
+    {
+      "path": "官方-角色/阿塔尔/阿塔尔3.png",
+      "kind": "image",
+      "size": 251199,
+      "sizeMB": 0.24
+    },
+    {
+      "path": "玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）8.jpeg",
+      "kind": "image",
+      "size": 250064,
+      "sizeMB": 0.24
+    },
+    {
+      "path": "群友笑话合集/1_群友笑话合集.png",
+      "kind": "image",
+      "size": 244794,
+      "sizeMB": 0.23
+    },
+    {
+      "path": "玩家-二创图/范斯梅耶/范斯梅耶拉夏7.jpeg",
+      "kind": "image",
+      "size": 235904,
+      "sizeMB": 0.22
+    },
+    {
+      "path": "玩家-二创图/共创（已获取画师同意）/共创（已获取画师同意）1.jpeg",
+      "kind": "image",
+      "size": 234386,
+      "sizeMB": 0.22
+    },
+    {
+      "path": "玩家-二创图/鸭鸭（待补充整理）/鸭鸭夕岚1.jpeg",
+      "kind": "image",
+      "size": 233600,
+      "sizeMB": 0.22
+    }
+  ]
+}

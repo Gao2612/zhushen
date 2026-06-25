@@ -20,10 +20,6 @@ const appIcon = app.isPackaged
       'logo.ico'
     )
   : join(assetRoot, 'logo', 'logo.ico');
-const zoomStep = 0.1;
-const minZoomFactor = 0.6;
-const maxZoomFactor = 1.8;
-
 const internalHosts = new Set([
   'docs.qq.com',
   'www.taptap.cn',
@@ -138,16 +134,6 @@ const isInternalUrl = (url) => {
 
 const getSenderWindow = (event) => {
   return BrowserWindow.fromWebContents(event.sender);
-};
-
-const clampZoomFactor = (factor) => {
-  return Math.min(maxZoomFactor, Math.max(minZoomFactor, factor));
-};
-
-const setZoomFactor = (window, factor) => {
-  const normalizedFactor = clampZoomFactor(Number(factor.toFixed(2)));
-  window.webContents.setZoomFactor(normalizedFactor);
-  return normalizedFactor;
 };
 
 const ensureMusicWindow = () => {
@@ -416,20 +402,6 @@ const registerShortcuts = (window) => {
       event.preventDefault();
       return;
     }
-    if (['+', '='].includes(input.key)) {
-      setZoomFactor(window, window.webContents.getZoomFactor() + zoomStep);
-      event.preventDefault();
-      return;
-    }
-    if (input.key === '-') {
-      setZoomFactor(window, window.webContents.getZoomFactor() - zoomStep);
-      event.preventDefault();
-      return;
-    }
-    if (input.key === '0') {
-      setZoomFactor(window, 1);
-      event.preventDefault();
-    }
   });
 };
 
@@ -510,41 +482,6 @@ const registerDesktopIpc = () => {
     }
     senderWindow.setAlwaysOnTop(!!(payload && payload.enabled));
     return senderWindow.isAlwaysOnTop();
-  });
-
-  ipcMain.handle('desktop:get-zoom-factor', (event) => {
-    const senderWindow = getSenderWindow(event);
-    return senderWindow ? senderWindow.webContents.getZoomFactor() : 1;
-  });
-
-  ipcMain.handle('desktop:zoom-in', (event) => {
-    const senderWindow = getSenderWindow(event);
-    if (!senderWindow) {
-      return 1;
-    }
-    return setZoomFactor(
-      senderWindow,
-      senderWindow.webContents.getZoomFactor() + zoomStep
-    );
-  });
-
-  ipcMain.handle('desktop:zoom-out', (event) => {
-    const senderWindow = getSenderWindow(event);
-    if (!senderWindow) {
-      return 1;
-    }
-    return setZoomFactor(
-      senderWindow,
-      senderWindow.webContents.getZoomFactor() - zoomStep
-    );
-  });
-
-  ipcMain.handle('desktop:reset-zoom', (event) => {
-    const senderWindow = getSenderWindow(event);
-    if (!senderWindow) {
-      return 1;
-    }
-    return setZoomFactor(senderWindow, 1);
   });
 
   ipcMain.handle('desktop:export-data', async (event, payload) => {

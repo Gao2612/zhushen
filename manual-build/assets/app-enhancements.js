@@ -1402,15 +1402,35 @@
         visibleCount = Math.min(items.length, visibleCount + step);
         sync();
       });
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function (entries) {
+          if (!entries.some(function (entry) { return entry.isIntersecting; })) {
+            return;
+          }
+          if (visibleCount >= items.length) {
+            observer.disconnect();
+            return;
+          }
+          visibleCount = Math.min(items.length, visibleCount + step);
+          sync();
+        }, {
+          rootMargin: '360px 0px'
+        });
+        observer.observe(row);
+      }
       sync();
 
       function sync() {
         items.forEach(function (item, index) {
           item.classList.toggle('performance-page-hidden', index >= visibleCount);
+          if (index < visibleCount + step) {
+            item.style.contentVisibility = 'auto';
+            item.style.containIntrinsicSize = '320px';
+          }
         });
         button.textContent = visibleCount >= items.length
           ? '已显示全部'
-          : '加载更多（' + visibleCount + ' / ' + items.length + '）';
+          : '继续加载（' + visibleCount + ' / ' + items.length + '）';
         button.disabled = visibleCount >= items.length;
       }
     }

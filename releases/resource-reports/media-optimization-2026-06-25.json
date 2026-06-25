@@ -1,0 +1,40 @@
+{
+  "generatedAt": "2026-06-25",
+  "totalBefore": 209019064,
+  "totalAfter": 93130005,
+  "totalSaved": 115889059,
+  "results": [
+    {
+      "path": "official-posts/492288870839223557/pv.mp4",
+      "skipped": false,
+      "before": 75694836,
+      "after": 29059018,
+      "saved": 46635818,
+      "backup": "official-posts/492288870839223557/pv.mp4"
+    },
+    {
+      "path": "official-posts/492294102788866561/player-reaction.mp4",
+      "skipped": false,
+      "before": 71536110,
+      "after": 60321871,
+      "saved": 11214239,
+      "backup": "official-posts/492294102788866561/player-reaction.mp4"
+    },
+    {
+      "path": "官方-角色/视频/阿塔尔技能特效.mp4",
+      "skipped": false,
+      "before": 52405274,
+      "after": 3398036,
+      "saved": 49007238,
+      "backup": "官方-角色/视频/阿塔尔技能特效.mp4"
+    },
+    {
+      "path": "官方-角色/视频/阿塔尔回睦.mp4",
+      "skipped": false,
+      "before": 9382844,
+      "after": 351080,
+      "saved": 9031764,
+      "backup": "官方-角色/视频/阿塔尔回睦.mp4"
+    }
+  ]
+}

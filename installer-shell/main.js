@@ -970,7 +970,12 @@ ipcMain.handle('installer:status', async () => {
     installed: existsSync(appExe) && existsSync(launcherExe),
     installDir,
     appExe,
-    version: app.getVersion(),
+    installerVersion: app.getVersion(),
+    clientVersion: installedManifest
+      ? installedManifest.version
+      : embeddedManifest
+        ? embeddedManifest.version
+        : app.getVersion(),
     buildId: installedManifest ? installedManifest.buildId : '',
     embeddedBuildId: embeddedManifest ? embeddedManifest.buildId : '',
     healthProblems,

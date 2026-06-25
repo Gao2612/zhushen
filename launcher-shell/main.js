@@ -1101,7 +1101,12 @@ ipcMain.handle('installer:status', async () => {
     installed,
     installDir,
     appExe,
-    version: app.getVersion(),
+    launcherVersion: app.getVersion(),
+    clientVersion: installedManifest
+      ? installedManifest.version
+      : embeddedManifest
+        ? embeddedManifest.version
+        : app.getVersion(),
     buildId: installedManifest ? installedManifest.buildId : '',
     embeddedBuildId: embeddedManifest ? embeddedManifest.buildId : '',
     healthProblems,
@@ -1186,7 +1191,8 @@ ipcMain.handle('installer:check-update', async () => {
     });
     return {
       available: false,
-      error: error.message || String(error)
+      error: error.message || String(error),
+      manifestUrl: updateManifestUrl
     };
   }
 });
@@ -1293,7 +1299,9 @@ ipcMain.handle('installer:open-external', async (event, url) => {
   const allowed = [
     'https://www.taptap.cn/app/513986',
     'https://docs.qq.com/sheet/DVXVaQWZOcUFyRlNr?tab=BB08J2',
-    'https://github.com/Gao2612/zhushen/releases/latest'
+    'https://github.com/Gao2612/zhushen/releases/latest',
+    'https://github.com/Gao2612/zhushen/issues',
+    'https://github.com/Gao2612/zhushen'
   ];
   if (!allowed.includes(url)) {
     return false;

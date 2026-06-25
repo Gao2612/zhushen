@@ -25,6 +25,7 @@ const requiredContentFiles = [
   'fan-creations.json',
   'jokes.json',
   'official-posts.json',
+  'resource-manifest.json',
   'splash-videos.json'
 ];
 const assetExtensions = new Set([
@@ -45,6 +46,10 @@ const failures = [];
 
 function recordFailure(message) {
   failures.push(message);
+}
+
+function readJson(path) {
+  return JSON.parse(readFileSync(path, 'utf8'));
 }
 
 function normalizeReference(reference) {
@@ -126,11 +131,48 @@ for (const contentFile of requiredContentFiles) {
 }
 
 const generator = readFileSync(join(root, 'scripts', 'generate-ui.js'), 'utf8');
-if (!generator.includes("readContentJson('characters.json'")) {
+if (!generator.includes("readRequiredJson('characters.json')")) {
   recordFailure('生成脚本未从 content/characters.json 读取角色源数据');
 }
-if (!/readContentJson\(\s*['"]official-posts\.json['"]/.test(generator)) {
+if (!/readRequiredJson\(\s*['"]official-posts\.json['"]/.test(generator)) {
   recordFailure('生成脚本未从 content/official-posts.json 读取官方动态源数据');
+}
+if (/fallback[A-Z]/.test(generator) || generator.includes('readContentJson')) {
+  recordFailure('生成脚本仍包含 fallback 数据或旧读取函数');
+}
+if (!generator.includes('contentFile') || !generator.includes('markdownParagraphs')) {
+  recordFailure('官方动态正文未接入 Markdown 内容文件');
+}
+if (!generator.includes('previewSrc(')) {
+  recordFailure('页面卡片未接入资源缩略图 manifest');
+}
+
+const resourceManifest = readJson(join(contentRoot, 'resource-manifest.json'));
+if (!resourceManifest.assets || !resourceManifest.assets['zy/玩家二创.jpg']) {
+  recordFailure('资源 manifest 缺少首页封面资产');
+}
+for (const [assetPath, asset] of Object.entries(resourceManifest.assets || {})) {
+  if (!existsSync(join(assetsRoot, assetPath))) {
+    recordFailure(`资源 manifest 指向不存在的原始资源：${assetPath}`);
+  }
+  if (asset.kind === 'image') {
+    if (!asset.thumbnail) {
+      recordFailure(`图片资源缺少缩略图：${assetPath}`);
+    } else if (!existsSync(join(assetsRoot, asset.thumbnail))) {
+      recordFailure(`图片资源缩略图不存在：${assetPath} -> ${asset.thumbnail}`);
+    }
+  }
+}
+
+const officialPostsData = readJson(join(contentRoot, 'official-posts.json'));
+for (const post of officialPostsData) {
+  if (!post.contentFile) {
+    recordFailure(`官方动态缺少 Markdown 正文路径：${post.id || post.title}`);
+    continue;
+  }
+  if (!existsSync(join(contentRoot, post.contentFile))) {
+    recordFailure(`官方动态 Markdown 正文不存在：${post.contentFile}`);
+  }
 }
 
 const generatedPages = pages.map((page) => ({
@@ -157,6 +199,11 @@ const appUi = readFileSync(join(assetsRoot, 'app-ui.js'), 'utf8');
 const appTheme = readFileSync(join(assetsRoot, 'lib', 'app-theme.css'), 'utf8');
 const homePage = readFileSync(join(assetsRoot, 'zy.html'), 'utf8');
 const officialPage = readFileSync(join(assetsRoot, 'official.html'), 'utf8');
+const desktopMain = readFileSync(join(root, 'desktop', 'main.js'), 'utf8');
+const desktopPreload = readFileSync(join(root, 'desktop', 'preload.js'), 'utf8');
+if (/desktop:zoom-|desktop:get-zoom-factor|reset-zoom|zoomStep/.test(desktopMain + desktopPreload)) {
+  recordFailure('桌面端仍暴露普通用户缩放残留能力');
+}
 const enhancementRequirements = [
   ['档案抽屉', 'installProfileDrawer()'],
   ['局部切页', 'installSmoothNavigation()'],
@@ -171,6 +218,23 @@ for (const [label, source] of enhancementRequirements) {
 }
 
 const launcher = readFileSync(join(root, 'launcher-shell', 'index.html'), 'utf8');
+if (!launcher.includes("runUpdateCheck('auto')")) {
+  recordFailure('启动器打开后未自动检查远端版本');
+}
+for (const label of [
+  '\\u5b98\\u7f51',
+  'TapTap',
+  'QQ\\u7fa4',
+  '\\u53cd\\u9988',
+  '\\u8bbe\\u7f6e'
+]) {
+  if (!launcher.includes(label)) {
+    recordFailure(`启动器底部缺少入口：${label}`);
+  }
+}
+if (!launcher.includes('clientVersion')) {
+  recordFailure('启动器未区分启动器版本和目标客户端版本');
+}
 if (!/body\.is-installed \.path-box,\s*body\.is-installed \.progress\s*\{\s*display:\s*none;/m.test(launcher)) {
   recordFailure('启动器已安装态仍可能显示安装路径、空间或进度');
 }

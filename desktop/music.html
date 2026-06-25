@@ -9,7 +9,28 @@
   <script>
     const music = document.getElementById('music');
     let lastState = { enabled: null, volume: null, positionApplied: false };
+    let fadeTimer = null;
     music.muted = false;
+    const fadeTo = (targetVolume, duration) => new Promise((resolve) => {
+      window.clearInterval(fadeTimer);
+      const startedAt = Date.now();
+      const startVolume = music.volume;
+      const distance = targetVolume - startVolume;
+      if (duration <= 0 || Math.abs(distance) < 0.01) {
+        music.volume = targetVolume;
+        resolve();
+        return;
+      }
+      fadeTimer = window.setInterval(() => {
+        const ratio = Math.min(1, (Date.now() - startedAt) / duration);
+        music.volume = Math.max(0, Math.min(1, startVolume + distance * ratio));
+        if (ratio >= 1) {
+          window.clearInterval(fadeTimer);
+          fadeTimer = null;
+          resolve();
+        }
+      }, 32);
+    });
     const readState = () => ({
       enabled: lastState.enabled === true,
       playing: !music.paused,
@@ -24,7 +45,6 @@
       const normalizedVolume = Math.round(volume * 100);
       const stateUnchanged = lastState.enabled === !!state.enabled
         && lastState.volume === normalizedVolume;
-      music.volume = volume;
       music.muted = false;
       if (!lastState.positionApplied && Number(state.position) > 0) {
         music.currentTime = Math.max(0, Number(state.position) || 0);
@@ -37,14 +57,20 @@
       };
       if (!state.enabled) {
         if (!music.paused) {
-          music.pause();
+          return fadeTo(0, 420).then(() => {
+            music.pause();
+            music.volume = volume;
+            return readState();
+          });
         }
+        music.volume = volume;
         return Promise.resolve(readState());
       }
       if (stateUnchanged && !music.paused) {
         return Promise.resolve(readState());
       }
-      return music.play().then(() => readState()).catch((error) => {
+      music.volume = 0;
+      return music.play().then(() => fadeTo(volume, 520)).then(() => readState()).catch((error) => {
         const result = readState();
         result.error = error && error.message ? error.message : String(error);
         return result;

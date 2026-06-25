@@ -4,7 +4,6 @@ contextBridge.exposeInMainWorld('ZhushenDesktop', {
   exportData: (data) => ipcRenderer.invoke('desktop:export-data', { data }),
   getAlwaysOnTop: () => ipcRenderer.invoke('desktop:get-always-on-top'),
   getMusicState: () => ipcRenderer.invoke('desktop:get-music-state'),
-  getZoomFactor: () => ipcRenderer.invoke('desktop:get-zoom-factor'),
   getStartupEnabled: () => ipcRenderer.invoke('desktop:get-startup-enabled'),
   importData: () => ipcRenderer.invoke('desktop:import-data'),
   openInternal: (url, title) => ipcRenderer.invoke(
@@ -12,7 +11,6 @@ contextBridge.exposeInMainWorld('ZhushenDesktop', {
     { url, title }
   ),
   requestUninstall: () => ipcRenderer.invoke('desktop:request-uninstall'),
-  resetZoom: () => ipcRenderer.invoke('desktop:reset-zoom'),
   setAlwaysOnTop: (enabled) => ipcRenderer.invoke(
     'desktop:set-always-on-top',
     { enabled }
@@ -25,7 +23,5 @@ contextBridge.exposeInMainWorld('ZhushenDesktop', {
   toggleFullscreen: () => ipcRenderer.invoke('desktop:toggle-fullscreen'),
   windowClose: () => ipcRenderer.invoke('desktop:window-close'),
   windowMinimize: () => ipcRenderer.invoke('desktop:window-minimize'),
-  windowToggleMaximize: () => ipcRenderer.invoke('desktop:window-toggle-maximize'),
-  zoomIn: () => ipcRenderer.invoke('desktop:zoom-in'),
-  zoomOut: () => ipcRenderer.invoke('desktop:zoom-out')
+  windowToggleMaximize: () => ipcRenderer.invoke('desktop:window-toggle-maximize')
 });

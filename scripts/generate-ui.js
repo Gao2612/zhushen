@@ -5,582 +5,73 @@ const root = resolve(__dirname, '..');
 const assetsRoot = join(root, 'manual-build', 'assets');
 const packageJson = require('../package.json');
 
-const fallbackPages = [
-  { href: 'zy.html', label: '首页' },
-  { href: 'official.html', label: '官方发布' },
-  { href: 'gfjs.html', label: '角色' },
-  { href: 'gfgn.html', label: '概念' },
-  { href: 'wjec.html', label: '二创' },
-  { href: 'qyxhhj.html', label: '笑话' }
-];
+const contentRoot = join(root, 'content');
 
-const fallbackSearchSections = [
-  ['全部', '全部'],
-  ['官方', '官方发布'],
-  ['角色', '角色'],
-  ['概念', '概念'],
-  ['二创', '二创'],
-  ['笑话', '笑话']
-];
-
-const fallbackFavoriteGroups = [
-  '全部收藏',
-  '官方发布',
-  '角色',
-  '概念',
-  '二创',
-  '笑话',
-  '图片'
-];
-
-const fallbackCharacters = [
-  {
-    key: 'atal',
-    name: '阿塔尔',
-    title: '少女骑士 · 送葬人',
-    tags: ['官方', '猎人', '送葬人'],
-    cover: '官方-角色/阿塔尔/阿塔尔1 .jpeg',
-    desc:
-      '被国家和盟友背叛的少女骑士。死前与「第十三席的恶魔」定约，' +
-      '堕入名为「汇流地」的异界，成为猎人，代号「送葬人」，' +
-      '开始履行契约——狩猎神明。',
-    quote: '去为诸神带回死亡吧，「送葬人」。',
-    images: [
-      '官方-角色/阿塔尔/阿塔尔1 .jpeg',
-      '官方-角色/阿塔尔/阿塔尔2.png',
-      '官方-角色/阿塔尔/阿塔尔3.png',
-      '官方-角色/阿塔尔/阿塔尔4.jpeg',
-      '官方-角色/阿塔尔/阿塔尔5.jpeg'
-    ],
-    videos: [
-      { src: '官方-角色/视频/阿塔尔.mp4', label: '阿塔尔展示' },
-      { src: '官方-角色/视频/阿塔尔回睦.mp4', label: '阿塔尔回眸' },
-      { src: '官方-角色/视频/阿塔尔技能特效.mp4', label: '技能特效' }
-    ]
-  },
-  {
-    key: 'dehenu',
-    name: '德赫奴',
-    title: '神明 · 无性别',
-    tags: ['官方', '神明', '待考证'],
-    cover: '官方-角色/德赫奴/德赫奴1.jpeg',
-    desc:
-      '已知身份为神明，设定为无性别。曾在 PV 中对阿塔尔说道：' +
-      '“你的灵魂非常明亮，真是令人怀念呢。”',
-    quote: '你的灵魂非常明亮，真是令人怀念呢。',
-    images: [
-      '官方-角色/德赫奴/德赫奴1.jpeg',
-      '官方-角色/德赫奴/德赫奴2.jpeg',
-      '官方-角色/德赫奴/德赫奴3.png'
-    ],
-    videos: [
-      { src: '官方-角色/视频/德赫奴.mp4', label: '德赫奴展示' },
-      { src: '官方-角色/视频/德赫奴技能.mp4', label: '技能演示' }
-    ]
-  },
-  {
-    key: 'laxia',
-    name: '拉夏·贝乌斯',
-    title: '第十三席恶魔',
-    tags: ['官方', '恶魔', '契约'],
-    cover: '官方-角色/拉夏·贝乌斯/拉夏1.jpeg',
-    desc:
-      '汇流地的管理者之一，与阿塔尔定下契约的「第十三席恶魔」。' +
-      '以自身手段深入调查汇流地的异变。',
-    quote: '汇流地的管理者之一。',
-    images: [
-      '官方-角色/拉夏·贝乌斯/拉夏1.jpeg',
-      '官方-角色/拉夏·贝乌斯/拉夏2.png',
-      '官方-角色/拉夏·贝乌斯/拉夏3.jpeg',
-      '官方-角色/拉夏·贝乌斯/拉夏4.jpeg',
-      '官方-角色/拉夏·贝乌斯/拉夏5.jpeg'
-    ],
-    videos: []
-  },
-  {
-    key: 'meisaidesi',
-    name: '梅赛德斯',
-    title: '神秘旅者',
-    tags: ['官方', '待补充'],
-    cover: '官方-角色/梅赛德斯/梅赛德斯1.jpeg',
-    desc: '在汇流地中出现的另一位神秘角色，其背景和目的尚待揭晓。',
-    quote: '背景仍待补充。',
-    images: [
-      '官方-角色/梅赛德斯/梅赛德斯1.jpeg',
-      '官方-角色/梅赛德斯/梅赛德斯2.png'
-    ],
-    videos: []
-  },
-  {
-    key: 'xilan',
-    name: '夕岚',
-    title: '暮色之岚',
-    tags: ['官方', '猎人', '异化'],
-    cover: '官方-角色/夕岚/夕岚1.jpeg',
-    desc:
-      '汇流地中的猎人之一。受生命法则影响，在踏入汇流地深层后' +
-      '逐渐产生扭曲与异化。拥有丰富的人气二创作品。',
-    quote: '汇流地中的猎人之一。',
-    images: [
-      '官方-角色/夕岚/夕岚1.jpeg',
-      '官方-角色/夕岚/夕岚2.jpeg',
-      '官方-角色/夕岚/夕岚3.jpeg',
-      '官方-角色/夕岚/夕岚4.jpeg',
-      '官方-角色/夕岚/夕岚5.png',
-      '官方-角色/夕岚/夕岚6.png',
-      '官方-角色/夕岚/夕岚7.jpeg',
-      '官方-角色/夕岚/夕岚8.jpeg',
-      '官方-角色/夕岚/夕岚9.gif'
-    ],
-    videos: []
-  }
-];
-
-const fallbackFanVideos = [
-  {
-    src: '官方-角色/视频/夕岚玩家二创1.mp4',
-    title: '夕岚玩家二创一',
-    desc: '从角色官方页移入二创归档，避免与官方设定混放。',
-    character: '夕岚'
-  },
-  {
-    src: '官方-角色/视频/夕岚玩家二创2.mp4',
-    title: '夕岚玩家二创二',
-    desc: '从角色官方页移入二创归档，保留应用内播放入口。',
-    character: '夕岚'
-  },
-  {
-    src: '官方-角色/视频/夕岚我的世界.mp4',
-    title: '夕岚我的世界',
-    desc: '玩家自制内容，作为二创视频单独收录。',
-    character: '夕岚'
-  }
-];
-
-const fallbackConceptCards = [
-  {
-    title: '登场角色：德赫奴',
-    src: '官方-概念/登场角色：德赫奴.png',
-    tag: '官方宣传物料'
-  },
-  {
-    title: '登场角色：拉夏·贝乌斯',
-    src: '官方-概念/登场角色：拉夏·贝乌斯.png',
-    tag: '官方宣传物料'
-  },
-  {
-    title: '游戏登入界面',
-    src: '官方-概念/登入界面.jpeg',
-    tag: '官方宣传物料'
-  },
-  {
-    title: '制作人补充设想',
-    src: '官方-概念/一醉关于游戏定位的补充和设想~.jpeg',
-    tag: '官方资料'
-  },
-  {
-    title: '白国主与拉夏的角色定位',
-    src: '官方-概念/白国主&拉夏的角色定位.png',
-    tag: '角色定位'
-  }
-];
-
-for (let index = 1; index <= 15; index += 1) {
-  const ext = [1, 2, 3, 5, 7].includes(index) ? 'jpeg' : 'png';
-  fallbackConceptCards.push({
-    title: `原官方世界观概念图 ${index}`,
-    src: `官方-概念/官方概念（原官方世界观）/${index}_官方概念（原官方世界观）.${ext}`,
-    tag: '世界观'
-  });
-}
-
-const fallbackArtists = [
-  ['阿钰钰钰', '玩家-二创图/阿钰钰钰/', ['阿钰钰钰拉夏1.gif', '阿钰钰钰拉夏2.gif', '阿钰钰钰夕岚1.png']],
-  ['初月wy', '玩家-二创图/初月wy/', ['初月wy夕岚1.png', '初月wy夕岚2.png']],
-  ['电子水泥沥灰', '玩家-二创图/电子水泥沥灰/', ['电子水泥沥灰夕岚1.jpeg']],
-  ['范斯梅耶', '玩家-二创图/范斯梅耶/', ['范斯梅耶拉夏1.jpeg', '范斯梅耶拉夏2.jpeg', '范斯梅耶拉夏3.png', '范斯梅耶拉夏4.jpeg', '范斯梅耶拉夏5.jpeg', '范斯梅耶拉夏6.jpeg', '范斯梅耶拉夏7.jpeg']],
-  ['共创（已获取画师同意）', '玩家-二创图/共创（已获取画师同意）/', ['共创（已获取画师同意）1.jpeg', '共创（已获取画师同意）2.jpeg', '共创（已获取画师同意）3.jpeg', '共创（已获取画师同意）4.jpeg', '共创（已获取画师同意）5.jpeg', '共创（已获取画师同意）6.jpeg', '共创（已获取画师同意）7.jpeg', '共创（已获取画师同意）8.jpeg', '共创（已获取画师同意）9.jpeg', '共创（已获取画师同意）11.jpeg', '共创（已获取画师同意）12.jpeg', '共创（已获取画师同意）13.jpeg']],
-  ['精神病系教主', '玩家-二创图/精神病系教主/', ['精神病系教主拉夏1.jpeg', '精神病系教主拉夏2.jpeg', '精神病系教主拉夏3.jpeg']],
-  ['莲生', '玩家-二创图/莲生/', ['莲生夕岚1.png', '莲生夕岚2.png']],
-  ['皮皮', '玩家-二创图/皮皮/', ['皮皮阿塔尔1.png', '皮皮德赫奴1.jpeg', '皮皮夕岚1.jpeg', '皮皮夕岚2.jpeg', '皮皮夕岚3.jpeg', '皮皮夕岚4.jpeg']],
-  ['巧枝椅', '玩家-二创图/巧枝椅/', ['巧枝椅水墨1.jpeg', '巧枝椅水墨2.jpeg', '巧枝椅水墨3.jpeg', '巧枝椅水墨4.jpeg', '巧枝椅水墨5.jpeg', '巧枝椅水墨6.jpeg', '巧枝椅夕岚1.jpeg', '巧枝椅夕岚2.jpeg']],
-  ['夕岚老公', '玩家-二创图/夕岚老公/', ['夕岚老公夕岚1.jpeg', '夕岚老公夕岚2.png']],
-  ['心理素质叼差', '玩家-二创图/心理素质叼差/', ['心理素质叼差阿塔尔1.jpeg', '心理素质叼差拉夏1.jpeg', '心理素质叼差拉夏2.jpeg', '心理素质叼差拉夏3.jpeg', '心理素质叼差拉夏4.jpeg', '心理素质叼差梅赛德斯1.jpeg', '心理素质叼差夕岚1.jpeg', '心理素质叼差夕岚2.jpeg']],
-  ['鸭鸭', '玩家-二创图/鸭鸭（待补充整理）/', ['鸭鸭夕岚1.jpeg', '鸭鸭夕岚2.jpeg', '鸭鸭夕岚3.jpeg', '鸭鸭夕岚4.jpeg', '鸭鸭夕岚6.jpeg', '鸭鸭夕岚7.jpeg', '鸭鸭夕岚8.png', '鸭鸭夕岚9.png', '鸭鸭夕岚10.png', '鸭鸭夕岚11.png']],
-  ['hsj', '玩家-二创图/hsj/', ['hsj拉夏1.jpeg']],
-  ['jk凯威', '玩家-二创图/jk凯威/', ['jk凯威阿塔尔1.jpeg', 'jk凯威拉夏1.png']]
-].map(([name, base, files]) => ({
-  name,
-  base,
-  files,
-  entries: files.map((file) => ({
-    title: file.replace(/\.(jpeg|jpg|png|gif)$/i, ''),
-    src: base + file,
-    artist: name,
-    type: file.toLowerCase().endsWith('.gif') ? '动图' : '图片',
-    character: detectCharacter(file)
-  }))
-}));
-
-const fallbackJokes = [
-  ['罗老师的画饼', '罗老师24年年初在游戏官群画的饼'],
-  ['版号戏谈', '可惜，本来一测那会儿就要申请版号的'],
-  ['群友“虾”的嚣张', '虾自从线下测试见过罗老师后就放开了自己'],
-  ['虾是罗老师的狗', '一段很有社区记忆点的群聊片段'],
-  ['罗老师疯狂星期四V50', '真的给安装包吗'],
-  ['虾你在干什么', '不是哥们'],
-  ['两个屑屑的家伙', '屑屑的罗老师和群友“小孩”'],
-  ['瑟瑟，不要瑟瑟', '有一段时间群里有点闹腾'],
-  ['游戏备用名', '关于备用名的社区讨论'],
-  ['备用名后续的讨论1', '时间流逝'],
-  ['备用名后续的讨论2', '群友都很活跃'],
-  ['汇流地的往事', '多少故事随风而去，徒留满地狼藉'],
-  ['似曾相识', '一段疑似前脚说完后脚忘记的聊天记录'],
-  ['傲娇的罗老师什么时候直播', '希望知诸还有复活的那一天']
-].map(([title, desc], index) => ({
-  title,
-  desc,
-  src: `群友笑话合集/${index + 1}_群友笑话合集.${[1, 2, 7, 8, 9, 10, 11, 12].includes(index + 1) ? 'png' : 'jpeg'}`
-}));
-
-const fallbackSplashVideos = [
-  ['random', '随机播放'],
-  ['none', '关闭启动视频'],
-  ['atal', '阿塔尔'],
-  ['atal_skill', '阿塔尔技能特效'],
-  ['atal_huimu', '阿塔尔回眸'],
-  ['dehenu', '德赫奴'],
-  ['dehenu_skill', '德赫奴技能']
-];
-
-const fallbackOfficialPosts = [
-  {
-    id: 'offline-tech-test-recruit',
-    title: '《诸神终应知晓》线下技术测招募开启',
-    date: '2024/02',
-    sourceName: '诸神终应知晓',
-    category: '梦开始的地方',
-    sourceUrl: 'https://ycbcj9s09d.feishu.cn/share/base/form/shrcna0QuEOrv2f2xRalylRayrc',
-    sourceLabel: '来源：官方线下技术测招募信息，已整理为应用内档案',
-    summary:
-      '官方开启上海线下技术测试招募，玩家可体验首曝实拍录制里的完整内容，并提供合理范围内最高 2000 元报销额度。',
-    quote: '本次测试为线下技术测试，玩家可以体验到首曝实拍录制里的完整内容。',
-    content: [
-      '问卷链接：https://ycbcj9s09d.feishu.cn/share/base/form/shrcna0QuEOrv2f2xRalylRayrc',
-      '试玩活动地点：上海。',
-      '活动举办时间：3月2日（周六）或3月9日（周六），具体以报名实际情况为准。',
-      '本次测试为线下技术测试，玩家可以体验到首曝实拍录制里的完整内容：2个可观赏/游玩的角色、2个可挑战的BOSS、1张大地图。',
-      '同时，官方为所有获得试玩资格的玩家准备了 2000 元报销额度，报销适用于合理范围内的往返交通费用与活动当晚住宿。',
-      '活动资格将于 2月22日 选出，届时罗老师会通过 QQ-2464090881 私信通知活动相关详细信息。'
-    ],
-    points: [
-      '线下技术测地点为上海。',
-      '可体验内容包含 2 个可观赏/游玩的角色、2 个可挑战 BOSS 与 1 张大地图。',
-      '获得试玩资格的玩家可获得合理范围内最高 2000 元报销额度。'
-    ],
-    media: []
-  },
-  {
-    id: '492288870839223557',
-    title: '实机首曝 PV',
-    date: '2024/01/05',
-    sourceName: '诸神终应知晓',
-    category: 'PV',
-    sourceUrl: 'https://www.taptap.cn/moment/492288870839223557?group_id=708622',
-    summary:
-      '首曝 PV 以“为神明带回死亡”为核心宣言，公开了汇流地、送葬人和同行者命运的基础氛围。',
-    quote: '去为诸神带回死亡吧，「送葬人」。',
-    content: [
-      '官方正文将故事定位在少女的归乡之路上，关键词是杀戮、成长、救赎与成王。',
-      'PV 同时把汇流地称作尘世的墓地与摇篮，强调它即将向玩家展开。',
-      '帖子里的情绪核心不是单纯展示战斗，而是送葬人和数十位同行者的邂逅、别离与命运。'
-    ],
-    points: [
-      '故事围绕杀戮、成长、救赎与成王展开。',
-      '汇流地被描述为尘世的墓地与摇篮。',
-      '强调与数十位拥有闪耀灵魂的同行者相遇和别离。'
-    ],
-    media: [
-      {
-        type: 'video',
-        src: 'official-posts/492288870839223557/pv.mp4',
-        poster: 'official-posts/492288870839223557/cover.jpg',
-        label: '实机首曝 PV'
-      },
-      { type: 'image', src: 'official-posts/492288870839223557/media-01.jpg', label: 'PV 帖内配图' },
-      { type: 'image', src: 'official-posts/492288870839223557/media-02.jpg', label: 'PV 帖内封面' }
-    ]
-  },
-  {
-    id: '492294102788866561',
-    title: '手机实拍录制 Player Reaction',
-    date: '2024/01/05',
-    sourceName: '诸神终应知晓',
-    category: '实机影像',
-    sourceUrl: 'https://www.taptap.cn/moment/492294102788866561?group_id=708622',
-    summary:
-      '官方发布手机端实机试玩影像，注明设备为 RedMi K70，并提示内容仍处开发阶段。',
-    quote: '游戏开发中，不代表最终品质。',
-    content: [
-      '这条动态的核心是手机端实机试玩影像，标题明确标注 Player Reaction。',
-      '官方正文注明试玩设备为 RedMi K70，并把内容限定在开发中版本。',
-      '已通过 TapTap 视频资源接口补齐 720p 应用内播放版本，保留原帖封面与帖内配图。'
-    ],
-    points: [
-      '视频内容为玩家-投资人罗老师的实机试玩反应。',
-      '素材重点展示移动端实机运行效果。',
-      '官方明确标注最终品质仍以正式版本为准。'
-    ],
-    media: [
-      {
-        type: 'video',
-        src: 'official-posts/492294102788866561/player-reaction.mp4',
-        poster: 'official-posts/492294102788866561/media-02.jpg',
-        label: '手机实拍录制 Player Reaction'
-      },
-      { type: 'image', src: 'official-posts/492294102788866561/media-01.jpg', label: '实机影像帖内配图' },
-      { type: 'image', src: 'official-posts/492294102788866561/media-02.jpg', label: 'Player Reaction 视频封面' }
-    ]
-  },
-  {
-    id: '499956228982573909',
-    title: '官方玩家群现已建立',
-    date: '2024/01/25',
-    sourceName: '诸神终应知晓',
-    category: '社群',
-    sourceUrl: 'https://www.taptap.cn/moment/499956228982573909?group_id=708622',
-    summary:
-      '官方宣布玩家群建立，公开群号，并配套发布抽奖活动与首曝 PV、实拍录制入口。',
-    quote: '官方玩家群现已建立。',
-    content: [
-      '官方在正文中感谢玩家关注，并公开玩家群建立信息。',
-      '帖子把加群截图互动、抽奖活动和官方内容入口放在同一条动态里。',
-      '本卡片保留群号、活动性质和官方配图，不收录评论区参与截图。'
-    ],
-    points: [
-      '官方玩家群号：130340208。',
-      '帖子包含加群互动抽奖活动说明。',
-      '官方整理了首曝 PV 与实拍录制两个延伸入口。'
-    ],
-    media: [
-      { type: 'image', src: 'official-posts/499956228982573909/media-01.jpg', label: '官方玩家群配图一' },
-      { type: 'image', src: 'official-posts/499956228982573909/media-02.jpg', label: '官方玩家群配图二' }
-    ]
-  },
-  {
-    id: '514519781039145122',
-    title: '线下试玩活动回顾',
-    date: '2024/03/06',
-    sourceName: '诸神终应知晓',
-    category: '线下试玩',
-    sourceUrl: 'https://www.taptap.cn/moment/514519781039145122?group_id=708622',
-    summary:
-      '官方回顾上海线下试玩活动，集中回应操作、性能、技能反馈、养成和游戏定位等问题。',
-    quote: '试玩内容为9个月前的临时版本。',
-    content: [
-      '官方说明线下试玩以群内招募方式在上海举行，用来和玩家见面并收集反馈。',
-      '正文的重点是答疑：从移动端误触、角色切换、性能表现到技能理解都有回应。',
-      '制作组强调测试版本较早，许多问题已经在后续规划或优化中。'
-    ],
-    points: [
-      '误触、切换角色、处决灵敏度、掉帧与穿模均被列入后续优化。',
-      '制作人说明正式切人方案会包含头像点击与双指划屏两种方式。',
-      '官方将定位描述为带动作要素的刷子游戏，并确认女主锁定。'
-    ],
-    media: [
-      { type: 'image', src: 'official-posts/514519781039145122/media-01.jpg', label: '线下试玩图一' },
-      { type: 'image', src: 'official-posts/514519781039145122/media-02.jpg', label: '线下试玩图二' },
-      { type: 'image', src: 'official-posts/514519781039145122/media-03.jpg', label: '线下试玩图三' },
-      { type: 'image', src: 'official-posts/514519781039145122/media-04.jpg', label: '线下试玩图四' },
-      { type: 'image', src: 'official-posts/514519781039145122/media-05.jpg', label: '线下试玩图五' },
-      { type: 'image', src: 'official-posts/514519781039145122/media-06.jpg', label: '线下试玩图六' },
-      { type: 'image', src: 'official-posts/514519781039145122/media-07.jpg', label: '线下试玩图七' },
-      { type: 'image', src: 'official-posts/514519781039145122/media-08.jpg', label: '线下试玩图八' },
-      { type: 'image', src: 'official-posts/514519781039145122/media-09.jpg', label: '线下试玩图九' },
-      { type: 'image', src: 'official-posts/514519781039145122/media-10.jpg', label: '线下试玩图十' }
-    ]
-  },
-  {
-    id: '525136274135190081',
-    title: '线下参展 ComiDay27',
-    date: '2024/04/05',
-    sourceName: '诸神终应知晓',
-    category: '线下参展',
-    sourceUrl: 'https://www.taptap.cn/moment/525136274135190081?group_id=708622',
-    summary:
-      '官方宣布首次参展成都 ComiDay27，提供实机试玩、周边领取和 BOSS 挑战等活动。',
-    quote: '黑暗幻想 X 3D点划激爽ACT。',
-    content: [
-      '这条动态是参展预告，核心信息是成都 ComiDay27 的时间、地点和展位。',
-      '现场内容包括实机试玩、周边领取、BOSS 挑战和正式测试资格相关活动。',
-      '卡片内置了帖子宣传图，方便在应用里直接查看参展信息。'
-    ],
-    points: [
-      '活动时间为 4.5 至 4.6。',
-      '活动地点为成都西博城会展中心 14 号馆。',
-      '展位编号为 T17-19，并设置正式测试资格挑战。'
-    ],
-    media: [
-      { type: 'image', src: 'official-posts/525136274135190081/media-01.jpg', label: 'ComiDay27 参展图一' },
-      { type: 'image', src: 'official-posts/525136274135190081/media-02.jpg', label: 'ComiDay27 参展图二' },
-      { type: 'image', src: 'official-posts/525136274135190081/media-03.jpg', label: 'ComiDay27 参展图三' }
-    ]
-  },
-  {
-    id: '534736525926074207',
-    title: '诸神终应知晓 X 核聚变',
-    date: '2024/05/01',
-    sourceName: '诸神终应知晓',
-    category: '线下参展',
-    sourceUrl: 'https://www.taptap.cn/moment/534736525926074207?group_id=708622',
-    summary:
-      '官方宣布参加广州核聚变，现场开放首曝版实机试玩、周边领取与 BOSS 挑战。',
-    quote: '现场有游戏实机可试玩。',
-    content: [
-      '官方把这条动态作为广州核聚变参展公告，说明现场会开放游戏实机试玩。',
-      '活动内容延续线下试玩、周边领取、BOSS 挑战和互动赠票。',
-      '帖子内的主视觉图已放入卡片画廊，可直接在应用里查看。'
-    ],
-    points: [
-      '活动时间为 5.18 至 5.19。',
-      '活动地点为广州保利世贸博览馆 6 号馆。',
-      '展位编号为 A18，并设置互动赠票活动。'
-    ],
-    media: [
-      { type: 'image', src: 'official-posts/534736525926074207/media-01.jpg', label: '核聚变参展图' }
-    ]
-  },
-  {
-    id: '544236913331014741',
-    title: '参展回顾',
-    date: '2024/05/27',
-    sourceName: '魔王圆桌',
-    category: '参展回顾',
-    sourceUrl: 'https://www.taptap.cn/moment/544236913331014741?group_id=708622',
-    summary:
-      '魔王圆桌回顾上海线下测、成都 ComicDay 与广州核聚变，并继续公开试玩反馈答疑。',
-    quote: '一千多名玩家试玩过游戏。',
-    content: [
-      '这篇回顾把三次线下见面串成一条时间线：上海线下测、成都 ComicDay、广州核聚变。',
-      '正文继续回应动作手感、闪避、普攻判定、QTE 倒计时、画质差异等玩家反馈。',
-      '卡片保留了大量现场图和一张 GIF，作为参展过程的视觉档案。'
-    ],
-    points: [
-      '回顾三次线下见面，并感谢玩家志愿者协助。',
-      '闪避、操作队列、普攻判定、QTE 倒计时等问题进入优化讨论。',
-      '官方说明 PC 端画质会高于手机端，但不会与移动端割裂。'
-    ],
-    media: [
-      { type: 'image', src: 'official-posts/544236913331014741/media-01.jpg', label: '参展回顾图一' },
-      { type: 'image', src: 'official-posts/544236913331014741/media-02.jpg', label: '参展回顾图二' },
-      { type: 'image', src: 'official-posts/544236913331014741/media-03.jpg', label: '参展回顾图三' },
-      { type: 'image', src: 'official-posts/544236913331014741/media-04.jpg', label: '参展回顾图四' },
-      { type: 'image', src: 'official-posts/544236913331014741/media-05.jpg', label: '参展回顾图五' },
-      { type: 'image', src: 'official-posts/544236913331014741/media-06.jpg', label: '参展回顾图六' },
-      { type: 'image', src: 'official-posts/544236913331014741/media-07.jpg', label: '参展回顾图七' },
-      { type: 'image', src: 'official-posts/544236913331014741/media-08.jpg', label: '参展回顾图八' },
-      { type: 'image', src: 'official-posts/544236913331014741/media-09.jpg', label: '参展回顾图九' },
-      { type: 'image', src: 'official-posts/544236913331014741/media-10.jpg', label: '参展回顾图十' },
-      { type: 'image', src: 'official-posts/544236913331014741/media-11.jpg', label: '参展回顾图十一' },
-      { type: 'image', src: 'official-posts/544236913331014741/media-12.jpg', label: '参展回顾图十二' },
-      { type: 'image', src: 'official-posts/544236913331014741/media-13.jpg', label: '参展回顾图十三' },
-      { type: 'image', src: 'official-posts/544236913331014741/media-14.jpg', label: '参展回顾静态封面' },
-      { type: 'gif', src: 'official-posts/544236913331014741/media-15.gif', label: '参展回顾 GIF' }
-    ]
-  },
-  {
-    id: '568559847222545007',
-    title: '不要祈祷，不要合上战斗的双手',
-    date: '2024/08/02',
-    sourceName: '魔王圆桌',
-    category: '研发冻结',
-    sourceUrl: 'https://www.taptap.cn/moment/568559847222545007?group_id=708622',
-    summary:
-      '魔王圆桌宣布《诸神终应知晓》无限期冻结研发，并发布来自一醉与罗莎的告别文字。',
-    quote: '我只愿诸位——勇气常在。',
-    content: [
-      '官方在 2024 年 8 月 2 日宣布项目无限期冻结研发。',
-      '帖子由制作组公告、一醉的长文和罗莎的告别文字构成，语气明显偏向阶段性告别。',
-      '卡片保留了帖内 GIF 与静态封面，用作研发冻结公告的视觉档案。'
-    ],
-    points: [
-      '官方说明在与各方沟通后决定无限期冻结研发。',
-      '一醉以长文向玩家和行业朋友告别。',
-      '罗莎表示短暂告别是为了更好的再见做准备。'
-    ],
-    media: [
-      { type: 'gif', src: 'official-posts/568559847222545007/media-01.gif', label: '研发冻结公告 GIF' },
-      { type: 'image', src: 'official-posts/568559847222545007/media-02.jpg', label: '研发冻结公告封面' }
-    ]
-  },
-  {
-    id: 'luo-teacher-goodbye-letter',
-    title: 'To 罗老师最可爱的玩家',
-    date: '2024/08/02',
-    sourceName: '罗老师',
-    category: '暂时的终章',
-    sourceUrl: '',
-    sourceLabel: '来源：罗老师给玩家的告别信，已整理为应用内档案',
-    summary:
-      '罗老师以告别信的形式向玩家、管理、志愿者和群友致谢，说明项目暂别，并表达未来重启《诸神终应知晓》的愿望。',
-    quote: '这是个黯淡的世界，但终有人，会成为太阳。',
-    content: [
-      'To 罗老师最可爱的玩家，',
-      '这大概是我第一次以这种方式来和他人告别。',
-      '大概你们发现了，我有段时间没出现在群里了，一直在做斗争，与融资做斗争，与天命在做斗争，与内心的不甘在做斗争。',
-      '不好意思，渺小如我们，仍然没有打赢这场复活赛，没有办法让你们看到我们所坚信的“奇迹”。',
-      '说出来你们可能不信，以前作为投资人的我其实是很害怕和玩家沟通的，最开始说话都很小心翼翼。',
-      '是你们，让我意识到玩家是这么得可爱，这么得真诚，这么得值得我们努力活下去。',
-      '线下见过的每一位玩家的脸我都记得，线上和我打过招呼的每一位群友我也记得。',
-      '我很害怕失去你们，纵然万般不舍，却又不得不亲自写下这封告别信。',
-      '感谢每一位管理、志愿者、群友、玩家，对我、对诸神终应知晓、对魔王圆桌的支持。',
-      '但我想，强大如我们，不会停下前行的脚步，我们会一直坚持做游戏。',
-      '终有一天，我们会攒足力量，重启《诸神终应知晓》，这场短暂的告别是为了更好的再见做准备。',
-      '这是个黯淡的世界，但终有人，会成为太阳。',
-      '群不会解散，会从官群转为民间朋友群；我也不会走，会时不时出现看看你们。',
-      '祝，各位一切都好。'
-    ],
-    points: [
-      '这是一封面向玩家、管理、志愿者与群友的告别信。',
-      '信中说明项目暂别的原因与不舍，并感谢玩家对项目和魔王圆桌的支持。',
-      '罗老师表达了未来攒足力量、重启《诸神终应知晓》的愿望。'
-    ],
-    media: []
-  }
-];
-
-function readContentJson(fileName, fallbackValue) {
-  const filePath = join(root, 'content', fileName);
+function readRequiredJson(fileName) {
+  const filePath = join(contentRoot, fileName);
   if (!existsSync(filePath)) {
-    return fallbackValue;
+    throw new Error(`缺少源数据文件：content/${fileName}`);
   }
   return JSON.parse(readFileSync(filePath, 'utf8'));
 }
 
-const navigationContent = readContentJson('navigation.json', {
-  pages: fallbackPages,
-  searchSections: fallbackSearchSections,
-  favoriteGroups: fallbackFavoriteGroups
-});
-const fanCreationContent = readContentJson('fan-creations.json', {
-  fanVideos: fallbackFanVideos,
-  artists: fallbackArtists
-});
-const pages = navigationContent.pages || fallbackPages;
-const searchSections =
-  navigationContent.searchSections || fallbackSearchSections;
-const favoriteGroups =
-  navigationContent.favoriteGroups || fallbackFavoriteGroups;
-const characters = readContentJson('characters.json', fallbackCharacters);
-const fanVideos = fanCreationContent.fanVideos || fallbackFanVideos;
-const conceptCards = readContentJson('concepts.json', fallbackConceptCards);
-const artists = fanCreationContent.artists || fallbackArtists;
-const jokes = readContentJson('jokes.json', fallbackJokes);
-const splashVideos = readContentJson('splash-videos.json', fallbackSplashVideos);
-const officialPosts = readContentJson(
-  'official-posts.json',
-  fallbackOfficialPosts
+function readRequiredText(relativePath) {
+  const filePath = join(contentRoot, relativePath);
+  if (!existsSync(filePath)) {
+    throw new Error(`缺少正文文件：content/${relativePath}`);
+  }
+  return readFileSync(filePath, 'utf8');
+}
+
+function assertArray(value, label) {
+  if (!Array.isArray(value)) {
+    throw new Error(`源数据字段必须是数组：${label}`);
+  }
+  return value;
+}
+
+function markdownParagraphs(markdown) {
+  return markdown
+    .split(/\n{2,}/)
+    .map((block) => block.trim())
+    .filter(Boolean)
+    .map((block) => block.replace(/^>\s*/, ''));
+}
+
+function loadOfficialPosts() {
+  return assertArray(readRequiredJson('official-posts.json'), 'official-posts')
+    .map((post) => {
+      if (!post.contentFile) {
+        throw new Error(`官方动态缺少 contentFile：${post.id || post.title}`);
+      }
+      return {
+        ...post,
+        content: markdownParagraphs(readRequiredText(post.contentFile))
+      };
+    });
+}
+
+const navigationContent = readRequiredJson('navigation.json');
+const fanCreationContent = readRequiredJson('fan-creations.json');
+const resourceManifest = existsSync(join(contentRoot, 'resource-manifest.json'))
+  ? readRequiredJson('resource-manifest.json')
+  : { assets: {} };
+const pages = assertArray(navigationContent.pages, 'navigation.pages');
+const searchSections = assertArray(
+  navigationContent.searchSections,
+  'navigation.searchSections'
 );
+const favoriteGroups = assertArray(
+  navigationContent.favoriteGroups,
+  'navigation.favoriteGroups'
+);
+const characters = assertArray(readRequiredJson('characters.json'), 'characters');
+const fanVideos = assertArray(fanCreationContent.fanVideos, 'fan-creations.fanVideos');
+const conceptCards = assertArray(readRequiredJson('concepts.json'), 'concepts');
+const artists = assertArray(fanCreationContent.artists, 'fan-creations.artists');
+const jokes = assertArray(readRequiredJson('jokes.json'), 'jokes');
+const splashVideos = assertArray(readRequiredJson('splash-videos.json'), 'splash-videos');
+const officialPosts = loadOfficialPosts();
 
 function dateValue(date) {
   const parts = date.split('/').map((part) => Number(part));
@@ -788,12 +279,23 @@ function footer() {
   </footer>`;
 }
 
+function assetInfo(src) {
+  return resourceManifest.assets && resourceManifest.assets[src]
+    ? resourceManifest.assets[src]
+    : null;
+}
+
+function previewSrc(src) {
+  const info = assetInfo(src);
+  return info && info.thumbnail ? info.thumbnail : src;
+}
+
 function card({ title, desc, src, href, meta, kind, favoriteId }) {
   const openAttr = href ? `href="${href}"` : `href="${src}" data-lightbox-src="${src}"`;
   const favorite = favoriteId ? `<button class="fav-button" data-favorite="${favoriteId}" aria-label="收藏${title}">收藏</button>` : '';
   return `<article class="archive-card" data-search-text="${escapeAttr([title, desc, meta, kind].join(' '))}" data-kind="${kind || ''}">
     <a ${openAttr}>
-      <img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" data-src="${src}" alt="${title}" loading="lazy" decoding="async">
+      <img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" data-src="${previewSrc(src)}" data-full-src="${src}" alt="${title}" loading="lazy" decoding="async">
       <span class="card-kind">${kind || '档案'}</span>
     </a>
     <div class="card-body">
@@ -887,7 +389,7 @@ function renderOfficialMedia(post) {
   const videos = post.media
     .filter((item) => item.type === 'video')
     .map((item) => `<article class="official-video">
-      <video controls preload="none" playsinline webkit-playsinline poster="${item.poster}" data-lazy-video>
+      <video controls preload="none" playsinline webkit-playsinline poster="${previewSrc(item.poster)}" data-lazy-video>
         <source data-src="${item.src}" type="video/mp4">
       </video>
       <a class="native-video-button" href="${nativeVideoHref(item.src, `${post.title} · ${item.label}`)}">应用内播放</a>
@@ -897,7 +399,7 @@ function renderOfficialMedia(post) {
   const gallery = post.media
     .filter((item) => item.type !== 'video')
     .map((item) => `<a class="official-media-card" href="${item.src}" data-lightbox-src="${item.src}" data-favorite-id="official-media:${item.src}">
-      <img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" data-src="${item.src}" alt="${item.label}" loading="lazy" decoding="async">
+      <img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" data-src="${previewSrc(item.src)}" data-full-src="${item.src}" alt="${item.label}" loading="lazy" decoding="async">
       <span>${item.label}</span>
     </a>`)
     .join('');
@@ -1260,7 +762,7 @@ function settingsPage() {
         </div>
       </div>
       <p class="settings-note" data-desktop-background-status>背景模式：读取中</p>
-      <p class="settings-note">快捷键：F11 全屏/退出全屏，Esc 退出全屏，Ctrl+F 搜索，Ctrl+加号/减号缩放，Ctrl+0 恢复缩放，Alt+左/右前进后退。</p>
+      <p class="settings-note">快捷键：F11 全屏/退出全屏，Esc 退出全屏，Ctrl+F 搜索，Alt+左/右前进后退。</p>
       <p class="settings-note" data-desktop-status>桌面功能：读取中</p>
     </article>
     <article class="settings-card">

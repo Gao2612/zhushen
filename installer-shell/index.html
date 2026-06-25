@@ -721,7 +721,8 @@
         updateNode.classList.add('ready');
       } else if (!updateAvailable) {
         updateNode.textContent = installed
-          ? '\u7248\u672c v' + (status.version || '1.1.1')
+          ? '\u5b89\u88c5\u5668 v' + (status.installerVersion || '1.1.1')
+            + ' / \u5ba2\u6237\u7aef v' + (status.clientVersion || '1.1.1')
           : '\u5c1a\u672a\u5b89\u88c5\u3002';
         updateNode.classList.remove('ready');
       }
