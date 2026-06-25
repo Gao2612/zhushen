@@ -10,6 +10,5 @@ These scripts are thin wrappers for the v0.1 verification build.
 Set `UE_ROOT` to the engine directory when the engine is not in a default path, for example:
 
 ```powershell
-$env:UE_ROOT = "G:\Program Files\Epic Games\UE_5.5"
+$env:UE_ROOT = "G:\UE_5.8"
 ```
-

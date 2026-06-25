@@ -3,7 +3,7 @@ $ErrorActionPreference = "Stop"
 $ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 $ProjectFile = Join-Path $ProjectRoot "ZhushenActionDemo.uproject"
 $ArchiveDir = Join-Path $ProjectRoot "Builds\Windows\v0.1"
-$EngineRoot = if ($env:UE_ROOT) { $env:UE_ROOT } else { "G:\Program Files\Epic Games\UE_5.5" }
+$EngineRoot = if ($env:UE_ROOT) { $env:UE_ROOT } else { "G:\UE_5.8" }
 $RunUAT = Join-Path $EngineRoot "Engine\Build\BatchFiles\RunUAT.bat"
 
 if (!(Test-Path -LiteralPath $RunUAT)) {
@@ -22,4 +22,3 @@ if (!(Test-Path -LiteralPath $RunUAT)) {
   -iostore `
   -archive `
   -archivedirectory="$ArchiveDir"
-

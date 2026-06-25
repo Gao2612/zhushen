@@ -6,6 +6,7 @@ if ($env:UE_ROOT) {
   $Candidates += $env:UE_ROOT
 }
 $Candidates += @(
+  "G:\UE_5.8",
   "G:\Program Files\Epic Games\UE_5.5",
   "G:\Program Files\Epic Games\UE_5.4",
   "C:\Program Files\Epic Games\UE_5.5",
