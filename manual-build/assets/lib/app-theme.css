@@ -712,10 +712,18 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   max-height: 100vh;
   object-fit: contain;
   border-radius: 0;
+  cursor: grab;
+  touch-action: none;
+  transform-origin: center center;
+  transition: transform .16s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 .lightbox-close, .lightbox-action { position: fixed; top: 18px; }
 .lightbox-close { right: 18px; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); color: var(--text); background: rgba(0,0,0,.5); font-size: 28px; }
 .lightbox-action { left: 18px; }
+.lightbox-save { left: 104px; }
 #lightboxCaption {
   position: fixed;
   right: 18px;

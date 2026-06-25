@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper
+
 apply plugin: 'com.android.application'
 
 def releaseSigningConfigured = [
@@ -6,6 +8,9 @@ def releaseSigningConfigured = [
     'ZHUSHEN_KEY_ALIAS',
     'ZHUSHEN_KEY_PASSWORD'
 ].every { System.getenv(it) }
+def packageInfo = new JsonSlurper().parse(
+    file("${rootDir}/../package.json")
+)
 
 android {
     namespace = "com.zhushen.game"
@@ -21,7 +26,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 3
-        versionName "1.1.1"
+        versionName packageInfo.version
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'

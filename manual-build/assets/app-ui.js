@@ -250,6 +250,11 @@
     var image = document.getElementById('lightboxImg');
     var caption = document.getElementById('lightboxCaption');
     var current = null;
+    var pointers = new Map();
+    var transform = {scale: 1, x: 0, y: 0};
+    var lastTapAt = 0;
+    var longPressTimer = 0;
+    var pinchStart = null;
     if (!box || !image) {
       return;
     }
@@ -266,6 +271,7 @@
       image.src = current.src;
       image.alt = current.title;
       caption.textContent = current.title;
+      resetTransform();
       box.classList.add('active');
       box.setAttribute('aria-hidden', 'false');
       document.documentElement.classList.add('lightbox-open');
@@ -290,12 +296,171 @@
         }
       });
     });
+    document.querySelectorAll('[data-save-current]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        saveCurrentImage();
+      });
+    });
+    image.addEventListener('pointerdown', function (event) {
+      if (!current) {
+        return;
+      }
+      image.setPointerCapture(event.pointerId);
+      image.style.cursor = 'grabbing';
+      pointers.set(event.pointerId, pointerFromEvent(event));
+      if (pointers.size === 1) {
+        startLongPress();
+      }
+      if (pointers.size === 2) {
+        window.clearTimeout(longPressTimer);
+        pinchStart = createPinchStart();
+      }
+    });
+    image.addEventListener('pointermove', function (event) {
+      if (!pointers.has(event.pointerId)) {
+        return;
+      }
+      var previous = pointers.get(event.pointerId);
+      var next = pointerFromEvent(event);
+      pointers.set(event.pointerId, next);
+      window.clearTimeout(longPressTimer);
+      if (pointers.size === 1 && transform.scale > 1) {
+        transform.x += next.x - previous.x;
+        transform.y += next.y - previous.y;
+        applyTransform();
+        return;
+      }
+      if (pointers.size >= 2 && pinchStart) {
+        applyPinchTransform();
+      }
+    });
+    image.addEventListener('pointerup', endPointer);
+    image.addEventListener('pointercancel', endPointer);
+    image.addEventListener('dblclick', function (event) {
+      event.preventDefault();
+      resetTransform();
+    });
+    image.addEventListener('click', function (event) {
+      var now = Date.now();
+      if (now - lastTapAt < 280) {
+        event.preventDefault();
+        resetTransform();
+      }
+      lastTapAt = now;
+    });
     function close() {
       box.classList.remove('active');
       box.setAttribute('aria-hidden', 'true');
       document.documentElement.classList.remove('lightbox-open');
       image.removeAttribute('src');
       image.removeAttribute('alt');
+      pointers.clear();
+      window.clearTimeout(longPressTimer);
+      pinchStart = null;
+      resetTransform();
+    }
+
+    function pointerFromEvent(event) {
+      return {id: event.pointerId, x: event.clientX, y: event.clientY};
+    }
+
+    function endPointer(event) {
+      if (pointers.has(event.pointerId)) {
+        pointers.delete(event.pointerId);
+      }
+      window.clearTimeout(longPressTimer);
+      image.style.cursor = 'grab';
+      pinchStart = pointers.size >= 2 ? createPinchStart() : null;
+    }
+
+    function startLongPress() {
+      window.clearTimeout(longPressTimer);
+      longPressTimer = window.setTimeout(function () {
+        saveCurrentImage();
+      }, 650);
+    }
+
+    function createPinchStart() {
+      var values = Array.from(pointers.values()).slice(0, 2);
+      if (values.length < 2) {
+        return null;
+      }
+      return {
+        distance: distance(values[0], values[1]),
+        center: center(values[0], values[1]),
+        scale: transform.scale,
+        x: transform.x,
+        y: transform.y
+      };
+    }
+
+    function applyPinchTransform() {
+      var values = Array.from(pointers.values()).slice(0, 2);
+      if (!pinchStart || values.length < 2 || pinchStart.distance <= 0) {
+        return;
+      }
+      var nextCenter = center(values[0], values[1]);
+      var nextDistance = distance(values[0], values[1]);
+      transform.scale = clamp(
+        pinchStart.scale * (nextDistance / pinchStart.distance),
+        1,
+        4
+      );
+      transform.x = pinchStart.x + nextCenter.x - pinchStart.center.x;
+      transform.y = pinchStart.y + nextCenter.y - pinchStart.center.y;
+      if (transform.scale === 1) {
+        transform.x = 0;
+        transform.y = 0;
+      }
+      applyTransform();
+    }
+
+    function distance(first, second) {
+      var deltaX = first.x - second.x;
+      var deltaY = first.y - second.y;
+      return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    }
+
+    function center(first, second) {
+      return {
+        x: (first.x + second.x) / 2,
+        y: (first.y + second.y) / 2
+      };
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function resetTransform() {
+      transform = {scale: 1, x: 0, y: 0};
+      applyTransform();
+    }
+
+    function applyTransform() {
+      image.style.transform = 'translate3d('
+        + transform.x
+        + 'px, '
+        + transform.y
+        + 'px, 0) scale('
+        + transform.scale
+        + ')';
+    }
+
+    function saveCurrentImage() {
+      if (!current || !current.src) {
+        return;
+      }
+      if (window.Android && typeof window.Android.saveImage === 'function') {
+        window.Android.saveImage(new URL(current.src, location.href).href);
+        return;
+      }
+      var link = document.createElement('a');
+      link.href = current.src;
+      link.download = current.title || 'zhushen-image';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
     }
 
     function getLightboxTitle(link) {

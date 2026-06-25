@@ -1660,6 +1660,7 @@
     installSmoothNavigation();
     window.ZhushenEnhancementsRefresh = refreshPageEnhancements;
     refreshPageEnhancements();
+    window.setTimeout(notifyFrontendReady, 0);
   }
 
   function refreshPageEnhancements() {
@@ -1673,6 +1674,19 @@
     updatePageBackdrop();
     installCountdown();
     showDisclaimer();
+  }
+
+  function notifyFrontendReady() {
+    try {
+      if (
+        window.Android &&
+        typeof window.Android.setFrontendReady === 'function'
+      ) {
+        window.Android.setFrontendReady();
+      }
+    } catch (error) {
+      console.warn('frontend_ready_notify_failed', error);
+    }
   }
 
   if (document.readyState === 'loading') {

@@ -177,6 +177,7 @@ public final class MainActivity extends ComponentActivity {
     private boolean gameStarted = false;
     private boolean exitTwice = false;
     private boolean backgroundMusicPausedByLifecycle = false;
+    private boolean waitingForFrontendReady = false;
     private String pendingSaveUrl;
     private String pendingNativeVideoAssetPath;
     private ValueCallback<Uri[]> pendingFileChooser;
@@ -614,7 +615,7 @@ public final class MainActivity extends ComponentActivity {
                 closeBrowserBarOnly();
                 injectEnhancements(view);
                 updateSelectedTab(url);
-                revealContentAfterLoad();
+                waitForFrontendReadyAfterLoad();
             }
 
             @Override
@@ -644,17 +645,62 @@ public final class MainActivity extends ComponentActivity {
 
     private LinearLayout createLoadingOverlay() {
         LinearLayout overlay = new LinearLayout(this);
-        overlay.setBackgroundColor(Color.parseColor("#0a0a0f"));
+        overlay.setBackgroundColor(Color.parseColor("#09090d"));
         overlay.setVisibility(View.GONE);
         overlay.setGravity(Gravity.CENTER);
         overlay.setOrientation(LinearLayout.VERTICAL);
+        overlay.setPadding(dp(28), dp(28), dp(28), dp(28));
+
+        TextView title = new TextView(this);
+        title.setText("诸神终应知晓");
+        title.setTextColor(Color.parseColor("#f7e7bf"));
+        title.setTextSize(24);
+        title.setGravity(Gravity.CENTER);
+        title.setLetterSpacing(0.08f);
+        overlay.addView(title);
 
         TextView label = new TextView(this);
-        label.setText("加载中…");
+        label.setText("正在整理汇流地档案…");
         label.setTextColor(Color.parseColor("#f0d78c"));
-        label.setTextSize(16);
+        label.setTextSize(14);
         label.setAlpha(0.7f);
-        overlay.addView(label);
+        label.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams labelParams = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        labelParams.topMargin = dp(14);
+        overlay.addView(label, labelParams);
+
+        ProgressBar loader = new ProgressBar(
+            this,
+            null,
+            android.R.attr.progressBarStyleHorizontal
+        );
+        loader.setIndeterminate(false);
+        loader.setMax(100);
+        loader.setProgress(68);
+        loader.setProgressDrawable(
+            ContextCompat.getDrawable(this, R.drawable.progress_bar)
+        );
+        LinearLayout.LayoutParams loaderParams = new LinearLayout.LayoutParams(
+            dp(220),
+            dp(4)
+        );
+        loaderParams.topMargin = dp(22);
+        overlay.addView(loader, loaderParams);
+
+        TextView hint = new TextView(this);
+        hint.setText("首次进入会等待页面资源准备完成");
+        hint.setTextColor(Color.argb(150, 224, 213, 192));
+        hint.setTextSize(12);
+        hint.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams hintParams = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        hintParams.topMargin = dp(12);
+        overlay.addView(hint, hintParams);
         return overlay;
     }
 
@@ -1558,7 +1604,31 @@ public final class MainActivity extends ComponentActivity {
         view.evaluateJavascript(script, null);
     }
 
+    private void waitForFrontendReadyAfterLoad() {
+        if (!firstLoad) {
+            revealContentAfterLoad();
+            return;
+        }
+        waitingForFrontendReady = true;
+        loadingOverlay.setVisibility(View.VISIBLE);
+        mainHandler.postDelayed(() -> {
+            if (!waitingForFrontendReady || !firstLoad) {
+                return;
+            }
+            Log.w(TAG, "frontend_ready_timeout");
+            revealContentAfterLoad();
+        }, 4500);
+    }
+
+    private void notifyFrontendReady() {
+        if (!waitingForFrontendReady && !firstLoad) {
+            return;
+        }
+        revealContentAfterLoad();
+    }
+
     private void revealContentAfterLoad() {
+        waitingForFrontendReady = false;
         if (!firstLoad) {
             loadingOverlay.setVisibility(View.GONE);
             tabBar.setVisibility(View.VISIBLE);
@@ -1592,6 +1662,7 @@ public final class MainActivity extends ComponentActivity {
     }
 
     private void revealExternalContentAfterLoad(Uri uri) {
+        waitingForFrontendReady = false;
         currentExternalUri = uri;
         if (!isInternalBrowserVisible()) {
             loadingOverlay.setVisibility(View.GONE);
@@ -2094,6 +2165,20 @@ public final class MainActivity extends ComponentActivity {
     }
 
     public final class AppBridge {
+        @JavascriptInterface
+        public void setFrontendReady() {
+            mainHandler.post(() -> notifyFrontendReady());
+        }
+
+        @JavascriptInterface
+        public void saveImage(String imageUrl) {
+            if (imageUrl == null || imageUrl.trim().isEmpty()) {
+                mainHandler.post(() -> showToast("图片地址无效"));
+                return;
+            }
+            mainHandler.post(() -> requestSaveImage(imageUrl));
+        }
+
         @JavascriptInterface
         public void setSkipDisclaimer(boolean skip) {
             preferences.edit()

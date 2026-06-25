@@ -1,10 +1,11 @@
-const { writeFileSync } = require('fs');
+const { existsSync, readFileSync, writeFileSync } = require('fs');
 const { join, resolve } = require('path');
 
 const root = resolve(__dirname, '..');
 const assetsRoot = join(root, 'manual-build', 'assets');
+const packageJson = require('../package.json');
 
-const pages = [
+const fallbackPages = [
   { href: 'zy.html', label: '首页' },
   { href: 'official.html', label: '官方发布' },
   { href: 'gfjs.html', label: '角色' },
@@ -13,7 +14,7 @@ const pages = [
   { href: 'qyxhhj.html', label: '笑话' }
 ];
 
-const searchSections = [
+const fallbackSearchSections = [
   ['全部', '全部'],
   ['官方', '官方发布'],
   ['角色', '角色'],
@@ -22,7 +23,7 @@ const searchSections = [
   ['笑话', '笑话']
 ];
 
-const favoriteGroups = [
+const fallbackFavoriteGroups = [
   '全部收藏',
   '官方发布',
   '角色',
@@ -32,7 +33,7 @@ const favoriteGroups = [
   '图片'
 ];
 
-const characters = [
+const fallbackCharacters = [
   {
     key: 'atal',
     name: '阿塔尔',
@@ -135,7 +136,7 @@ const characters = [
   }
 ];
 
-const fanVideos = [
+const fallbackFanVideos = [
   {
     src: '官方-角色/视频/夕岚玩家二创1.mp4',
     title: '夕岚玩家二创一',
@@ -156,7 +157,7 @@ const fanVideos = [
   }
 ];
 
-const conceptCards = [
+const fallbackConceptCards = [
   {
     title: '登场角色：德赫奴',
     src: '官方-概念/登场角色：德赫奴.png',
@@ -186,14 +187,14 @@ const conceptCards = [
 
 for (let index = 1; index <= 15; index += 1) {
   const ext = [1, 2, 3, 5, 7].includes(index) ? 'jpeg' : 'png';
-  conceptCards.push({
+  fallbackConceptCards.push({
     title: `原官方世界观概念图 ${index}`,
     src: `官方-概念/官方概念（原官方世界观）/${index}_官方概念（原官方世界观）.${ext}`,
     tag: '世界观'
   });
 }
 
-const artists = [
+const fallbackArtists = [
   ['阿钰钰钰', '玩家-二创图/阿钰钰钰/', ['阿钰钰钰拉夏1.gif', '阿钰钰钰拉夏2.gif', '阿钰钰钰夕岚1.png']],
   ['初月wy', '玩家-二创图/初月wy/', ['初月wy夕岚1.png', '初月wy夕岚2.png']],
   ['电子水泥沥灰', '玩家-二创图/电子水泥沥灰/', ['电子水泥沥灰夕岚1.jpeg']],
@@ -221,7 +222,7 @@ const artists = [
   }))
 }));
 
-const jokes = [
+const fallbackJokes = [
   ['罗老师的画饼', '罗老师24年年初在游戏官群画的饼'],
   ['版号戏谈', '可惜，本来一测那会儿就要申请版号的'],
   ['群友“虾”的嚣张', '虾自从线下测试见过罗老师后就放开了自己'],
@@ -242,7 +243,7 @@ const jokes = [
   src: `群友笑话合集/${index + 1}_群友笑话合集.${[1, 2, 7, 8, 9, 10, 11, 12].includes(index + 1) ? 'png' : 'jpeg'}`
 }));
 
-const splashVideos = [
+const fallbackSplashVideos = [
   ['random', '随机播放'],
   ['none', '关闭启动视频'],
   ['atal', '阿塔尔'],
@@ -252,7 +253,7 @@ const splashVideos = [
   ['dehenu_skill', '德赫奴技能']
 ];
 
-const officialPosts = [
+const fallbackOfficialPosts = [
   {
     id: 'offline-tech-test-recruit',
     title: '《诸神终应知晓》线下技术测招募开启',
@@ -548,6 +549,39 @@ const officialPosts = [
   }
 ];
 
+function readContentJson(fileName, fallbackValue) {
+  const filePath = join(root, 'content', fileName);
+  if (!existsSync(filePath)) {
+    return fallbackValue;
+  }
+  return JSON.parse(readFileSync(filePath, 'utf8'));
+}
+
+const navigationContent = readContentJson('navigation.json', {
+  pages: fallbackPages,
+  searchSections: fallbackSearchSections,
+  favoriteGroups: fallbackFavoriteGroups
+});
+const fanCreationContent = readContentJson('fan-creations.json', {
+  fanVideos: fallbackFanVideos,
+  artists: fallbackArtists
+});
+const pages = navigationContent.pages || fallbackPages;
+const searchSections =
+  navigationContent.searchSections || fallbackSearchSections;
+const favoriteGroups =
+  navigationContent.favoriteGroups || fallbackFavoriteGroups;
+const characters = readContentJson('characters.json', fallbackCharacters);
+const fanVideos = fanCreationContent.fanVideos || fallbackFanVideos;
+const conceptCards = readContentJson('concepts.json', fallbackConceptCards);
+const artists = fanCreationContent.artists || fallbackArtists;
+const jokes = readContentJson('jokes.json', fallbackJokes);
+const splashVideos = readContentJson('splash-videos.json', fallbackSplashVideos);
+const officialPosts = readContentJson(
+  'official-posts.json',
+  fallbackOfficialPosts
+);
+
 function dateValue(date) {
   const parts = date.split('/').map((part) => Number(part));
   const year = parts[0] || 1970;
@@ -695,6 +729,7 @@ function htmlPage({ title, active, hero, body, extraClass = '' }) {
   <div class="lightbox" id="lightbox" aria-hidden="true">
     <button class="lightbox-close" data-lightbox-close aria-label="关闭">×</button>
     <button class="lightbox-action" data-favorite-current>收藏</button>
+    <button class="lightbox-action lightbox-save" data-save-current>保存</button>
     <img id="lightboxImg" alt="预览">
     <p id="lightboxCaption"></p>
   </div>
@@ -1108,7 +1143,7 @@ function settingsPage() {
       <p class="eyebrow">About</p>
       <h2>关于本应用</h2>
       <dl>
-        <dt>版本</dt><dd>玩家自制史记 v1.1.1</dd>
+        <dt>版本</dt><dd>玩家自制史记 v${packageJson.version}</dd>
         <dt>内容来源</dt><dd>官方公开物料、玩家社群整理与玩家二创授权内容</dd>
         <dt>本地数据</dt><dd>收藏、最近浏览和免责声明偏好仅保存在当前设备</dd>
         <dt>联系作者</dt><dd>china19210703@163.com</dd>
@@ -1975,10 +2010,18 @@ h2 { font-size: clamp(24px, 5vw, 38px); }
   max-height: 100vh;
   object-fit: contain;
   border-radius: 0;
+  cursor: grab;
+  touch-action: none;
+  transform-origin: center center;
+  transition: transform .16s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 .lightbox-close, .lightbox-action { position: fixed; top: 18px; }
 .lightbox-close { right: 18px; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); color: var(--text); background: rgba(0,0,0,.5); font-size: 28px; }
 .lightbox-action { left: 18px; }
+.lightbox-save { left: 104px; }
 #lightboxCaption {
   position: fixed;
   right: 18px;
@@ -2286,6 +2329,11 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
     var image = document.getElementById('lightboxImg');
     var caption = document.getElementById('lightboxCaption');
     var current = null;
+    var pointers = new Map();
+    var transform = {scale: 1, x: 0, y: 0};
+    var lastTapAt = 0;
+    var longPressTimer = 0;
+    var pinchStart = null;
     if (!box || !image) {
       return;
     }
@@ -2302,6 +2350,7 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
       image.src = current.src;
       image.alt = current.title;
       caption.textContent = current.title;
+      resetTransform();
       box.classList.add('active');
       box.setAttribute('aria-hidden', 'false');
       document.documentElement.classList.add('lightbox-open');
@@ -2326,12 +2375,171 @@ writeFileSync(join(assetsRoot, 'app-ui.js'), `(function () {
         }
       });
     });
+    document.querySelectorAll('[data-save-current]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        saveCurrentImage();
+      });
+    });
+    image.addEventListener('pointerdown', function (event) {
+      if (!current) {
+        return;
+      }
+      image.setPointerCapture(event.pointerId);
+      image.style.cursor = 'grabbing';
+      pointers.set(event.pointerId, pointerFromEvent(event));
+      if (pointers.size === 1) {
+        startLongPress();
+      }
+      if (pointers.size === 2) {
+        window.clearTimeout(longPressTimer);
+        pinchStart = createPinchStart();
+      }
+    });
+    image.addEventListener('pointermove', function (event) {
+      if (!pointers.has(event.pointerId)) {
+        return;
+      }
+      var previous = pointers.get(event.pointerId);
+      var next = pointerFromEvent(event);
+      pointers.set(event.pointerId, next);
+      window.clearTimeout(longPressTimer);
+      if (pointers.size === 1 && transform.scale > 1) {
+        transform.x += next.x - previous.x;
+        transform.y += next.y - previous.y;
+        applyTransform();
+        return;
+      }
+      if (pointers.size >= 2 && pinchStart) {
+        applyPinchTransform();
+      }
+    });
+    image.addEventListener('pointerup', endPointer);
+    image.addEventListener('pointercancel', endPointer);
+    image.addEventListener('dblclick', function (event) {
+      event.preventDefault();
+      resetTransform();
+    });
+    image.addEventListener('click', function (event) {
+      var now = Date.now();
+      if (now - lastTapAt < 280) {
+        event.preventDefault();
+        resetTransform();
+      }
+      lastTapAt = now;
+    });
     function close() {
       box.classList.remove('active');
       box.setAttribute('aria-hidden', 'true');
       document.documentElement.classList.remove('lightbox-open');
       image.removeAttribute('src');
       image.removeAttribute('alt');
+      pointers.clear();
+      window.clearTimeout(longPressTimer);
+      pinchStart = null;
+      resetTransform();
+    }
+
+    function pointerFromEvent(event) {
+      return {id: event.pointerId, x: event.clientX, y: event.clientY};
+    }
+
+    function endPointer(event) {
+      if (pointers.has(event.pointerId)) {
+        pointers.delete(event.pointerId);
+      }
+      window.clearTimeout(longPressTimer);
+      image.style.cursor = 'grab';
+      pinchStart = pointers.size >= 2 ? createPinchStart() : null;
+    }
+
+    function startLongPress() {
+      window.clearTimeout(longPressTimer);
+      longPressTimer = window.setTimeout(function () {
+        saveCurrentImage();
+      }, 650);
+    }
+
+    function createPinchStart() {
+      var values = Array.from(pointers.values()).slice(0, 2);
+      if (values.length < 2) {
+        return null;
+      }
+      return {
+        distance: distance(values[0], values[1]),
+        center: center(values[0], values[1]),
+        scale: transform.scale,
+        x: transform.x,
+        y: transform.y
+      };
+    }
+
+    function applyPinchTransform() {
+      var values = Array.from(pointers.values()).slice(0, 2);
+      if (!pinchStart || values.length < 2 || pinchStart.distance <= 0) {
+        return;
+      }
+      var nextCenter = center(values[0], values[1]);
+      var nextDistance = distance(values[0], values[1]);
+      transform.scale = clamp(
+        pinchStart.scale * (nextDistance / pinchStart.distance),
+        1,
+        4
+      );
+      transform.x = pinchStart.x + nextCenter.x - pinchStart.center.x;
+      transform.y = pinchStart.y + nextCenter.y - pinchStart.center.y;
+      if (transform.scale === 1) {
+        transform.x = 0;
+        transform.y = 0;
+      }
+      applyTransform();
+    }
+
+    function distance(first, second) {
+      var deltaX = first.x - second.x;
+      var deltaY = first.y - second.y;
+      return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    }
+
+    function center(first, second) {
+      return {
+        x: (first.x + second.x) / 2,
+        y: (first.y + second.y) / 2
+      };
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function resetTransform() {
+      transform = {scale: 1, x: 0, y: 0};
+      applyTransform();
+    }
+
+    function applyTransform() {
+      image.style.transform = 'translate3d('
+        + transform.x
+        + 'px, '
+        + transform.y
+        + 'px, 0) scale('
+        + transform.scale
+        + ')';
+    }
+
+    function saveCurrentImage() {
+      if (!current || !current.src) {
+        return;
+      }
+      if (window.Android && typeof window.Android.saveImage === 'function') {
+        window.Android.saveImage(new URL(current.src, location.href).href);
+        return;
+      }
+      var link = document.createElement('a');
+      link.href = current.src;
+      link.download = current.title || 'zhushen-image';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
     }
 
     function getLightboxTitle(link) {

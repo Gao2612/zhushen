@@ -3,6 +3,7 @@ const { extname, join, normalize, resolve } = require('path');
 
 const root = resolve(__dirname, '..');
 const assetsRoot = join(root, 'manual-build', 'assets');
+const contentRoot = join(root, 'content');
 const pages = [
   'zy.html',
   'official.html',
@@ -16,6 +17,15 @@ const forbiddenAssets = [
   'deploy.bat',
   'setup-server.sh',
   'nginx-zhushen.conf'
+];
+const requiredContentFiles = [
+  'navigation.json',
+  'characters.json',
+  'concepts.json',
+  'fan-creations.json',
+  'jokes.json',
+  'official-posts.json',
+  'splash-videos.json'
 ];
 const assetExtensions = new Set([
   '.css',
@@ -107,6 +117,20 @@ for (const forbiddenAsset of forbiddenAssets) {
   if (existsSync(join(assetsRoot, forbiddenAsset))) {
     recordFailure(`运行资产包包含部署文件：${forbiddenAsset}`);
   }
+}
+
+for (const contentFile of requiredContentFiles) {
+  if (!existsSync(join(contentRoot, contentFile))) {
+    recordFailure(`缺少源数据文件：content/${contentFile}`);
+  }
+}
+
+const generator = readFileSync(join(root, 'scripts', 'generate-ui.js'), 'utf8');
+if (!generator.includes("readContentJson('characters.json'")) {
+  recordFailure('生成脚本未从 content/characters.json 读取角色源数据');
+}
+if (!/readContentJson\(\s*['"]official-posts\.json['"]/.test(generator)) {
+  recordFailure('生成脚本未从 content/official-posts.json 读取官方动态源数据');
 }
 
 const generatedPages = pages.map((page) => ({

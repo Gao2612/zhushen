@@ -1,0 +1,63 @@
+{
+  "pages": [
+    {
+      "href": "zy.html",
+      "label": "首页"
+    },
+    {
+      "href": "official.html",
+      "label": "官方发布"
+    },
+    {
+      "href": "gfjs.html",
+      "label": "角色"
+    },
+    {
+      "href": "gfgn.html",
+      "label": "概念"
+    },
+    {
+      "href": "wjec.html",
+      "label": "二创"
+    },
+    {
+      "href": "qyxhhj.html",
+      "label": "笑话"
+    }
+  ],
+  "searchSections": [
+    [
+      "全部",
+      "全部"
+    ],
+    [
+      "官方",
+      "官方发布"
+    ],
+    [
+      "角色",
+      "角色"
+    ],
+    [
+      "概念",
+      "概念"
+    ],
+    [
+      "二创",
+      "二创"
+    ],
+    [
+      "笑话",
+      "笑话"
+    ]
+  ],
+  "favoriteGroups": [
+    "全部收藏",
+    "官方发布",
+    "角色",
+    "概念",
+    "二创",
+    "笑话",
+    "图片"
+  ]
+}
