@@ -108,8 +108,8 @@
 
 ## UE5 工具链安装状态
 
-- 已安装并验证 Temurin JDK 17：`G:\Program Files\Eclipse Adoptium\jdk-17\bin\java.exe`。
-- 已安装 Android command-line tools 到 `G:\Android\cmdline-tools\latest`，并安装 Android SDK 到 `G:\Android\Sdk`。
-- 已验证 `adb`：`G:\Android\Sdk\platform-tools\adb.exe`，版本 `37.0.0-14910828`。
-- 已安装 Android 35、build-tools 35.0.0 与 NDK 25.2.9519653 到 G 盘。
-- 已通过 winget 安装 Epic Games Launcher；官方安装器实际落到 `C:\Program Files\Epic Games\Launcher`。UE5 本体仍需在 Epic Launcher 登录后安装 UE 5.4 或 UE 5.5，完成后再执行 `RunUAT` 打包验证。
+- UE5 v0.1 目标版本统一为 UE 5.8。
+- 当前电脑尚未安装对应 UE5 / Android 工具链，因此新增完整下载清单与下载入口脚本。
+- 新增 `ue5/ZhushenActionDemo/Docs/v0.1-download-checklist.md`，列出 Epic Games Launcher、UE 5.8、Visual Studio、Android Studio、JDK 17 与 UE 5.8 Android SDK 自动配置流程。
+- 新增 `Tools/open-v01-downloads.ps1`，可一次打开官方下载安装页和 UE Android 配置文档。
+- 环境报告改为记录“目标路径 + 当前电脑待安装”，避免误写成当前电脑已经完成 UE5 / Android 打包环境。

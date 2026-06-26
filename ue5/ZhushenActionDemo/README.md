@@ -10,9 +10,16 @@ It intentionally does not include combat, skills, bosses, final UI, final charac
 
 ## Expected Engine
 
-- Unreal Engine: 5.5 preferred, 5.4 acceptable after project regeneration.
+- Unreal Engine: 5.8.
 - Windows target: Win64 Shipping.
 - Android target: Landscape APK or AAB, ASTC texture format, package name `com.zhushen.demo`.
+
+## Download Checklist
+
+The current machine may not have the UE5 toolchain installed yet. Use the full checklist:
+
+- `Docs/v0.1-download-checklist.md`
+- `Tools/open-v01-downloads.ps1`
 
 ## First Run
 

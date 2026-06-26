@@ -878,7 +878,7 @@ function ueDemoPage() {
     <article class="settings-card">
       <p class="eyebrow">Project</p>
       <h2>工程骨架</h2>
-      <p class="settings-note">仓库内保存 UE5 工程骨架：<code>ue5/ZhushenActionDemo</code>。G 盘工作目录同步到 <code>G:\\ZhushenUE5Demo</code>，方便后续在 Unreal Editor 中打开。</p>
+      <p class="settings-note">仓库内保存 UE5 5.8 工程骨架：<code>ue5/ZhushenActionDemo</code>。建议同步到 <code>G:\\ZhushenUE5Demo</code>，并将 UE 安装到 <code>G:\\UE_5.8</code>。</p>
     </article>
     <article class="settings-card">
       <p class="eyebrow">Windows</p>
@@ -900,17 +900,19 @@ function ueDemoPage() {
   </section>
   <section class="split-panel">
     <div>
-      <p class="eyebrow">Build Report</p>
-      <h2>构建报告位置</h2>
-      <p>当前机器未检测到 UE5、RunUAT、adb、java，因此本次先提交可打开的 UE5 工程骨架、配置和报告模板。实际 Windows exe / Android APK 需要在安装 UE5 与 Android 工具链后执行。</p>
+      <p class="eyebrow">Download Checklist</p>
+      <h2>UE 5.8 下载与环境准备</h2>
+      <p>当前电脑尚未安装 UE 5.8、RunUAT、adb、java 等工具链。仓库已补齐完整下载清单和一键打开下载页脚本，安装完成后再执行 Windows / Android 打包验证。</p>
     </div>
     <div class="personal-archive-panel">
       <div>
         <div class="mini-title">
-          <h3>报告文件</h3>
-          <span>BuildReports</span>
+          <h3>环境文件</h3>
+          <span>UE 5.8</span>
         </div>
         <div class="mini-list">
+          <a href="../../ue5/ZhushenActionDemo/Docs/v0.1-download-checklist.md">ue5/ZhushenActionDemo/Docs/v0.1-download-checklist.md</a>
+          <a href="../../ue5/ZhushenActionDemo/Tools/open-v01-downloads.ps1">ue5/ZhushenActionDemo/Tools/open-v01-downloads.ps1</a>
           <a href="../../ue5/ZhushenActionDemo/BuildReports/v0.1-build-report.md">ue5/ZhushenActionDemo/BuildReports/v0.1-build-report.md</a>
         </div>
       </div>
