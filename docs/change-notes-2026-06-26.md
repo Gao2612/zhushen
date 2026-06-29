@@ -1,53 +1,88 @@
 # 2026-06-26 变更记录
 
-本次维护针对另一台电脑提交的 UE5 v0.1 工程骨架做口径收口。
-目标是明确 v0.1 使用 UE 5.8 最新版，并为当前电脑缺少 UE5 / Android
-工具链的情况补齐下载和安装入口。
+本次维护围绕 UE5 v0.1 Environment Verification 展开。目标不是做战斗、
+技能或正式 UI，而是确认《诸神终应知晓》UE5 Demo 的环境、地图、
+Windows 打包和 Android 打包链路能推进到可复现状态。
 
 ## UE5 v0.1 环境下载补全
 
-- UE5 v0.1 目标版本明确为 UE 5.8。
-- 新增 `ue5/ZhushenActionDemo/Docs/v0.1-download-checklist.md`，集中记录 Epic Games Launcher、UE 5.8、Visual Studio、Android Studio、JDK 17 和 Android SDK 的下载入口。
-- 新增 `ue5/ZhushenActionDemo/Tools/open-v01-downloads.ps1`，可一次打开官方下载页和 UE Android 配置文档。
-- 已在桌面交付目录下载 Epic Games Launcher、Visual Studio Build Tools、Temurin JDK 17 和 Android command-line tools。
-- 下载目录为 `C:\Users\EDY\Desktop\诸神终应知晓\UE5.8环境下载包`，并附带 `download-manifest.json` 与 `README-先看这里.md`。
-- `README.md` 与 `Tools/README.md` 改为指向 UE 5.8，不再写 5.4 / 5.5 作为首选。
-- `BuildReports/v0.1-build-report.md` 改为记录目标路径和当前电脑待安装状态，避免误判为当前电脑已经具备 UE5 / Android 打包环境。
-- 资料馆 `UE5 Demo` 页面同步改为“当前电脑需按清单安装环境”，并增加下载清单和脚本入口。
+- UE5 v0.1 目标版本固定为 UE 5.8。
+- 新增 `ue5/ZhushenActionDemo/Docs/v0.1-download-checklist.md`，
+  集中记录 Epic Games Launcher、UE 5.8、Visual Studio、JDK 17、
+  Android SDK / NDK 和 Android command-line tools 的下载入口。
+- 新增 `ue5/ZhushenActionDemo/Tools/open-v01-downloads.ps1`，
+  可一次打开官方下载页和 UE Android 配置文档。
+- 桌面交付目录已保存 Epic Games Launcher、VS Build Tools、
+  Temurin JDK 17、Android command-line tools、NDK r27c 和 Gradle 8.7。
+- `README.md` 与 `Tools/README.md` 统一改为 UE 5.8 口径。
 
-## UE5 v0.1 引擎前置准备
+## UE5 v0.1 工程准备
 
-- 新增 `Content/Core/Maps`、`Content/Core/Materials`、`Content/Core/Characters`、`Content/Core/UI`、`Content/Demo/Maps`、`Content/Test/Materials` 和 `Content/Test/Meshes` 目录占位。
-- 增强 `Tools/check-v01-env.ps1`，输出 UE_ROOT、UnrealEditor、RunUAT、Visual Studio、MSBuild、Windows SDK、Android Studio、JDK、adb、Android SDK、build-tools 与 NDK 状态。
-- `BuildReports/v0.1-build-report.md` 增加 Windows / Android Development 与 Shipping 待填表格、失败记录模板和验收步骤。
-- 新增 `BuildReports/v0.1-readiness-check.md`，拆分引擎安装前已完成、引擎安装前还可做、引擎安装后才能做和当前阻塞项。
-- 新增 `BuildReports/v0.1-code-structure-review.md`，静态审查 C++ 模块依赖、Target、GameMode、Pawn 和 HUD 是否符合 v0.1 极简目标。
-- 资料馆 `UE5 Demo` 页面进一步改为“环境准备中”，明确当前不是打包验证完成态。
+- 新增 `Content/Core`、`Content/Demo`、`Content/Test` 目录占位。
+- 增强 `Tools/check-v01-env.ps1`，输出 UE_ROOT、UnrealEditor、
+  RunUAT、Visual Studio、MSBuild、Windows SDK、JDK、adb、
+  Android SDK、build-tools 与 NDK 状态。
+- `BuildReports/v0.1-build-report.md` 增加 Windows / Android
+  Development 与 Shipping 表格、失败记录模板和验收步骤。
+- `BuildReports/v0.1-readiness-check.md` 拆分引擎安装前准备、
+  引擎安装后进展和当前阻塞项。
+- `BuildReports/v0.1-code-structure-review.md` 静态审查 C++ 模块、
+  Target、GameMode、Pawn 和 HUD 是否符合 v0.1 极简目标。
+- 资料馆 UE Demo 页面保持“环境准备中 / 验证中”口径，不误标为正式完成。
+
+## 启动地图与 Windows 验证
+
+- 已生成真实地图资产
+  `ue5/ZhushenActionDemo/Content/Demo/Maps/L_v01_Startup.umap`。
+- 地图包含 40m x 40m 灰盒地面、可见占位角色、方向标记、
+  Directional Light、Sky Light、Camera Actor、PlayerStart 和
+  `Zhushen UE5 Demo v0.1` 文字。
+- `CreateV01StartupMap.py` 适配 UE 5.8 Editor Subsystem API，
+  并保留脚本日志，便于定位生成失败。
+- 另一台电脑已通过临时内容版工程完成 Windows Development /
+  Shipping 打包验证，并记录包体和启动保持运行结果。
+- 当前电脑已完成 UE 5.8、VS、JDK、Android SDK / NDK 安装，
+  正式 C++ 链路已推进到编译、Cook、IoStore 通过。
+- 当前电脑 Windows Shipping 最后卡在 UAT staging 复制 `dbghelp.dll`。
+  手动复制同一路径成功，说明下一步应集中排查 UAT SafeCopy、占用或权限。
+
+## Android 验证进展
+
+- Android SDK / NDK 已被 UE 5.8 识别为 Android VALID r27c。
+- 当前电脑 Android 原生 arm64 `.so` 编译通过。
+- Gradle 8.7 已缓存到本机 wrapper 目录，并添加本机 Gradle mirror
+  初始化脚本。
+- 当前电脑后续卡在 Gradle 依赖解析的 TLS / Maven 镜像问题。
+- 另一台电脑 Android Development 曾推进到 cook 阶段，但卡在移动端
+  shader / Engine plugin material，未生成 APK。
+- 当前 `adb devices -l` 没有在线设备，APK 安装、横屏、启动时间、
+  帧率和发热均未完成。
+
+## 工具与兼容修复
+
+- `ZhushenActionDemo.Target.cs` 和 `ZhushenActionDemoEditor.Target.cs`
+  升级到 `BuildSettingsVersion.V7`，适配 UE 5.8。
+- `ZhushenV01Hud.cpp` 不再使用 UE 5.8 已移除的
+  `GEngine->GetAverageFPS()`，改用 `FApp::GetDeltaTime()` 计算 FPS。
+- Windows / Android 打包脚本默认指向
+  `C:\Program Files\Epic Games\UE_5.8`，并注入 UE 5.8 自带 .NET 10。
+- `scripts/check-encoding.js` 排除 UE 生成缓存目录，避免 `Saved/`、
+  `Intermediate/`、`Binaries/` 等非源码文件误触发编码门禁。
+- `.gitignore` 增加 UE 打包临时文件排除，防止 OpenOrder 日志和
+  生成的 Android Java 临时目录混入提交。
+
+## 当前未完成与后续接续点
+
+- Windows：优先修复 `dbghelp.dll` staging copy，拿到可重复产出的
+  Windows Shipping 包。
+- Android：优先解决 Gradle 依赖解析和 shader cook 牵入问题，
+  再生成 Development APK。
+- 设备：连接 MuMu 或真机后补齐 APK 安装、横屏、启动时间、包体和帧率。
+- 报告：继续更新 `BuildReports/v0.1-build-report.md` 中的实测数据。
 
 ## 边界说明
 
-- 本次已完成 Windows Development / Shipping 内容版打包验证；Android Development 已执行但阻塞在 shader cook，未生成 APK。
 - 本次没有新增战斗、技能、Boss、正式 UI、正式角色美术或资料馆联动。
-- 本次没有制作半自动安装脚本；安装脚本等 UE 5.8 安装完成后再做。
-- v0.1 仍处于环境验证阶段，下一步需要补完整 Windows SDK、清理 Android cook 牵入的默认插件，并连接 Android 真机继续验证。
-
-## UE5 v0.1 启动地图与 Windows 验证
-
-- 已使用 `Tools/CreateV01StartupMap.py` 生成真实地图资产 `ue5/ZhushenActionDemo/Content/Demo/Maps/L_v01_Startup.umap`。
-- 地图现在包含 40m x 40m 灰盒地面、可见占位角色（圆柱身体 + 球形头部）、四个方向尺度标记、Directional Light、Sky Light、Camera Actor、PlayerStart 和 `Zhushen UE5 Demo v0.1` 文字。
-- 之前只看到方形地面的原因是 PlayerStart 不是可见角色，本次已补上显式占位体。
-- 已在本机用 Unreal Editor 打开 `L_v01_Startup`，用于人工查看生成地图。
-- 当前 Windows SDK 仍被 UBT 标记为 `Win64 INVALID 10.0.22621.0`，所以正式 C++ 工程还不能完整 `-build`。
-- 为先验证 v0.1 内容链路，已创建临时内容版工程 `G:\ZhushenUE5Demo-PackageTemp`，排除 `Source/` 后执行 `-nocompile -nocompileeditor -skipbuild` 打包。
-- Windows Development 内容版打包通过，归档目录 `ue5/ZhushenActionDemo/Builds/Windows/Development/v0.1`，包体约 843.4 MB，启动后保持运行 12 秒。
-- Windows Shipping 内容版打包通过，归档目录 `ue5/ZhushenActionDemo/Builds/Windows/Shipping/v0.1`，包体约 513.3 MB，启动后保持运行 12 秒。
-
-## UE5 v0.1 Android 阻塞记录
-
-- Android SDK / NDK 已被 UE 5.8 识别为 `Android VALID r27c`。
-- 已将 `Config/Android/AndroidEngine.ini` 中 `bBuildForES31` 调整为 `False`，尝试减少 Android shader cook 压力。
-- Android Development 第一轮在旧地图状态运行约 1672.6 秒后中止，避免验证到过期地图。
-- Android Development 第二轮同步新版地图后运行约 386.4 秒，仍卡在 `Cooked packages 440 Packages Remain 61 Total 501`。
-- 阻塞日志显示 UE 正在等待 `InterchangeAssets`、`HairStrands`、`Paper2D` 和部分 Engine material 的移动端 shader，且仍出现 `OPENGL_ES3_1_ANDROID` cook。
-- 当前 `adb devices -l` 无在线设备，因此 APK 安装、横屏、启动时间、帧率和发热均未验证。
-- 下一步建议先清理 Android cook 会牵入的默认插件，并确认 Android RHI 只保留目标后端，再重新打 APK。
+- 本次没有把 UE 引擎源码、Android SDK、Gradle 缓存或下载包提交进仓库。
+- v0.1 仍是环境验证阶段，完成标准仍是 Windows 可启动、
+  Android 可安装横屏、包体和启动数据可复现。

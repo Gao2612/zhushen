@@ -24,6 +24,13 @@ const textExtensions = new Set([
 const ignoredDirectories = new Set([
   '.git',
   '.gradle',
+  '.vs',
+  'Binaries',
+  'Build',
+  'Builds',
+  'DerivedDataCache',
+  'Intermediate',
+  'Saved',
   'android-sdk',
   'android-sdk-tmp',
   'build',

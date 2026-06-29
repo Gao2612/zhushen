@@ -29,10 +29,10 @@ $Links = @(
 
 Write-Host "v0.1 UE 5.8 环境下载入口" -ForegroundColor Yellow
 Write-Host "建议安装路径：" -ForegroundColor Yellow
-Write-Host "  UE_ROOT      = G:\UE_5.8"
-Write-Host "  ProjectRoot  = G:\ZhushenUE5Demo"
-Write-Host "  ANDROID_HOME = G:\Android\Sdk"
-Write-Host "  JAVA_HOME    = G:\Program Files\Eclipse Adoptium\jdk-17"
+Write-Host "  UE_ROOT      = C:\Program Files\Epic Games\UE_5.8"
+Write-Host "  ProjectRoot  = E:\zhushen\ue5\ZhushenActionDemo"
+Write-Host "  ANDROID_HOME = C:\Android\Sdk"
+Write-Host "  JAVA_HOME    = C:\Program Files\Eclipse Adoptium\jdk-17.0.19.10-hotspot"
 Write-Host ""
 
 foreach ($Link in $Links) {

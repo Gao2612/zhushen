@@ -1,10 +1,10 @@
 $ErrorActionPreference = "Continue"
 
 $ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
-$ExpectedProjectRoot = "G:\ZhushenUE5Demo"
-$ExpectedEngineRoot = "G:\UE_5.8"
-$ExpectedAndroidRoot = "G:\Android\Sdk"
-$ExpectedJavaRoot = "G:\Program Files\Eclipse Adoptium\jdk-17"
+$ExpectedProjectRoot = "E:\zhushen\ue5\ZhushenActionDemo"
+$ExpectedEngineRoot = "C:\Program Files\Epic Games\UE_5.8"
+$ExpectedAndroidRoot = "C:\Android\Sdk"
+$ExpectedJavaRoot = "C:\Program Files\Eclipse Adoptium\jdk-17.0.19.10-hotspot"
 
 function Find-FirstExisting {
   param([string[]]$Paths)
@@ -116,17 +116,23 @@ function Get-WindowsSdkSummary {
   }
 }
 
-$EngineRoot = Find-FirstExisting -Paths @($env:UE_ROOT, $ExpectedEngineRoot)
+$EngineRoot = Find-FirstExisting -Paths @($env:UE_ROOT, $ExpectedEngineRoot, "G:\UE_5.8")
 $UnrealEditor = if ($EngineRoot) { Join-Path $EngineRoot "Engine\Binaries\Win64\UnrealEditor.exe" } else { $null }
 $RunUAT = if ($EngineRoot) { Join-Path $EngineRoot "Engine\Build\BatchFiles\RunUAT.bat" } else { $null }
+$JavaHome = Find-FirstExisting -Paths @($env:JAVA_HOME, $ExpectedJavaRoot, "G:\Program Files\Eclipse Adoptium\jdk-17")
 $Java = Find-CommandOrPath -CommandName "java.exe" -Paths @(
-  "$env:JAVA_HOME\bin\java.exe",
+  "$JavaHome\bin\java.exe",
   "$ExpectedJavaRoot\bin\java.exe"
 )
-$AndroidHome = Find-FirstExisting -Paths @($env:ANDROID_HOME, $env:ANDROID_SDK_ROOT, $ExpectedAndroidRoot)
+$AndroidHome = Find-FirstExisting -Paths @($env:ANDROID_HOME, $env:ANDROID_SDK_ROOT, $ExpectedAndroidRoot, "G:\Android\Sdk")
 $Adb = Find-CommandOrPath -CommandName "adb.exe" -Paths @(
   "$AndroidHome\platform-tools\adb.exe",
   "$ExpectedAndroidRoot\platform-tools\adb.exe"
+)
+$CmdlineTools = Find-FirstExisting -Paths @(
+  "$AndroidHome\cmdline-tools\latest\bin\sdkmanager.bat",
+  "$ExpectedAndroidRoot\cmdline-tools\latest\bin\sdkmanager.bat",
+  "C:\Android\cmdline-tools\latest\bin\sdkmanager.bat"
 )
 $AndroidStudio = Find-FirstExisting -Paths @(
   "$env:ProgramFiles\Android\Android Studio\bin\studio64.exe",
@@ -145,14 +151,14 @@ $Rows = @(
   (New-EnvRow -Name "VisualStudio" -Status (Get-StatusValue -Path $VisualStudio) -Value $(if ($VisualStudio) { $VisualStudio } else { "MISSING" }) -Expected "Visual Studio 2022 C++ workload" -Note "Required for UE C++ compile"),
   (New-EnvRow -Name "MSBuild" -Status (Get-StatusValue -Path $MSBuild) -Value $(if ($MSBuild) { $MSBuild } else { "MISSING" }) -Expected "MSBuild.exe" -Note "Required for Windows compile"),
   (New-EnvRow -Name "WindowsSDK" -Status $WindowsSdk.Status -Value $WindowsSdk.Value -Expected "Windows 10/11 SDK" -Note "Required for Windows Shipping build"),
-  (New-EnvRow -Name "AndroidStudio" -Status (Get-StatusValue -Path $AndroidStudio) -Value $(if ($AndroidStudio) { $AndroidStudio } else { "MISSING" }) -Expected "Android Studio" -Note "Android SDK management entry"),
-  (New-EnvRow -Name "JAVA_HOME" -Status (Get-StatusValue -Path "$env:JAVA_HOME") -Value $(if ($env:JAVA_HOME) { $env:JAVA_HOME } else { "MISSING" }) -Expected $ExpectedJavaRoot -Note "JDK 17 recommended"),
+  (New-EnvRow -Name "AndroidStudio" -Status $(if ($AndroidStudio) { "OK" } elseif ($CmdlineTools) { "OPTIONAL" } else { "MISSING" }) -Value $(if ($AndroidStudio) { $AndroidStudio } elseif ($CmdlineTools) { "Using Android command-line tools: $CmdlineTools" } else { "MISSING" }) -Expected "Android Studio or command-line tools" -Note "Full Android Studio UI is optional for v0.1 packaging"),
+  (New-EnvRow -Name "JAVA_HOME" -Status (Get-StatusValue -Path "$JavaHome") -Value $(if ($JavaHome) { $JavaHome } else { "MISSING" }) -Expected $ExpectedJavaRoot -Note "JDK 17 recommended"),
   (New-EnvRow -Name "Java" -Status (Get-StatusValue -Path $Java) -Value $(if ($Java) { $Java } else { "MISSING" }) -Expected "$ExpectedJavaRoot\bin\java.exe" -Note "Required for Android packaging"),
   (New-EnvRow -Name "ANDROID_HOME" -Status (Get-StatusValue -Path $AndroidHome) -Value $(if ($AndroidHome) { $AndroidHome } else { "MISSING" }) -Expected $ExpectedAndroidRoot -Note "Android SDK root"),
   (New-EnvRow -Name "Adb" -Status (Get-StatusValue -Path $Adb) -Value $(if ($Adb) { $Adb } else { "MISSING" }) -Expected "$ExpectedAndroidRoot\platform-tools\adb.exe" -Note "Required for device install and logs"),
   (New-EnvRow -Name "SDK Platforms" -Status (Get-StatusValue -Path "$AndroidHome\platforms") -Value (Get-ChildNames -Path "$AndroidHome\platforms") -Expected "android-35" -Note "Android target platform"),
   (New-EnvRow -Name "Build Tools" -Status (Get-StatusValue -Path "$AndroidHome\build-tools") -Value (Get-ChildNames -Path "$AndroidHome\build-tools") -Expected "35.0.0" -Note "Android build tools"),
-  (New-EnvRow -Name "NDK" -Status (Get-StatusValue -Path "$AndroidHome\ndk") -Value (Get-ChildNames -Path "$AndroidHome\ndk") -Expected "UE 5.8 SDK Management recommended version" -Note "Required for Android C++ compile")
+  (New-EnvRow -Name "NDK" -Status (Get-StatusValue -Path "$AndroidHome\ndk") -Value (Get-ChildNames -Path "$AndroidHome\ndk") -Expected "27.2.12479018 / r27c" -Note "Required for Android C++ compile")
 )
 
 Write-Host "ZhushenActionDemo v0.1 environment check" -ForegroundColor Yellow

@@ -1,12 +1,24 @@
 $ErrorActionPreference = "Stop"
 
 $ProjectRoot = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
-$EngineRoot = if ($env:UE_ROOT) { $env:UE_ROOT } else { "G:\UE_5.8" }
+$EngineRoot = if ($env:UE_ROOT) { $env:UE_ROOT } else { "C:\Program Files\Epic Games\UE_5.8" }
 $RunUAT = Join-Path $EngineRoot "Engine\Build\BatchFiles\RunUAT.bat"
-$TempProjectRoot = if ($env:ZHUSHEN_UE5_PACKAGE_TEMP) { $env:ZHUSHEN_UE5_PACKAGE_TEMP } else { "G:\ZhushenUE5Demo-PackageTemp" }
+$DotNetRoot = Join-Path $EngineRoot "Engine\Binaries\ThirdParty\DotNet\10.0\win-x64"
+$TempRoot = if ($env:ZHUSHEN_UE5_PACKAGE_TEMP) {
+  $env:ZHUSHEN_UE5_PACKAGE_TEMP
+} else {
+  Join-Path $env:TEMP "ZhushenUE5Demo-PackageTemp"
+}
+$TempProjectRoot = Join-Path $TempRoot "WindowsContentOnly"
 
 if (!(Test-Path -LiteralPath $RunUAT)) {
   throw "RunUAT.bat not found. Set UE_ROOT to your Unreal Engine directory."
+}
+
+if (Test-Path -LiteralPath $DotNetRoot) {
+  $env:DOTNET_ROOT = $DotNetRoot
+  $env:DOTNET_ROOT_X64 = $DotNetRoot
+  $env:PATH = "$DotNetRoot;$env:PATH"
 }
 
 if (Test-Path -LiteralPath $TempProjectRoot) {
@@ -15,6 +27,9 @@ if (Test-Path -LiteralPath $TempProjectRoot) {
 
 New-Item -ItemType Directory -Path $TempProjectRoot | Out-Null
 robocopy $ProjectRoot $TempProjectRoot /E /XD Source Intermediate Saved Builds DerivedDataCache .vs /XF *.sln | Out-Null
+if ($LASTEXITCODE -ge 8) {
+  throw "Failed to prepare Windows content-only package temp project. robocopy exit code: $LASTEXITCODE"
+}
 
 $ProjectFile = Join-Path $TempProjectRoot "ZhushenActionDemo.uproject"
 
